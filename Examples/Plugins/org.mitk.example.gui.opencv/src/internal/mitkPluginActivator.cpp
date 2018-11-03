@@ -16,6 +16,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include "mitkPluginActivator.h"
 #include "src/internal/videoplayer/QmitkVideoPlayer.h"
+#include "src/internal/SimpleOpenCVExample.h"
 #include <mitkPersistenceService.h>
 
 namespace mitk
@@ -25,6 +26,7 @@ namespace mitk
     mitk::PersistenceService::LoadModule();
 
     BERRY_REGISTER_EXTENSION_CLASS(QmitkVideoPlayer, context)
+	  BERRY_REGISTER_EXTENSION_CLASS(SimpleOpenCVExample, context)
   }
 
   void PluginActivator::stop(ctkPluginContext *context) { Q_UNUSED(context) }

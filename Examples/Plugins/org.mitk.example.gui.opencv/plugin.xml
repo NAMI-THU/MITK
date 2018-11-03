@@ -9,6 +9,12 @@
       category="org.mitk.views.example" 
       icon="resources/videoplayer.gif"
       class="QmitkVideoPlayer" />
+	  <view 
+      id="org.mitk.views.simpleopencvexample" 
+      name="Simple OpenCV Example" 
+      category="org.mitk.views.example" 
+      icon="resources/videoplayer.gif"
+      class="SimpleOpenCVExample" />
   </extension>
   
 </plugin>

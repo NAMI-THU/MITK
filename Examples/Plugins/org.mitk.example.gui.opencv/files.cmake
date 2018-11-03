@@ -4,12 +4,18 @@ set(SRC_CPP_FILES
 
 set(INTERNAL_CPP_FILES
   videoplayer/QmitkVideoPlayer.cpp
+  SimpleOpenCVExample.cpp
   mitkPluginActivator.cpp
+)
+
+set(UI_FILES
+  src/internal/SimpleOpenCVExampleControls.ui
 )
 
 set(MOC_H_FILES
   src/internal/mitkPluginActivator.h
   src/internal/videoplayer/QmitkVideoPlayer.h
+  src/internal/SimpleOpenCVExample.h
 )
 
 set(CACHED_RESOURCE_FILES

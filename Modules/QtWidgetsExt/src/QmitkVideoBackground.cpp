@@ -241,7 +241,9 @@ void QmitkVideoBackground::Modified()
     mitk::VtkLayerController *layerController = mitk::VtkLayerController::GetInstance((*it).renWin);
 
     if (layerController && !layerController->IsRendererInserted((*it).videoRenderer))
+      {
       layerController->InsertBackgroundRenderer((*it).videoRenderer, true);
+      }
   }
 }
 
