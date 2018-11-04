@@ -19,10 +19,11 @@ See LICENSE.txt or http://www.mitk.org for details.
 #define SimpleOpenCVExample_h
 
 #include <berryISelectionListener.h>
-
+#include <QTime>
 #include <QmitkAbstractView.h>
-
 #include "ui_SimpleOpenCVExampleControls.h"
+#include "mitkOpenCVToMitkImageFilter.h"
+#include "opencv2/opencv.hpp"
 
 /**
   \brief TODO
@@ -42,6 +43,7 @@ protected slots:
 
   /// \brief Called when the user clicks the GUI button
   void OnStartGrabbing();
+  void OnUpdateImage();
 
 protected:
   virtual void CreateQtPartControl(QWidget *parent) override;
@@ -50,7 +52,12 @@ protected:
 
   bool m_running;
 
+  cv::VideoCapture *m_VideoCapture;
+  mitk::OpenCVToMitkImageFilter::Pointer m_conversionFilter;
+
   Ui::SimpleOpenCVExampleControls m_Controls;
+
+  QTimer *m_UpdateTimer;
 };
 
 #endif // SimpleOpenCVExample_h
