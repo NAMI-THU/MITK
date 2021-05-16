@@ -1,0 +1,16 @@
+/**
+  \defgroup org_mitk_gui_qt_thrombus org.mitk.gui.qt.thrombus
+  \ingroup MITKPlugins
+
+  \brief Describe your plugin here.
+
+*/
+
+/**
+  \defgroup org_mitk_gui_qt_thrombus_internal Internal
+  \ingroup org_mitk_gui_qt_thrombus
+
+  \brief This subcategory includes the internal classes of the org.mitk.gui.qt.thrombus plugin. Other
+  plugins must not rely on these classes. They contain implementation details and their interface
+  may change at any time. We mean it.
+*/
