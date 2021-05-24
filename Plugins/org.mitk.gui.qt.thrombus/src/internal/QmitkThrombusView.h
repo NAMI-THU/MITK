@@ -38,9 +38,6 @@ class QmitkThrombusView : public QmitkAbstractView
 public:
   static const std::string VIEW_ID;
 
-  QmitkThrombusView();
-  ~QmitkThrombusView() override;
-
   void CreateQtPartControl(QWidget *parent) override;
 
   void SetFocus() override;
