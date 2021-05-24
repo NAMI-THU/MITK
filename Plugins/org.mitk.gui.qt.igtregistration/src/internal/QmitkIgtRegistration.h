@@ -15,24 +15,24 @@ See LICENSE.txt or http://www.mitk.org for details.
 ===================================================================*/
 
 
-#ifndef Thrombus_h
-#define Thrombus_h
+#ifndef QmitkIgtRegistration_h
+#define QmitkIgtRegistration_h
 
 #include <berryISelectionListener.h>
 
 #include <QmitkAbstractView.h>
 
-#include "ui_ThrombusControls.h"
+#include "ui_QmitkIgtRegistrationControls.h"
 
 /**
-  \brief Thrombus
+  \brief QmitkIgtRegistration
 
   \warning  This class is not yet documented. Use "git blame" and ask the author to provide basic documentation.
 
   \sa QmitkAbstractView
   \ingroup ${plugin_target}_internal
 */
-class Thrombus : public QmitkAbstractView
+class QmitkIgtRegistration : public QmitkAbstractView
 {
   // this is needed for all Qt objects that should have a Qt meta-object
   // (everything that derives from QObject and wants to have signal/slots)
@@ -53,7 +53,7 @@ protected:
   /// \brief Called when the user clicks the GUI button
   void DoImageProcessing();
 
-  Ui::ThrombusControls m_Controls;
+  Ui::QmitkIgtRegistrationControls m_Controls;
 };
 
-#endif // Thrombus_h
+#endif // QmitkIgtRegistration_h

@@ -15,18 +15,15 @@ See LICENSE.txt or http://www.mitk.org for details.
 ===================================================================*/
 
 
-#include "org_mitk_gui_qt_thrombus_Activator.h"
-#include "QmitkThrombusView.h"
+#include "org_mitk_gui_qt_igtregistration_Activator.h"
+#include "QmitkIgtRegistration.h"
 
 namespace mitk
 {
-  void org_mitk_gui_qt_thrombus_Activator::start(ctkPluginContext *context)
+  void org_mitk_gui_qt_igtregistration_Activator::start(ctkPluginContext *context)
   {
-    BERRY_REGISTER_EXTENSION_CLASS(QmitkThrombusView, context)
+    BERRY_REGISTER_EXTENSION_CLASS(QmitkIgtRegistration, context)
   }
 
-  void org_mitk_gui_qt_thrombus_Activator::stop(ctkPluginContext *context)
-  {
-      Q_UNUSED(context)
-  }
+  void org_mitk_gui_qt_igtregistration_Activator::stop(ctkPluginContext *context) { Q_UNUSED(context) }
 }

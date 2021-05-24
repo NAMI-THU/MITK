@@ -20,7 +20,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <berryIWorkbenchWindow.h>
 
 // Qmitk
-#include "Thrombus.h"
+#include "QmitkThrombusView.h"
 
 // Qt
 #include <QMessageBox>
@@ -28,21 +28,21 @@ See LICENSE.txt or http://www.mitk.org for details.
 // mitk image
 #include <mitkImage.h>
 
-const std::string Thrombus::VIEW_ID = "org.mitk.views.thrombus";
+const std::string QmitkThrombusView::VIEW_ID = "org.mitk.views.thrombus";
 
-void Thrombus::SetFocus()
+void QmitkThrombusView::SetFocus()
 {
   m_Controls.buttonPerformImageProcessing->setFocus();
 }
 
-void Thrombus::CreateQtPartControl(QWidget *parent)
+void QmitkThrombusView::CreateQtPartControl(QWidget *parent)
 {
   // create GUI widgets from the Qt Designer's .ui file
   m_Controls.setupUi(parent);
-  connect(m_Controls.buttonPerformImageProcessing, &QPushButton::clicked, this, &Thrombus::DoImageProcessing);
+  connect(m_Controls.buttonPerformImageProcessing, &QPushButton::clicked, this, &QmitkThrombusView::DoImageProcessing);
 }
 
-void Thrombus::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*source*/,
+void QmitkThrombusView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*source*/,
                                                 const QList<mitk::DataNode::Pointer> &nodes)
 {
   // iterate all selected objects, adjust warning visibility
@@ -60,7 +60,7 @@ void Thrombus::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*source*/,
   m_Controls.buttonPerformImageProcessing->setEnabled(false);
 }
 
-void Thrombus::DoImageProcessing()
+void QmitkThrombusView::DoImageProcessing()
 {
   QList<mitk::DataNode::Pointer> nodes = this->GetDataManagerSelection();
   if (nodes.empty())
