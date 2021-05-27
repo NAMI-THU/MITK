@@ -16,10 +16,17 @@
 
 class QmitkThrombusDataReader
 {
-  mitk::TrackingDeviceSource::Pointer trackingSource;
+  mitk::TrackingDevice::Pointer m_TrackingDevice;
 
+  mitk::TrackingDeviceSource::Pointer m_TrackingDeviceSource; // Source of the IGT pipeline
+  mitk::TrackingDeviceData m_TrackingDeviceData; // Handles the tracking device data
 
   void SetTrackingDevice(mitk::TrackingDeviceSource::Pointer trackingSource);
+
+
+  void ConnectDevice();
+  void StartTracking();
+
 };
 
 #endif // QMITKTHROMBUSDATAREADER_H
