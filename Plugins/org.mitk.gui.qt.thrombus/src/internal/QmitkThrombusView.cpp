@@ -32,7 +32,7 @@ const std::string QmitkThrombusView::VIEW_ID = "org.mitk.views.thrombus";
 
 void QmitkThrombusView::SetFocus()
 {
-  m_Controls.buttonPerformImageProcessing->setFocus();
+  //m_Controls.buttonPerformImageProcessing->setFocus();
 }
 
 void QmitkThrombusView::CreateQtPartControl(QWidget *parent)
