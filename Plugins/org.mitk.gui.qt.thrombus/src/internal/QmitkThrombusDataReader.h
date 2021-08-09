@@ -19,6 +19,7 @@ class QmitkThrombusDataReader
 public:
   void SetTrackingDevice(mitk::TrackingDevice::Pointer td);
 
+  void AutoDetectTools();
   void ConnectDevice();
   void StartTracking();
   void StopTracking();
