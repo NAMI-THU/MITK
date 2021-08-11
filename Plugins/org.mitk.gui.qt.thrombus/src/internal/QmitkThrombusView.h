@@ -43,9 +43,6 @@ public:
   void SetFocus() override;
 
 protected:
-
-    // action when buttons are pressed can be introduced here...
-
   /// \brief called by QmitkFunctionality when DataManager's selection has changed
   virtual void OnSelectionChanged(berry::IWorkbenchPart::Pointer source,
                                   const QList<mitk::DataNode::Pointer> &nodes) override;
@@ -54,6 +51,11 @@ protected:
   void DoImageProcessing();
 
   Ui::QmitkThrombusViewControls m_Controls;
+
+protected slots:
+  // action when buttons are pressed can be introduced here...
+
+  void OnConnectTrackerBtnSelected();
 };
 
 #endif // QMITKTHROMBUSVIEW_H

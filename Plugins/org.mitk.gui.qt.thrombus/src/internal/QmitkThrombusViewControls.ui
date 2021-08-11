@@ -308,12 +308,12 @@
     </spacer>
    </item>
    <item row="1" column="0">
-    <widget class="QPushButton" name="buttonPerformImageProcessing">
+    <widget class="QPushButton" name="btnConnectTracker">
      <property name="toolTip">
       <string>Do image processing</string>
      </property>
      <property name="text">
-      <string>Do Something</string>
+      <string>Connect Tracker</string>
      </property>
     </widget>
    </item>

@@ -34,7 +34,6 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkNodePredicateNot.h>
 #include <mitkNodePredicateProperty.h>
 #include <mitkPointSet.h>
-
 #include <mitkSurface.h>
 #include <vtkAppendPolyData.h>
 #include <vtkSphereSource.h>
@@ -303,8 +302,8 @@ void QmitkAblationPlanningView::CreateSpheresOfAblationVolumes()
     vtkSmartPointer<vtkPolyData> surface = vtkSmartPointer<vtkPolyData>::New();
     mitk::Point3D centerInWorldCoordinates;
 
-    m_AblationPlan->GetSegmentationImage()->GetGeometry()->IndexToWorld(m_AblationPlan->GetAblationZone(index)->indexCenter,
-                                                     centerInWorldCoordinates);
+    m_AblationPlan->GetSegmentationImage()->GetGeometry()->IndexToWorld(
+      m_AblationPlan->GetAblationZone(index)->indexCenter, centerInWorldCoordinates);
 
     // Center
     vtkSphere->SetRadius(m_AblationPlan->GetAblationZone(index)->radius);
@@ -362,10 +361,13 @@ void QmitkAblationPlanningView::CalculateAblationStatistics()
 {
   m_Controls.numberAblationVoluminaLabel->setText(QString("%1").arg(m_AblationPlan->GetNumberOfZones()));
   m_Controls.numberTumorVolumeLabel->setText(QString("%1").arg(m_AblationPlan->GetStatistics().tumorVolume));
-  m_Controls.numberTumorAndMarginVolumeLabel->setText(QString("%1").arg(m_AblationPlan->GetStatistics().tumorAndSafetyMarginVolume));
+  m_Controls.numberTumorAndMarginVolumeLabel->setText(
+    QString("%1").arg(m_AblationPlan->GetStatistics().tumorAndSafetyMarginVolume));
   m_Controls.numberAblationVolumeLabel->setText(QString("%1").arg(m_AblationPlan->GetStatistics().totalAblationVolume));
-  m_Controls.numberVolumeAblatedTwoAndMoreLabel->setText(QString("%1").arg(m_AblationPlan->GetStatistics().ablationVolumeAblatedMoreThanOneTime));
-  m_Controls.numberOverlappingAblationZonesLabel->setText(QString("%1").arg(m_AblationPlan->GetStatistics().factorOverlappingAblationZones));
+  m_Controls.numberVolumeAblatedTwoAndMoreLabel->setText(
+    QString("%1").arg(m_AblationPlan->GetStatistics().ablationVolumeAblatedMoreThanOneTime));
+  m_Controls.numberOverlappingAblationZonesLabel->setText(
+    QString("%1").arg(m_AblationPlan->GetStatistics().factorOverlappingAblationZones));
   m_Controls.numberFactorAblatedVolumeOutsideSafetyMarginLabel->setText(
     QString("%1").arg(m_AblationPlan->GetStatistics().factorAblatedVolumeOutsideSafetyMargin));
 }
@@ -561,16 +563,16 @@ void QmitkAblationPlanningView::OnCalculateAblationZonesPushButtonClicked()
                                           minAblationRadius,
                                           toleranceNonAblatedVolume);
 
-  //Set segmentation image for algorithm
-  m_PlanningAlgo->SetSegmentationData(m_SegmentationImage,m_ImageDimension,m_ImageSpacing);
+  // Set segmentation image for algorithm
+  m_PlanningAlgo->SetSegmentationData(m_SegmentationImage, m_ImageDimension, m_ImageSpacing);
 
-  //Set safety margin for algorithm
+  // Set safety margin for algorithm
   m_PlanningAlgo->SetSafetyMargin(m_TumorTissueSafetyMarginIndices);
 
-  //Compute planning
+  // Compute planning
   m_PlanningAlgo->ComputePlanning();
 
-  //Get final proposal and visualize it!
+  // Get final proposal and visualize it!
   mitk::AblationPlan::Pointer finalProposal = m_PlanningAlgo->GetAblationPlan();
 
   MITK_INFO << "Finished calculating ablation zones!";
@@ -579,7 +581,8 @@ void QmitkAblationPlanningView::OnCalculateAblationZonesPushButtonClicked()
   mitk::RenderingManager::GetInstance()->Modified();
   mitk::RenderingManager::GetInstance()->RequestUpdateAll();
 
-  double notAblated = AblationUtils::CheckImageForNonAblatedTissueInPercentage(finalProposal->GetSegmentationImage(), finalProposal->GetImageDimension());
+  double notAblated = AblationUtils::CheckImageForNonAblatedTissueInPercentage(finalProposal->GetSegmentationImage(),
+                                                                               finalProposal->GetImageDimension());
   if (notAblated > 0)
   {
     MITK_WARN << "There is still non ablated tumor tissue (" << notAblated << " percent).";
