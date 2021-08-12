@@ -14,13 +14,14 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-
 #ifndef ARStrokeTreatmentView_h
 #define ARStrokeTreatmentView_h
 
-#include <berryISelectionListener.h>
-#include <QmitkAbstractView.h>
 #include "ui_ARStrokeTreatmentControls.h"
+#include <QmitkAbstractView.h>
+#include <berryISelectionListener.h>
+
+#include <QTimer>
 
 /**
   \brief ARStrokeTreatmentView
@@ -54,10 +55,17 @@ protected:
 
   Ui::ARStrokeTreatmentControls m_Controls;
 
-  protected slots:
-      // slots to connect....
+protected slots:
+  // slots to connect....
 
-        void OnTrackingGrabberPushed();
+  void OnTrackingGrabberPushed();
+  void UpdateTrackingData();
+
+protected:
+  bool m_TrackingActive = false;
+  mitk::NavigationDataSource::Pointer m_TrackingSource;
+
+  QTimer *m_Updatetimer;
 };
 
 #endif // ARStrokeTreatmentView_h

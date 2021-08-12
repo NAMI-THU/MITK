@@ -49,9 +49,29 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
 
 void ARStrokeTreatmentView::OnTrackingGrabberPushed()
 {
-  mitk::NavigationDataSource::Pointer mySource =
-    m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource();
-  MITK_INFO << mySource->GetOutput()->GetPosition();
+  if (!m_TrackingActive)
+  {
+    m_Updatetimer = new QTimer(this);
+    m_TrackingActive = true;
+    m_Controls.m_TrackingGrabber->setText("Disable Tracking");
+    m_TrackingSource = m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource();
+    connect(m_Updatetimer, SIGNAL(timeout()), this, SLOT(UpdateTrackingData()));
+    m_Updatetimer->start(100);
+  }
+  if (m_TrackingActive)
+  {
+    m_Updatetimer = NULL;
+    m_TrackingActive = false;
+    m_Controls.m_TrackingGrabber->setText("Activate Tracking");
+    m_TrackingSource = NULL;
+    m_Updatetimer = NULL;
+  }
+  return;
+}
+
+void ARStrokeTreatmentView::UpdateTrackingData()
+{
+  MITK_INFO << m_TrackingSource->GetOutput()->GetPosition();
   return;
 }
 
