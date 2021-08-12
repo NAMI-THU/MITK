@@ -56,6 +56,8 @@ protected:
 
   protected slots:
       // slots to connect....
+
+        void OnTrackingGrabberPushed();
 };
 
 #endif // ARStrokeTreatmentView_h

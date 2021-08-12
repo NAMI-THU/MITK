@@ -44,6 +44,15 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
           SIGNAL(NavigationDataSourceSelected(mitk::NavigationDataSource::Pointer)),
           this,
           SLOT(OnSetupNavigation()));
+  connect(m_Controls.m_TrackingGrabber, SIGNAL(clicked()), this, SLOT(OnTrackingGrabberPushed()));
+}
+
+void ARStrokeTreatmentView::OnTrackingGrabberPushed()
+{
+  mitk::NavigationDataSource::Pointer mySource =
+    m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource();
+  MITK_INFO << mySource->GetOutput()->GetPosition();
+  return;
 }
 
 void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*source*/,
