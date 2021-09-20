@@ -60,6 +60,8 @@ protected:
   /// \brief Called when the user clicks the GUI button
   void DoImageProcessing();
 
+  void CreateConnections();
+
   Ui::ARStrokeTreatmentControls m_Controls;
 
    
@@ -69,13 +71,11 @@ protected:
     /// \brief Called when the user clicks the GUI button
     void OnStartGrabbing();
     void OnUpdateImage();
+    void TestText();
 
   protected:
 
-    bool m_running;
-
-    cv::VideoCapture *m_VideoCapture;
-    mitk::OpenCVToMitkImageFilter::Pointer m_conversionFilter;
+    bool m_GrabbingTrackingData;
        
     QTimer *m_UpdateTimer;
   
