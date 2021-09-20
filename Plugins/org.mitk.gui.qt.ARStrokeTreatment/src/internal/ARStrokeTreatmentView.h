@@ -20,8 +20,14 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include "ui_ARStrokeTreatmentControls.h"
 #include <QmitkAbstractView.h>
 #include <berryISelectionListener.h>
+#include <QmitkDataStorageComboBox.h>
 
 #include <QTimer>
+
+#include <mitkOpenCVToMitkImageFilter.h>
+#include "opencv2/opencv.hpp"
+#include <QTime>
+
 
 /**
   \brief ARStrokeTreatmentView
@@ -50,10 +56,32 @@ protected:
   virtual void OnSelectionChanged(berry::IWorkbenchPart::Pointer source,
                                   const QList<mitk::DataNode::Pointer> &nodes) override;
 
+
   /// \brief Called when the user clicks the GUI button
   void DoImageProcessing();
 
   Ui::ARStrokeTreatmentControls m_Controls;
+
+   
+
+  protected slots:
+
+    /// \brief Called when the user clicks the GUI button
+    void OnStartGrabbing();
+    void OnUpdateImage();
+
+  protected:
+
+    bool m_running;
+
+    cv::VideoCapture *m_VideoCapture;
+    mitk::OpenCVToMitkImageFilter::Pointer m_conversionFilter;
+       
+    QTimer *m_UpdateTimer;
+  
+
+
+
 
 protected slots:
   // slots to connect....
