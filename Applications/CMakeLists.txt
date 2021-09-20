@@ -6,7 +6,7 @@ if(MITK_USE_Qt5)
 
   # See T27701
   #if(MITK_USE_CTK)
-    add_subdirectory(PluginGenerator)
+    #add_subdirectory(PluginGenerator)
   #endif()
 
   if(MITK_USE_BLUEBERRY)
