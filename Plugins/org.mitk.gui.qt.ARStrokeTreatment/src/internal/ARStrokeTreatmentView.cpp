@@ -26,13 +26,11 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QmitkDataStorageComboBox.h>
 
 // mitk image
-#include <mitkImage.h>
 #include <QTimer>
 #include <mitkIRenderingManager.h>
-
+#include <mitkImage.h>
 
 const std::string ARStrokeTreatmentView::VIEW_ID = "org.mitk.views.arstroketreatment";
-
 
 void ARStrokeTreatmentView::SetFocus()
 {
@@ -55,7 +53,7 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
   connect(m_UpdateTimer, SIGNAL(timeout()), this, SLOT(OnUpdateImage()));
 }
 
-//Constructor and Destructor
+// Constructor and Destructor
 
 void ARStrokeTreatmentView::OnTrackingGrabberPushed()
 {
@@ -100,7 +98,6 @@ void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*
 
   // m_Controls.labelWarning->setVisible(true);
 }
-
 
 void ARStrokeTreatmentView::OnStartGrabbing()
 {
@@ -211,4 +208,10 @@ void ARStrokeTreatmentView::DoImageProcessing()
       // actually do something here...
     }
   }
+}
+
+void ARStrokeTreatmentView::TestText()
+{
+  MITK_INFO << "TestText succesfully printed! Yay!";
+  return;
 }
