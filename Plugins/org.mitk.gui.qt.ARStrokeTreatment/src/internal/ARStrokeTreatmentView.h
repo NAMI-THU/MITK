@@ -17,17 +17,14 @@ See LICENSE.txt or http://www.mitk.org for details.
 #ifndef ARStrokeTreatmentView_h
 #define ARStrokeTreatmentView_h
 
-#include "ui_ARStrokeTreatmentControls.h"
-#include <QmitkAbstractView.h>
-#include <berryISelectionListener.h>
-#include <QmitkDataStorageComboBox.h>
-
-#include <QTimer>
-
-#include <mitkOpenCVToMitkImageFilter.h>
 #include "opencv2/opencv.hpp"
+#include "ui_ARStrokeTreatmentControls.h"
 #include <QTime>
-
+#include <QTimer>
+#include <QmitkAbstractView.h>
+#include <QmitkDataStorageComboBox.h>
+#include <berryISelectionListener.h>
+#include <mitkOpenCVToMitkImageFilter.h>
 
 /**
   \brief ARStrokeTreatmentView
@@ -56,37 +53,39 @@ protected:
   virtual void OnSelectionChanged(berry::IWorkbenchPart::Pointer source,
                                   const QList<mitk::DataNode::Pointer> &nodes) override;
 
-
   /// \brief Called when the user clicks the GUI button
   void DoImageProcessing();
 
+  /// \connects all the buttons, labels, etc. of the Qt gui
   void CreateConnections();
 
-  Ui::ARStrokeTreatmentControls m_Controls;
+  Ui::ARStrokeTreatmentControls m_Controls; // automatically generated from ARStrokeTreatmentView.ui
 
-   
+protected slots:
 
-  protected slots:
+  /// \brief Called when the user clicks the GUI button
+  // starts/stops the tracking of the live tracking data
+  void OnStartTrackingGrabbing();
+  // starts/stops the tracking of the live video data
+  void OnStartVideoGrabbing();
+  // ???
+  void OnUpdateImage();
+  // prints a small text through MITK_INFO, for testing purposes
+  void TestText();
 
-    /// \brief Called when the user clicks the GUI button
-    void OnStartTrackingGrabbing();
-    void OnStartVideoGrabbing();
-    void OnUpdateImage();
-    void TestText();
+protected:
+  // true, if tracking data is grabbed
+  bool m_GrabbingTrackingData;
+  // true, if video data is grabbed
+  bool m_GrabbingVideoData;
 
-  protected:
+  cv::VideoCapture *m_VideoCapture;
+  mitk::OpenCVToMitkImageFilter *m_ConversionFilter;
 
-    bool m_GrabbingTrackingData;
-    bool m_GrabbingVideoData;
+  // update timer for the tracking grabber
+  QTimer *m_UpdateTimerTracking;
 
-    cv::VideoCapture* m_VideoCapture;
-    mitk::OpenCVToMitkImageFilter* m_ConversionFilter;
-       
-    QTimer *m_UpdateTimer;
-  
-
-
-
+  QTimer *m_UpdateTimerVideo;
 
 protected slots:
   // slots to connect....

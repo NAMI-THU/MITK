@@ -98,11 +98,11 @@ void ARStrokeTreatmentView::OnStartTrackingGrabbing()
   {
     m_GrabbingTrackingData = true;
     m_Controls.m_StartGrabbing->setText("Stop Tracking");
-    m_UpdateTimer->start(100);
+    m_UpdateTimerTracking->start(100);
   }
   else
   {
-    m_UpdateTimer->stop();
+    m_UpdateTimerTracking->stop();
     m_GrabbingTrackingData = false;
     m_Controls.m_StartGrabbing->setText("Start Tracking");
   }
@@ -150,13 +150,13 @@ void ARStrokeTreatmentView::OnStartVideoGrabbing()
         renderWindow->GetRenderingManager()->InitializeViews(
           imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true);
 
-      m_UpdateTimer->setInterval(20);
-      m_UpdateTimer->start();
+      m_UpdateTimerTracking->setInterval(20);
+      m_UpdateTimerTracking->start();
     }
   }
   else
   {
-    m_UpdateTimer->stop();
+    m_UpdateTimerTracking->stop();
     m_GrabbingVideoData = false;
     m_Controls.m_StartGrabbing->setText("Start Video Grabbing");
     cv::destroyWindow("Video");
@@ -218,7 +218,7 @@ void ARStrokeTreatmentView::CreateConnections() {
           this,
           SLOT(OnSetupNavigation()));
   connect(m_Controls.m_TrackingDataGrabber, SIGNAL(clicked()), this, SLOT(OnTrackingGrabberPushed()));
-  connect(m_UpdateTimer, SIGNAL(timeout()), this, SLOT(OnUpdateImage()));
+  connect(m_UpdateTimerTracking, SIGNAL(timeout()), this, SLOT(OnUpdateImage()));
   connect(m_Controls.m_TrackingDataLabel, SIGNAL(clicked()), this, SLOT(OnStartTrackingGrabbing()));
   connect(m_Controls.m_StartVideoGrabbing, SIGNAL(clicked()), this, SLOT(OnStartVideoGrabbing()));
   return;
