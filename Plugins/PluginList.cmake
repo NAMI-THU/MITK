@@ -16,6 +16,7 @@ set(MITK_PLUGINS
   org.mitk.planarfigure:ON
   org.mitk.core.ext:OFF
   org.mitk.core.jobs:OFF
+  org.mitk.example.gui.opencv:ON
   org.mitk.gui.qt.ablationplanning:ON
   org.mitk.gui.qt.ARStrokeTreatment:ON
   org.mitk.gui.qt.application:ON

@@ -97,17 +97,14 @@ void ARStrokeTreatmentView::OnStartGrabbing()
   if (!m_GrabbingTrackingData)
   {
     m_GrabbingTrackingData = true;
-    m_Controls.m_StartGrabbing->setText("Stop Video Grabbing");
+    m_Controls.m_StartGrabbing->setText("Stop Tracking");
     m_UpdateTimer->start(100);
   }
   else
   {
     m_UpdateTimer->stop();
     m_GrabbingTrackingData = false;
-    m_Controls.m_StartGrabbing->setText("Start Video Grabbing");
-    cv::destroyWindow("Video");
-    mitk::DataNode::Pointer imageNode = this->GetDataStorage()->GetNamedNode("Open CV Example Image Stream");
-    this->GetDataStorage()->Remove(imageNode);
+    m_Controls.m_StartGrabbing->setText("Start Tracking");
   }
 }
 
