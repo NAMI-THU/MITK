@@ -69,13 +69,18 @@ protected:
   protected slots:
 
     /// \brief Called when the user clicks the GUI button
-    void OnStartGrabbing();
+    void OnStartTrackingGrabbing();
+    void OnStartVideoGrabbing();
     void OnUpdateImage();
     void TestText();
 
   protected:
 
     bool m_GrabbingTrackingData;
+    bool m_GrabbingVideoData;
+
+    cv::VideoCapture* m_VideoCapture;
+    mitk::OpenCVToMitkImageFilter* m_ConversionFilter;
        
     QTimer *m_UpdateTimer;
   

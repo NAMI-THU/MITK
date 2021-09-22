@@ -103,13 +103,26 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="m_TrackingGrabber">
+          <widget class="QPushButton" name="m_TrackingDataGrabber">
            <property name="text">
             <string>Start Tracking</string>
            </property>
           </widget>
          </item>
         </layout>
+       </widget>
+       <widget class="QPushButton" name="m_StartVideoGrabbing">
+        <property name="geometry">
+         <rect>
+          <x>421</x>
+          <y>130</y>
+          <width>191</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Start Video Grabbing</string>
+        </property>
        </widget>
       </widget>
       <widget class="QLabel" name="m_CoordinateLabel">
@@ -131,8 +144,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>98</width>
-        <height>28</height>
+        <width>638</width>
+        <height>606</height>
        </rect>
       </property>
       <attribute name="label">
