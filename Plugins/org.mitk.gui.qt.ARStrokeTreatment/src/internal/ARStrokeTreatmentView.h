@@ -75,9 +75,9 @@ protected slots:
 
 protected:
   // true, if tracking data is grabbed
-  bool m_GrabbingTrackingData;
+  bool m_GrabbingTrackingData = false;
   // true, if video data is grabbed
-  bool m_GrabbingVideoData;
+  bool m_GrabbingVideoData = false;
 
   cv::VideoCapture *m_VideoCapture;
   mitk::OpenCVToMitkImageFilter *m_ConversionFilter;
