@@ -61,21 +61,9 @@ protected:
 
   Ui::ARStrokeTreatmentControls m_Controls; // automatically generated from ARStrokeTreatmentView.ui
 
-protected slots:
-
-  /// \brief Called when the user clicks the GUI button
-  // starts/stops the tracking of the live tracking data
-  void OnStartTrackingGrabbing();
-  // starts/stops the tracking of the live video data
-  void OnStartVideoGrabbing();
-  // ???
-  void OnUpdateImage();
-  // prints a small text through MITK_INFO, for testing purposes
-  void TestText();
-
 protected:
   // true, if tracking data is grabbed
-  bool m_GrabbingTrackingData = false;
+  bool m_TrackerGrabbingPushButton = false;
   // true, if video data is grabbed
   bool m_GrabbingVideoData = false;
 
@@ -87,17 +75,21 @@ protected:
 
   QTimer *m_UpdateTimerVideo;
 
-protected slots:
-  // slots to connect....
-
-  void OnTrackingGrabberPushed();
-  void UpdateTrackingData();
-
-protected:
   bool m_TrackingActive = false;
-  mitk::NavigationDataSource::Pointer m_TrackingSource;
 
-  QTimer *m_Updatetimer;
+  mitk::NavigationData::Pointer m_TrackingData;
+
+protected slots:
+  // starts/stops the tracking of the live tracking data
+  void OnTrackingGrabberPushed();
+  // starts/stops the tracking of the live video data
+  void OnVideoGrabberPushed();
+  // ???
+  void OnUpdateImage();
+  // prints a small text through MITK_INFO, for testing purposes
+  void TestText();
+
+  void UpdateTrackingData();
 };
 
 #endif // ARStrokeTreatmentView_h

@@ -52,27 +52,30 @@ void ARStrokeTreatmentView::OnTrackingGrabberPushed()
 {
   if (!m_TrackingActive)
   {
-    m_Updatetimer = new QTimer(this);
+    m_UpdateTimerTracking = new QTimer(this);
     m_TrackingActive = true;
-    m_Controls.m_TrackingDataGrabber->setText("Disable Tracking");
-    m_TrackingSource = m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource();
-    connect(m_Updatetimer, SIGNAL(timeout()), this, SLOT(UpdateTrackingData()));
-    m_Updatetimer->start(100);
+    m_Controls.m_TrackerGrabbingPushButton->setText("Stop Tracking");
+    connect(m_UpdateTimerTracking, SIGNAL(timeout()), this, SLOT(UpdateTrackingData()));
+    m_UpdateTimerTracking->setInterval(100);
+    m_UpdateTimerTracking->start();
   }
   if (m_TrackingActive)
   {
-    m_Updatetimer = NULL;
+    m_UpdateTimerTracking = NULL;
     m_TrackingActive = false;
-    m_Controls.m_TrackingDataGrabber->setText("Activate Tracking");
-    m_TrackingSource = NULL;
-    m_Updatetimer = NULL;
+    m_Controls.m_TrackerGrabbingPushButton->setText("Start Tracking");
+    //m_TrackingSource = NULL;
+    m_UpdateTimerTracking = NULL;
   }
   return;
 }
 
 void ARStrokeTreatmentView::UpdateTrackingData()
 {
-  MITK_INFO << m_TrackingSource->GetOutput()->GetPosition();
+  m_TrackingData = m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(
+    m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedToolID());
+  mitk::NavigationData::Pointer navData = m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(0);
+  MITK_INFO << navData->GetPosition();
   return;
 }
 
@@ -92,28 +95,12 @@ void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*
   // m_Controls.labelWarning->setVisible(true);
 }
 
-void ARStrokeTreatmentView::OnStartTrackingGrabbing()
+void ARStrokeTreatmentView::OnVideoGrabberPushed()
 {
-  if (!m_GrabbingTrackingData)
-  {
-    m_GrabbingTrackingData = true;
-    m_Controls.m_StartGrabbing->setText("Stop Tracking");
-    m_UpdateTimerTracking->start(100);
-  }
-  else
-  {
-    m_UpdateTimerTracking->stop();
-    m_GrabbingTrackingData = false;
-    m_Controls.m_StartGrabbing->setText("Start Tracking");
-  }
-}
-
-void ARStrokeTreatmentView::OnStartVideoGrabbing()
-{
-  if (!m_GrabbingVideoData)
+  if (!m_GrabbingVideoData) // If
   {
     m_GrabbingVideoData = true;
-    m_Controls.m_StartGrabbing->setText("Stop Video Grabbing");
+    m_Controls.m_VideoGrabbingPushButton->setText("Stop Video");
     m_VideoCapture = new cv::VideoCapture(); // open the default camera
     m_VideoCapture->open(m_Controls.m_InputID->value());
     if (!m_VideoCapture->isOpened())
@@ -121,7 +108,7 @@ void ARStrokeTreatmentView::OnStartVideoGrabbing()
       return;
     } // check if we succeeded
 
-    if (true) //m_Controls.m_SeparateWindow->isChecked()
+    if (true) // m_Controls.m_SeparateWindow->isChecked()
     {
       cv::namedWindow("Video", 1);
       while (m_GrabbingVideoData)
@@ -167,9 +154,7 @@ void ARStrokeTreatmentView::OnStartVideoGrabbing()
   }
 }
 
-void ARStrokeTreatmentView::OnUpdateImage()
-{
-}
+void ARStrokeTreatmentView::OnUpdateImage() {}
 
 void ARStrokeTreatmentView::DoImageProcessing()
 {
@@ -212,15 +197,14 @@ void ARStrokeTreatmentView::DoImageProcessing()
   }
 }
 
-void ARStrokeTreatmentView::CreateConnections() {
-  connect(m_Controls.m_TrackingDeviceSelectionWidget,
-          SIGNAL(NavigationDataSourceSelected(mitk::NavigationDataSource::Pointer)),
-          this,
-          SLOT(OnSetupNavigation()));
-  connect(m_Controls.m_TrackingDataGrabber, SIGNAL(clicked()), this, SLOT(OnTrackingGrabberPushed()));
-  connect(m_UpdateTimerTracking, SIGNAL(timeout()), this, SLOT(OnUpdateImage()));
-  connect(m_Controls.m_TrackingDataLabel, SIGNAL(clicked()), this, SLOT(OnStartTrackingGrabbing()));
-  connect(m_Controls.m_StartVideoGrabbing, SIGNAL(clicked()), this, SLOT(OnStartVideoGrabbing()));
+void ARStrokeTreatmentView::CreateConnections()
+{
+  //connect(m_Controls.m_TrackingDeviceSelectionWidget,
+  //        SIGNAL(NavigationDataSourceSelected(mitk::NavigationDataSource::Pointer)),
+  //        this,
+  //        SLOT(OnSetupNavigation()));
+  connect(m_Controls.m_TrackerGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnTrackingGrabberPushed()));
+  connect(m_Controls.m_VideoGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnVideoGrabberPushed()));
   return;
 }
 

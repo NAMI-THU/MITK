@@ -103,7 +103,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="m_TrackingDataGrabber">
+          <widget class="QPushButton" name="m_TrackerGrabbingPushButton">
            <property name="text">
             <string>Start Tracking</string>
            </property>
@@ -111,7 +111,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QPushButton" name="m_StartVideoGrabbing">
+       <widget class="QPushButton" name="m_VideoGrabbingPushButton">
         <property name="geometry">
          <rect>
           <x>421</x>
@@ -121,7 +121,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Start Video Grabbing</string>
+         <string>Start Video</string>
         </property>
        </widget>
       </widget>
