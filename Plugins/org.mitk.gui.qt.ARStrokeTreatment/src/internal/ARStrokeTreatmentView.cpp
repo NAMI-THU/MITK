@@ -122,12 +122,12 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
       imageNode->SetData(dummyImage);
       while (m_GrabbingVideoData)
         this->GetDataStorage()->Add(imageNode);
-      // cv::Mat frame;
+       cv::Mat frame;
       {
-        //*m_VideoCapture >> frame; // get a new frame from camera
-        // m_ConversionFilter->SetOpenCVMat(frame);
-        // m_ConversionFilter->Update();
-        // m_ConversionFilter->GetOutput();
+        *m_VideoCapture >> frame; // get a new frame from camera
+         m_ConversionFilter->SetOpenCVMat(frame);
+         m_ConversionFilter->Update();
+         m_ConversionFilter->GetOutput();
       }
     }
     // else if (m_Controls.m_MITKImage->isChecked())
