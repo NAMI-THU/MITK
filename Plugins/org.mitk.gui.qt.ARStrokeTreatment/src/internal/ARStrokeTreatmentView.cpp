@@ -132,55 +132,56 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
     m_Controls.m_VideoGrabbingPushButton->setText("Start Video");
     disconnect(m_UpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateImageData()));
     // m_Controls.m_StartGrabbing->setText("Start Video Grabbing");
+    m_VideoCapture == NULL;
     if (!m_TrackingActive && !m_VideoGrabbingActive) // Check if timer can be deactiated
     {
       m_UpdateTimer = NULL;
     }
   }
-   else if (m_Controls.m_MITKImage->isChecked())
+  else if (m_Controls.m_MITKImage->isChecked())
   {
-     /* mitk::DataNode::Pointer imageNode = mitk::DataNode::New(); // CHECK IF NEEDED
-    imageNode->SetName("Open CV Example Image Stream");
-    imageNode->SetData(mitk::Image::New());
-    m_ConversionFilter = mitk::OpenCVToMitkImageFilter::New();
-    this->GetDataStorage()->Add(imageNode);
-    OnUpdateImage();
-    // Initialize view on Image
-    mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
-    if (renderWindow != NULL)
-      renderWindow->GetRenderingManager()->InitializeViews(
-        imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true);
+    /* mitk::DataNode::Pointer imageNode = mitk::DataNode::New(); // CHECK IF NEEDED
+   imageNode->SetName("Open CV Example Image Stream");
+   imageNode->SetData(mitk::Image::New());
+   m_ConversionFilter = mitk::OpenCVToMitkImageFilter::New();
+   this->GetDataStorage()->Add(imageNode);
+   OnUpdateImage();
+   // Initialize view on Image
+   mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
+   if (renderWindow != NULL)
+     renderWindow->GetRenderingManager()->InitializeViews(
+       imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true);
 
-    m_UpdateTimerTracking->setInterval(20);
-    m_UpdateTimerTracking->start();*/
+   m_UpdateTimerTracking->setInterval(20);
+   m_UpdateTimerTracking->start();*/
   }
 }
 
 void ARStrokeTreatmentView::UpdateImageData()
 {
-  m_VideoCapture = new cv::VideoCapture(); // open the default camera
-  if (!m_VideoCapture->isOpened())
+  if (m_VideoCapture == NULL)
+  {
+    m_VideoCapture = new cv::VideoCapture(); // open the default camera
+  }
+  if (!m_VideoCapture->isOpened()) // Check if a video source is connected
   {
     return;
-  }         // check if we succeeded
-  if (true) // m_Controls.m_SeparateWindow->isChecked()
+  }
+  mitk::DataNode::Pointer imageNode = mitk::DataNode::New();
+  std::stringstream nodeName;
+  nodeName << "Live Image Stream";
+  imageNode->SetName(nodeName.str());
+  // create a dummy image (gray values 0..255) for correct initialization of level window, etc.
+  mitk::Image::Pointer dummyImage = mitk::ImageGenerator::GenerateRandomImage<float>(100, 100, 1, 1, 1, 1, 1, 255, 0);
+  imageNode->SetData(dummyImage);
+  while (m_VideoGrabbingActive)
+    this->GetDataStorage()->Add(imageNode);
+  cv::Mat frame;
   {
-    mitk::DataNode::Pointer imageNode = mitk::DataNode::New();
-    std::stringstream nodeName;
-    nodeName << "Live Image Stream";
-    imageNode->SetName(nodeName.str());
-    // create a dummy image (gray values 0..255) for correct initialization of level window, etc.
-    mitk::Image::Pointer dummyImage = mitk::ImageGenerator::GenerateRandomImage<float>(100, 100, 1, 1, 1, 1, 1, 255, 0);
-    imageNode->SetData(dummyImage);
-    while (m_VideoGrabbingActive)
-      this->GetDataStorage()->Add(imageNode);
-    cv::Mat frame;
-    {
-      *m_VideoCapture >> frame; // get a new frame from camera
-      m_ConversionFilter->SetOpenCVMat(frame);
-      m_ConversionFilter->Update();
-      m_ConversionFilter->GetOutput();
-    }
+    *m_VideoCapture >> frame; // get a new frame from camera
+    m_ConversionFilter->SetOpenCVMat(frame);
+    m_ConversionFilter->Update();
+    m_ConversionFilter->GetOutput();
   }
 }
 
