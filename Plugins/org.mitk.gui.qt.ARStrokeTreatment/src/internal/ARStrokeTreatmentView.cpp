@@ -29,6 +29,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QTimer>
 #include <mitkIRenderingManager.h>
 #include <mitkImage.h>
+#include <mitkImageGenerator.h>
+#include <mitkOpenCVToMitkImageFilter.h>
 
 const std::string ARStrokeTreatmentView::VIEW_ID = "org.mitk.views.arstroketreatment";
 
@@ -64,7 +66,7 @@ void ARStrokeTreatmentView::OnTrackingGrabberPushed()
     m_UpdateTimerTracking = NULL;
     m_TrackingActive = false;
     m_Controls.m_TrackerGrabbingPushButton->setText("Start Tracking");
-    //m_TrackingSource = NULL;
+    // m_TrackingSource = NULL;
     m_UpdateTimerTracking = NULL;
   }
   return;
@@ -74,7 +76,8 @@ void ARStrokeTreatmentView::UpdateTrackingData()
 {
   m_TrackingData = m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(
     m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedToolID());
-  mitk::NavigationData::Pointer navData = m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(0);
+  mitk::NavigationData::Pointer navData =
+    m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(0);
   MITK_INFO << navData->GetPosition();
   return;
 }
@@ -102,7 +105,6 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
     m_GrabbingVideoData = true;
     m_Controls.m_VideoGrabbingPushButton->setText("Stop Video");
     m_VideoCapture = new cv::VideoCapture(); // open the default camera
-    m_VideoCapture->open(m_Controls.m_InputID->value());
     if (!m_VideoCapture->isOpened())
     {
       return;
@@ -110,42 +112,47 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
 
     if (true) // m_Controls.m_SeparateWindow->isChecked()
     {
-      cv::namedWindow("Video", 1);
+      mitk::DataNode::Pointer imageNode = mitk::DataNode::New();
+      std::stringstream nodeName;
+      nodeName << "Live Image Stream";
+      imageNode->SetName(nodeName.str());
+      // create a dummy image (gray values 0..255) for correct initialization of level window, etc.
+      mitk::Image::Pointer dummyImage =
+        mitk::ImageGenerator::GenerateRandomImage<float>(100, 100, 1, 1, 1, 1, 1, 255, 0);
+      imageNode->SetData(dummyImage);
       while (m_GrabbingVideoData)
+        this->GetDataStorage()->Add(imageNode);
+      // cv::Mat frame;
       {
-        cv::Mat frame;
-        *m_VideoCapture >> frame; // get a new frame from camera
-        imshow("Video", frame);
-        // Example to write a frame to a file:
-        // imwrite("C:/temp/output.jpg", frame);
-        // Press 'c' to stop the stream
-        if (cv::waitKey(30) == 'c')
-          break;
+        //*m_VideoCapture >> frame; // get a new frame from camera
+        // m_ConversionFilter->SetOpenCVMat(frame);
+        // m_ConversionFilter->Update();
+        // m_ConversionFilter->GetOutput();
       }
     }
-    else if (m_Controls.m_MITKImage->isChecked())
-    {
-      mitk::DataNode::Pointer imageNode = mitk::DataNode::New();
-      imageNode->SetName("Open CV Example Image Stream");
-      imageNode->SetData(mitk::Image::New());
-      m_ConversionFilter = mitk::OpenCVToMitkImageFilter::New();
-      this->GetDataStorage()->Add(imageNode);
-      OnUpdateImage();
-      // Initialize view on Image
-      mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
-      if (renderWindow != NULL)
-        renderWindow->GetRenderingManager()->InitializeViews(
-          imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true);
+    // else if (m_Controls.m_MITKImage->isChecked())
+    //{
+    //  mitk::DataNode::Pointer imageNode = mitk::DataNode::New();
+    //  imageNode->SetName("Open CV Example Image Stream");
+    //  imageNode->SetData(mitk::Image::New());
+    //  m_ConversionFilter = mitk::OpenCVToMitkImageFilter::New();
+    //  this->GetDataStorage()->Add(imageNode);
+    //  OnUpdateImage();
+    //  // Initialize view on Image
+    //  mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
+    //  if (renderWindow != NULL)
+    //    renderWindow->GetRenderingManager()->InitializeViews(
+    //      imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true);
 
-      m_UpdateTimerTracking->setInterval(20);
-      m_UpdateTimerTracking->start();
-    }
+    //  m_UpdateTimerTracking->setInterval(20);
+    //  m_UpdateTimerTracking->start();
+    //}
   }
   else
   {
     m_UpdateTimerTracking->stop();
     m_GrabbingVideoData = false;
-    m_Controls.m_StartGrabbing->setText("Start Video Grabbing");
+    // m_Controls.m_StartGrabbing->setText("Start Video Grabbing");
     cv::destroyWindow("Video");
     mitk::DataNode::Pointer imageNode = this->GetDataStorage()->GetNamedNode("Open CV Example Image Stream");
     this->GetDataStorage()->Remove(imageNode);
@@ -199,7 +206,7 @@ void ARStrokeTreatmentView::DoImageProcessing()
 
 void ARStrokeTreatmentView::CreateConnections()
 {
-  //connect(m_Controls.m_TrackingDeviceSelectionWidget,
+  // connect(m_Controls.m_TrackingDeviceSelectionWidget,
   //        SIGNAL(NavigationDataSourceSelected(mitk::NavigationDataSource::Pointer)),
   //        this,
   //        SLOT(OnSetupNavigation()));

@@ -68,6 +68,7 @@ protected:
   bool m_GrabbingVideoData = false;
 
   cv::VideoCapture *m_VideoCapture;
+
   mitk::OpenCVToMitkImageFilter *m_ConversionFilter;
 
   // update timer for the tracking grabber
