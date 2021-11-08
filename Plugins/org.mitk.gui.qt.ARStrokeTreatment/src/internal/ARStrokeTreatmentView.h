@@ -62,11 +62,6 @@ protected:
   Ui::ARStrokeTreatmentControls m_Controls; // automatically generated from ARStrokeTreatmentView.ui
 
 protected:
-  // true, if tracking data is grabbed
-  bool m_TrackerGrabbingPushButton = false;
-  // true, if video data is grabbed
-  bool m_VideoGrabbingActive = false;
-
   cv::VideoCapture *m_VideoCapture;
 
   mitk::OpenCVToMitkImageFilter *m_ConversionFilter;

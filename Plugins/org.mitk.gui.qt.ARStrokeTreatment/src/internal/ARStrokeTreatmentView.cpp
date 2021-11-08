@@ -132,7 +132,7 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
     m_Controls.m_VideoGrabbingPushButton->setText("Start Video");
     disconnect(m_UpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateImageData()));
     // m_Controls.m_StartGrabbing->setText("Start Video Grabbing");
-    m_VideoCapture == NULL;
+    m_VideoCapture = NULL;
     if (!m_TrackingActive && !m_VideoGrabbingActive) // Check if timer can be deactiated
     {
       m_UpdateTimer = NULL;
