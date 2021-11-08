@@ -916,10 +916,10 @@ namespace mitk
     }
 
     // Add an extension if not already specified
-    if (ext.empty() && addExtension)
-    {
-      saveInfo.m_MimeType.GetExtensions().empty() ? std::string() : "." + saveInfo.m_MimeType.GetExtensions().front();
-    }
+    //if (ext.empty() && addExtension)
+    //{
+    //  saveInfo.m_MimeType.GetExtensions().empty() ? std::string() : "." + saveInfo.m_MimeType.GetExtensions().front();
+    //}
 
     std::vector<SaveInfo> infos;
     infos.push_back(saveInfo);
