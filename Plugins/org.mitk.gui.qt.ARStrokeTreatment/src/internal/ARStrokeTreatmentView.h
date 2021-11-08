@@ -65,18 +65,18 @@ protected:
   // true, if tracking data is grabbed
   bool m_TrackerGrabbingPushButton = false;
   // true, if video data is grabbed
-  bool m_GrabbingVideoData = false;
+  bool m_VideoGrabbingActive = false;
 
   cv::VideoCapture *m_VideoCapture;
 
   mitk::OpenCVToMitkImageFilter *m_ConversionFilter;
 
   // update timer for the tracking grabber
-  QTimer *m_UpdateTimerTracking;
-
-  QTimer *m_UpdateTimerVideo;
+  QTimer *m_UpdateTimer;
 
   bool m_TrackingActive = false;
+
+  bool m_VideoGrabbingActive = false;
 
   mitk::NavigationData::Pointer m_TrackingData;
 
@@ -86,11 +86,12 @@ protected slots:
   // starts/stops the tracking of the live video data
   void OnVideoGrabberPushed();
   // ???
-  void OnUpdateImage();
-  // prints a small text through MITK_INFO, for testing purposes
-  void TestText();
+  void UpdateImageData();
 
   void UpdateTrackingData();
+
+  // prints a small text through MITK_INFO, for testing purposes
+  void TestText();
 };
 
 #endif // ARStrokeTreatmentView_h
