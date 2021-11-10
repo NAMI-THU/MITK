@@ -138,6 +138,16 @@
         <string>TextLabel</string>
        </property>
       </widget>
+      <widget class="QmitkFiducialRegistrationWidget" name="widget" native="true">
+       <property name="geometry">
+        <rect>
+         <x>19</x>
+         <y>379</y>
+         <width>521</width>
+         <height>211</height>
+        </rect>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="page_2">
       <property name="geometry">
@@ -226,6 +236,12 @@
    <class>QmitkNavigationDataSourceSelectionWidget</class>
    <extends>QWidget</extends>
    <header>QmitkNavigationDataSourceSelectionWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QmitkFiducialRegistrationWidget</class>
+   <extends>QWidget</extends>
+   <header>qmitkfiducialregistrationwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

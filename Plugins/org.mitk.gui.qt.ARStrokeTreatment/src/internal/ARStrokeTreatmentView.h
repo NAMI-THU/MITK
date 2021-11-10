@@ -59,7 +59,7 @@ protected:
   /// \connects all the buttons, labels, etc. of the Qt gui
   void CreateConnections();
 
-  Ui::ARStrokeTreatmentControls m_Controls; // automatically generated from ARStrokeTreatmentView.ui
+  Ui::ARStrokeTreatmentControls* m_Controls; // automatically generated from ARStrokeTreatmentView.ui
 
 protected:
   cv::VideoCapture *m_VideoCapture;

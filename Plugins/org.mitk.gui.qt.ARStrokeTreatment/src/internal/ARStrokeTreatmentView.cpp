@@ -42,7 +42,8 @@ void ARStrokeTreatmentView::SetFocus()
 void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
 {
   // create GUI widgets from the Qt Designer's .ui file
-  m_Controls.setupUi(parent);
+  m_Controls = new Ui::ARStrokeTreatmentControls;
+  m_Controls->setupUi(parent);
   // connect(m_Controls.buttonPerformImageProcessing, &QPushButton::clicked, this,
   // &ARStrokeTreatmentView::DoImageProcessing);
   CreateConnections();
@@ -73,8 +74,8 @@ void ARStrokeTreatmentView::CreateConnections()
   //        SIGNAL(NavigationDataSourceSelected(mitk::NavigationDataSource::Pointer)),
   //        this,
   //        SLOT(OnSetupNavigation()));
-  connect(m_Controls.m_TrackerGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnTrackingGrabberPushed()));
-  connect(m_Controls.m_VideoGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnVideoGrabberPushed()));
+  connect(m_Controls->m_TrackerGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnTrackingGrabberPushed()));
+  connect(m_Controls->m_VideoGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnVideoGrabberPushed()));
   return;
 }
 
@@ -83,7 +84,7 @@ void ARStrokeTreatmentView::OnTrackingGrabberPushed()
   if (!m_TrackingActive)
   {
     m_TrackingActive = true;
-    m_Controls.m_TrackerGrabbingPushButton->setText("Stop Tracking");
+    m_Controls->m_TrackerGrabbingPushButton->setText("Stop Tracking");
     connect(m_UpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateTrackingData()));
     if (!m_UpdateTimer->isActive())
     {
@@ -93,7 +94,7 @@ void ARStrokeTreatmentView::OnTrackingGrabberPushed()
   if (m_TrackingActive)
   {
     m_TrackingActive = false;
-    m_Controls.m_TrackerGrabbingPushButton->setText("Start Tracking");
+    m_Controls->m_TrackerGrabbingPushButton->setText("Start Tracking");
     disconnect(m_UpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateTrackingData()));
     // m_TrackingSource = NULL; // check if necessary
     if (!m_TrackingActive && !m_VideoGrabbingActive) // Check if timer can be deactiated
@@ -106,10 +107,10 @@ void ARStrokeTreatmentView::OnTrackingGrabberPushed()
 
 void ARStrokeTreatmentView::UpdateTrackingData()
 {
-  m_TrackingData = m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(
-    m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedToolID());
+  m_TrackingData = m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(
+    m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID());
   mitk::NavigationData::Pointer navData =
-    m_Controls.m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(0);
+    m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(0);
   MITK_INFO << navData->GetPosition();
   return;
 }
@@ -119,7 +120,7 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
   if (!m_VideoGrabbingActive) // If not grabbing video data
   {
     m_VideoGrabbingActive = true;
-    m_Controls.m_VideoGrabbingPushButton->setText("Stop Video");
+    m_Controls->m_VideoGrabbingPushButton->setText("Stop Video");
     connect(m_UpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateImageData()));
     if (!m_UpdateTimer->isActive())
     {
@@ -129,7 +130,7 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
   if (m_VideoGrabbingActive)
   {
     m_VideoGrabbingActive = false;
-    m_Controls.m_VideoGrabbingPushButton->setText("Start Video");
+    m_Controls->m_VideoGrabbingPushButton->setText("Start Video");
     disconnect(m_UpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateImageData()));
     // m_Controls.m_StartGrabbing->setText("Start Video Grabbing");
     m_VideoCapture = NULL;
@@ -138,7 +139,7 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
       m_UpdateTimer = NULL;
     }
   }
-  else if (m_Controls.m_MITKImage->isChecked())
+  else if (m_Controls->m_MITKImage->isChecked())
   {
     /* mitk::DataNode::Pointer imageNode = mitk::DataNode::New(); // CHECK IF NEEDED
    imageNode->SetName("Open CV Example Image Stream");
