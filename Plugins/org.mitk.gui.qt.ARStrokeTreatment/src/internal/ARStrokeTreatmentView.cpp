@@ -132,9 +132,13 @@ void ARStrokeTreatmentView::UpdateLiveData()
   {
     if (m_VideoCapture == NULL)
     {
-      if (true)
+      if (false)
       {
         m_VideoCapture = new cv::VideoCapture(0);
+      }
+      if (true)
+      {
+        m_VideoCapture = new cv::VideoCapture("C:/7.avi");
       }
     }
     if (!m_VideoCapture->isOpened())
@@ -142,7 +146,6 @@ void ARStrokeTreatmentView::UpdateLiveData()
       MITK_WARN << "Video Camera not recognized!";
       return;
     }
-    MITK_INFO << "Grabbing";
     cv::Mat frame;
     if(!m_VideoCapture->read(frame))
     {
@@ -150,11 +153,9 @@ void ARStrokeTreatmentView::UpdateLiveData()
       return;
     }
     *m_VideoCapture >> frame; // get a new frame from camera
-    cv::imshow("Video Player", frame);
     m_ConversionFilter = mitk::OpenCVToMitkImageFilter::New();
     m_ConversionFilter->SetOpenCVMat(frame);
     m_ConversionFilter->Update();
-    TestText();
     m_imageNode->SetData(m_ConversionFilter->GetOutput());
     m_imageNode->Modified();
     mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
