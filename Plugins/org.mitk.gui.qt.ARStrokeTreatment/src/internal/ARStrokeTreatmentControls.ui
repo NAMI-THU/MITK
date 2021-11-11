@@ -138,7 +138,7 @@
         <string>TextLabel</string>
        </property>
       </widget>
-      <widget class="QmitkFiducialRegistrationWidget" name="widget" native="true">
+      <widget class="QmitkFiducialRegistrationWidget" name="m_RegistrationWidget" native="true">
        <property name="geometry">
         <rect>
          <x>19</x>
@@ -154,8 +154,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>638</width>
-        <height>606</height>
+        <width>98</width>
+        <height>28</height>
        </rect>
       </property>
       <attribute name="label">

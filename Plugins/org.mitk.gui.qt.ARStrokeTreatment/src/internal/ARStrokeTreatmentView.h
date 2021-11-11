@@ -75,15 +75,15 @@ protected:
 
   mitk::NavigationData::Pointer m_TrackingData;
 
+  mitk::DataNode::Pointer m_imageNode;
+
 protected slots:
   // starts/stops the tracking of the live tracking data
   void OnTrackingGrabberPushed();
   // starts/stops the tracking of the live video data
   void OnVideoGrabberPushed();
-  // ???
-  void UpdateImageData();
 
-  void UpdateTrackingData();
+  void UpdateLiveData();
 
   // prints a small text through MITK_INFO, for testing purposes
   void TestText();
