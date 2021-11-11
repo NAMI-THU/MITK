@@ -63,7 +63,7 @@ public:
   Ui::ARStrokeTreatmentControls* m_Controls; // automatically generated from ARStrokeTreatmentView.ui
 
 protected:
-  cv::VideoCapture *m_VideoCapture;
+  cv::VideoCapture *m_VideoCapture = new cv::VideoCapture;
 
   mitk::OpenCVToMitkImageFilter::Pointer m_ConversionFilter = mitk::OpenCVToMitkImageFilter::New();
 

@@ -121,6 +121,7 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
     mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
     renderWindow->GetRenderingManager()->InitializeViews(
       m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true);
+    m_VideoCapture = new cv::VideoCapture(0);
   }
 }
 
@@ -141,28 +142,7 @@ void ARStrokeTreatmentView::UpdateLiveData()
   }
   if (m_VideoGrabbingActive)
   {
-    if (m_VideoCapture == NULL)
-    {
-      if (true)
-      {
-        m_VideoCapture = new cv::VideoCapture(0);
-      }
-      if (false)
-      {
-        m_VideoCapture = new cv::VideoCapture("C:/7.avi");
-      }
-    }
-    if (!m_VideoCapture->isOpened())
-    {
-      MITK_WARN << "Video Camera not recognized!";
-      return;
-    }
     cv::Mat frame;
-    if (!m_VideoCapture->read(frame))
-    {
-      MITK_INFO << "ERROR!";
-      return;
-    }
     m_VideoCapture->read(frame);
     m_ConversionFilter->SetOpenCVMat(frame);
     m_ConversionFilter->Update();
