@@ -16,7 +16,10 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include "ARStrokeTreatmentRegistration.h"
 
+#include "ARStrokeTreatmentView.h"
+
 void ARStrokeTreatmentRegistration::InitializeRegistration()
 {
+  // Do something
   return;
 }

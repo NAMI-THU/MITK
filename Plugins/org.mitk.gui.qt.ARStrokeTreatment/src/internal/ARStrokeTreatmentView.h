@@ -25,6 +25,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QmitkDataStorageComboBox.h>
 #include <berryISelectionListener.h>
 #include <mitkOpenCVToMitkImageFilter.h>
+#include <mitkBasicCombinationOpenCVImageFilter.h>
 
 /**
   \brief ARStrokeTreatmentView
@@ -44,7 +45,7 @@ class ARStrokeTreatmentView : public QmitkAbstractView
 public:
   static const std::string VIEW_ID;
 
-protected:
+public:
   virtual void CreateQtPartControl(QWidget *parent) override;
 
   virtual void SetFocus() override;
@@ -64,7 +65,9 @@ protected:
 protected:
   cv::VideoCapture *m_VideoCapture;
 
-  mitk::OpenCVToMitkImageFilter *m_ConversionFilter;
+  mitk::OpenCVToMitkImageFilter::Pointer m_ConversionFilter = mitk::OpenCVToMitkImageFilter::New();
+
+  mitk::BasicCombinationOpenCVImageFilter::Pointer m_ImageFilter = mitk::BasicCombinationOpenCVImageFilter::New();
 
   // update timer for the tracking grabber
   QTimer *m_UpdateTimer;
@@ -82,6 +85,8 @@ protected slots:
   void OnTrackingGrabberPushed();
   // starts/stops the tracking of the live video data
   void OnVideoGrabberPushed();
+
+  void OnRegistrationPushed();
 
   void UpdateLiveData();
 

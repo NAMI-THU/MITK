@@ -19,6 +19,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <berryIWorkbenchWindow.h>
 
 // Qmitk
+#include "ARStrokeTreatmentRegistration.h"
 #include "ARStrokeTreatmentView.h"
 
 // Qt
@@ -53,6 +54,10 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
   m_UpdateTimer->start();
   CreateConnections();
   m_Controls->m_RegistrationWidget->setDataStorage(this->GetDataStorage());
+  m_Controls->m_RegistrationWidget->setDataStorage(this->GetDataStorage());
+  m_Controls->m_RegistrationWidget->HideStaticRegistrationRadioButton(true);
+  m_Controls->m_RegistrationWidget->HideContinousRegistrationRadioButton(true);
+  m_Controls->m_RegistrationWidget->HideUseICPRegistrationCheckbox(true);
 }
 
 void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*source*/,
@@ -78,6 +83,7 @@ void ARStrokeTreatmentView::CreateConnections()
   //        SLOT(OnSetupNavigation()));
   connect(m_Controls->m_TrackerGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnTrackingGrabberPushed()));
   connect(m_Controls->m_VideoGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnVideoGrabberPushed()));
+  connect(m_Controls->m_RegistrationPushButton, SIGNAL(clicked()), this, SLOT(OnRegistrationPushed()));
   connect(m_UpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateLiveData()));
   return;
 }
@@ -118,6 +124,11 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
   }
 }
 
+void ARStrokeTreatmentView::OnRegistrationPushed()
+{
+  return;
+}
+
 void ARStrokeTreatmentView::UpdateLiveData()
 {
   if (m_TrackingActive)
@@ -132,11 +143,11 @@ void ARStrokeTreatmentView::UpdateLiveData()
   {
     if (m_VideoCapture == NULL)
     {
-      if (false)
+      if (true)
       {
         m_VideoCapture = new cv::VideoCapture(0);
       }
-      if (true)
+      if (false)
       {
         m_VideoCapture = new cv::VideoCapture("C:/7.avi");
       }
@@ -147,13 +158,12 @@ void ARStrokeTreatmentView::UpdateLiveData()
       return;
     }
     cv::Mat frame;
-    if(!m_VideoCapture->read(frame))
+    if (!m_VideoCapture->read(frame))
     {
       MITK_INFO << "ERROR!";
       return;
     }
-    *m_VideoCapture >> frame; // get a new frame from camera
-    m_ConversionFilter = mitk::OpenCVToMitkImageFilter::New();
+    m_VideoCapture->read(frame);
     m_ConversionFilter->SetOpenCVMat(frame);
     m_ConversionFilter->Update();
     m_imageNode->SetData(m_ConversionFilter->GetOutput());
