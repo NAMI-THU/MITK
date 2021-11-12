@@ -25,7 +25,6 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QmitkDataStorageComboBox.h>
 #include <berryISelectionListener.h>
 #include <mitkOpenCVToMitkImageFilter.h>
-#include <mitkBasicCombinationOpenCVImageFilter.h>
 
 /**
   \brief ARStrokeTreatmentView
@@ -64,10 +63,10 @@ public:
 
 protected:
   cv::VideoCapture *m_VideoCapture = new cv::VideoCapture;
+  //opencv video support modul
+  // mitk::OpenCVVideoSource
 
   mitk::OpenCVToMitkImageFilter::Pointer m_ConversionFilter = mitk::OpenCVToMitkImageFilter::New();
-
-  mitk::BasicCombinationOpenCVImageFilter::Pointer m_ImageFilter = mitk::BasicCombinationOpenCVImageFilter::New();
 
   // update timer for the tracking grabber
   QTimer *m_UpdateTimer;
@@ -76,9 +75,17 @@ protected:
 
   bool m_VideoGrabbingActive = false;
 
+  mitk::NavigationData::Pointer m_InstrumentNavigationData;
+
   mitk::NavigationData::Pointer m_TrackingData;
 
   mitk::DataNode::Pointer m_imageNode;
+
+  // members for initial registration
+  mitk::DataNode::Pointer m_ImageFiducialsDataNode;
+  mitk::DataNode::Pointer m_TrackerFiducialsDataNode;
+
+  //void ARStrokeTreatmentView::OnAddRegistrationTrackingFiducial();
 
 protected slots:
   // starts/stops the tracking of the live tracking data
@@ -86,7 +93,7 @@ protected slots:
   // starts/stops the tracking of the live video data
   void OnVideoGrabberPushed();
 
-  void OnRegistrationPushed();
+  //void OnRegistrationPushed();
 
   void UpdateLiveData();
 
