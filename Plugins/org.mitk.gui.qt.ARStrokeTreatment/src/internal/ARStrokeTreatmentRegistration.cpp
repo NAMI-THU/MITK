@@ -20,6 +20,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 void ARStrokeTreatmentRegistration::InitializeRegistration()
 {
+  MITK_INFO << "Called ARStrokeTreatmentRegistration";
   // Do something
   return;
 }

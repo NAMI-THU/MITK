@@ -49,7 +49,7 @@
          <x>0</x>
          <y>0</y>
          <width>631</width>
-         <height>171</height>
+         <height>150</height>
         </rect>
        </property>
        <property name="minimumSize">
@@ -62,29 +62,68 @@
       <widget class="QGroupBox" name="groupTracking">
        <property name="geometry">
         <rect>
-         <x>-1</x>
-         <y>190</y>
+         <x>0</x>
+         <y>200</y>
          <width>631</width>
-         <height>221</height>
+         <height>181</height>
         </rect>
        </property>
        <property name="title">
         <string>ToolSelection</string>
        </property>
+       <widget class="QPushButton" name="m_VideoGrabbingPushButton">
+        <property name="geometry">
+         <rect>
+          <x>420</x>
+          <y>10</y>
+          <width>191</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Start Video</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="m_TrackerGrabbingPushButton">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>181</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Start Tracking</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>50</y>
+          <width>211</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Choose Image or Surface</string>
+        </property>
+       </widget>
        <widget class="QWidget" name="horizontalLayoutWidget">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>30</y>
-          <width>611</width>
-          <height>80</height>
+          <y>100</y>
+          <width>581</width>
+          <height>31</height>
          </rect>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <layout class="QHBoxLayout" name="horizontalLayoutImageSelection">
          <item>
-          <widget class="QLabel" name="label">
+          <widget class="QPushButton" name="m_ChooseSelectedImage">
            <property name="text">
-            <string>Pointer</string>
+            <string>Choose Selected</string>
            </property>
           </widget>
          </item>
@@ -102,32 +141,28 @@
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="m_TrackingDataLabel">
+          <widget class="QLabel" name="m_ImageLabel">
            <property name="text">
-            <string>TextLabel</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="m_TrackerGrabbingPushButton">
-           <property name="text">
-            <string>Start Tracking</string>
+            <string>&lt;none&gt;</string>
            </property>
           </widget>
          </item>
         </layout>
        </widget>
-       <widget class="QPushButton" name="m_VideoGrabbingPushButton">
+       <widget class="QmitkDataStorageComboBox" name="m_DataStorageComboBox">
         <property name="geometry">
          <rect>
-          <x>421</x>
-          <y>130</y>
-          <width>191</width>
-          <height>28</height>
+          <x>10</x>
+          <y>70</y>
+          <width>250</width>
+          <height>22</height>
          </rect>
         </property>
-        <property name="text">
-         <string>Start Video</string>
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>0</height>
+         </size>
         </property>
        </widget>
       </widget>
@@ -135,8 +170,8 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>420</y>
-         <width>621</width>
+         <y>370</y>
+         <width>631</width>
          <height>331</height>
         </rect>
        </property>
@@ -146,16 +181,6 @@
        <property name="title">
         <string>Registration</string>
        </property>
-       <widget class="QmitkFiducialRegistrationWidget" name="m_RegistrationWidget" native="true">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>30</y>
-          <width>581</width>
-          <height>241</height>
-         </rect>
-        </property>
-       </widget>
        <widget class="QPushButton" name="m_RegistrationPushButton">
         <property name="geometry">
          <rect>
@@ -169,6 +194,61 @@
          <string>Register</string>
         </property>
        </widget>
+       <widget class="QmitkFiducialRegistrationWidget" name="m_RegistrationWidget" native="true">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>611</width>
+          <height>400</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>400</height>
+         </size>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="layoutWidget_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>160</y>
+         <width>621</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="m_ChooseSelectedPointer">
+          <property name="text">
+           <string>Choose Selected</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="m_PointerLabel">
+          <property name="text">
+           <string>&lt;none&gt;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
      <widget class="QWidget" name="page_2">
@@ -264,6 +344,12 @@
    <class>QmitkFiducialRegistrationWidget</class>
    <extends>QWidget</extends>
    <header>qmitkfiducialregistrationwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QmitkDataStorageComboBox</class>
+   <extends>QComboBox</extends>
+   <header>QmitkDataStorageComboBox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

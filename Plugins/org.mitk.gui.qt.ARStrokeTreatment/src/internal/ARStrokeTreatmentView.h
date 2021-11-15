@@ -23,6 +23,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QTimer>
 #include <QmitkAbstractView.h>
 #include <QmitkDataStorageComboBox.h>
+#include <QmitkRenderWindow.h>
 #include <berryISelectionListener.h>
 #include <mitkOpenCVToMitkImageFilter.h>
 
@@ -59,11 +60,12 @@ public:
   /// \connects all the buttons, labels, etc. of the Qt gui
   void CreateConnections();
 
-  Ui::ARStrokeTreatmentControls* m_Controls; // automatically generated from ARStrokeTreatmentView.ui
+  Ui::ARStrokeTreatmentControls *m_Controls =
+    new Ui::ARStrokeTreatmentControls; // automatically generated from ARStrokeTreatmentView.ui
 
 protected:
   cv::VideoCapture *m_VideoCapture = new cv::VideoCapture;
-  //opencv video support modul
+  // opencv video support modul
   // mitk::OpenCVVideoSource
 
   mitk::OpenCVToMitkImageFilter::Pointer m_ConversionFilter = mitk::OpenCVToMitkImageFilter::New();
@@ -75,8 +77,6 @@ protected:
 
   bool m_VideoGrabbingActive = false;
 
-  mitk::NavigationData::Pointer m_InstrumentNavigationData;
-
   mitk::NavigationData::Pointer m_TrackingData;
 
   mitk::DataNode::Pointer m_imageNode;
@@ -85,7 +85,7 @@ protected:
   mitk::DataNode::Pointer m_ImageFiducialsDataNode;
   mitk::DataNode::Pointer m_TrackerFiducialsDataNode;
 
-  //void ARStrokeTreatmentView::OnAddRegistrationTrackingFiducial();
+  // void ARStrokeTreatmentView::OnAddRegistrationTrackingFiducial();
 
 protected slots:
   // starts/stops the tracking of the live tracking data
@@ -93,7 +93,11 @@ protected slots:
   // starts/stops the tracking of the live video data
   void OnVideoGrabberPushed();
 
-  //void OnRegistrationPushed();
+  void PointerSelectionChanged();
+
+  void ImageSelectionChanged();
+
+  void InitializeRegistration();
 
   void UpdateLiveData();
 

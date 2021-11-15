@@ -33,6 +33,11 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkImageGenerator.h>
 #include <mitkOpenCVToMitkImageFilter.h>
 
+#include <mitkNodePredicateNot.h>
+#include <mitkNodePredicateProperty.h>
+#include <mitkNodePredicateOr.h>
+#include <mitkNodePredicateDataType.h>
+
 const std::string ARStrokeTreatmentView::VIEW_ID = "org.mitk.views.arstroketreatment";
 
 void ARStrokeTreatmentView::SetFocus()
@@ -52,12 +57,18 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
   m_UpdateTimer = new QTimer(this);
   m_UpdateTimer->setInterval(100);
   m_UpdateTimer->start();
+
   CreateConnections();
-  m_Controls->m_RegistrationWidget->setDataStorage(this->GetDataStorage());
+
   m_Controls->m_RegistrationWidget->setDataStorage(this->GetDataStorage());
   m_Controls->m_RegistrationWidget->HideStaticRegistrationRadioButton(true);
   m_Controls->m_RegistrationWidget->HideContinousRegistrationRadioButton(true);
   m_Controls->m_RegistrationWidget->HideUseICPRegistrationCheckbox(true);
+
+  m_Controls->m_DataStorageComboBox->SetDataStorage(this->GetDataStorage());
+  m_Controls->m_DataStorageComboBox->SetAutoSelectNewItems(false);
+  //m_Controls->m_DataStorageComboBox->SetPredicate(
+  //  mitk::NodePredicateOr::New(mitk::NodePredicateDataType::New("Surface"), mitk::NodePredicateDataType::New("Image")));
 }
 
 void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*source*/,
@@ -83,23 +94,25 @@ void ARStrokeTreatmentView::CreateConnections()
   //        SLOT(OnSetupNavigation()));
   connect(m_Controls->m_TrackerGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnTrackingGrabberPushed()));
   connect(m_Controls->m_VideoGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnVideoGrabberPushed()));
-  //connect(m_Controls->m_RegistrationPushButton, SIGNAL(clicked()), this, SLOT(OnRegistrationPushed()));
   connect(m_UpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateLiveData()));
+
+  // create connections for Registration Widget
+  connect(m_Controls->m_ChooseSelectedPointer, SIGNAL(clicked()), this, SLOT(PointerSelectionChanged()));
+  connect(m_Controls->m_ChooseSelectedImage, SIGNAL(clicked()), this, SLOT(ImageSelectionChanged()));
   return;
 }
 
 void ARStrokeTreatmentView::OnTrackingGrabberPushed()
 {
-  if (!m_TrackingActive)
+  if (m_TrackingActive == false)
   {
-    m_TrackingActive = true;
     m_Controls->m_TrackerGrabbingPushButton->setText("Stop Tracking");
   }
-  if (m_TrackingActive)
+  if (m_TrackingActive == true)
   {
-    m_TrackingActive = false;
     m_Controls->m_TrackerGrabbingPushButton->setText("Start Tracking");
   }
+  m_TrackingActive = !m_TrackingActive;
   return;
 }
 
@@ -129,7 +142,7 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
   m_VideoGrabbingActive = !m_VideoGrabbingActive;
 }
 
-//void ARStrokeTreatmentView::OnAddRegistrationTrackingFiducial()
+// void ARStrokeTreatmentView::OnAddRegistrationTrackingFiducial()
 //{
 //  mitk::NavigationData::Pointer nd = m_InstrumentNavigationData;
 //
@@ -150,7 +163,7 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
 //      nullptr, "IGTSurfaceTracker: Error", "Can not access Tracker Fiducials. Adding fiducial not possible!");
 //}
 
-//void ARStrokeTreatmentView::OnRegistrationPushed()
+// void ARStrokeTreatmentView::OnRegistrationPushed()
 //{
 //
 //  mitk::PointSet::Pointer imageFiducials = dynamic_cast<mitk::PointSet *>(m_ImageFiducialsDataNode->GetData());
@@ -162,9 +175,8 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
 //  vtkSmartPointer<vtkPoints> targetPoints = vtkSmartPointer<vtkPoints>::New();
 //  for (int i = 0; i < imageFiducials->GetSize(); i++)
 //  {
-//    double point[3] = {imageFiducials->GetPoint(i)[0], imageFiducials->GetPoint(i)[1], imageFiducials->GetPoint(i)[2]};
-//    sourcePoints->InsertNextPoint(point);
-//    double point_targets[3] = {
+//    double point[3] = {imageFiducials->GetPoint(i)[0], imageFiducials->GetPoint(i)[1],
+//    imageFiducials->GetPoint(i)[2]}; sourcePoints->InsertNextPoint(point); double point_targets[3] = {
 //      trackerFiducials->GetPoint(i)[0], trackerFiducials->GetPoint(i)[1], trackerFiducials->GetPoint(i)[2]};
 //    targetPoints->InsertNextPoint(point_targets);
 //  }
@@ -240,10 +252,37 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
 //    newImageTransform->SetOffset(translationFloatNew);
 //    m_Controls.m_ImageComboBox->GetSelectedNode()->GetData()->GetGeometry()->SetIndexToWorldTransform(
 //      newImageTransform);
-//    m_T_ImageReg = m_Controls.m_ImageComboBox->GetSelectedNode()->GetData()->GetGeometry()->GetIndexToWorldTransform();
+//    m_T_ImageReg =
+//    m_Controls.m_ImageComboBox->GetSelectedNode()->GetData()->GetGeometry()->GetIndexToWorldTransform();
 //  }
 //  //################################################################
 //}
+
+void ARStrokeTreatmentView::PointerSelectionChanged()
+{
+  ARStrokeTreatmentView::InitializeRegistration();
+  int toolID = m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID();
+  m_TrackingData = m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(toolID);
+  m_Controls->m_RegistrationWidget->setTrackerNavigationData(m_TrackingData);
+  m_Controls->m_PointerLabel->setText(
+    m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationTool()->GetToolName().c_str());
+  MITK_INFO << "PointerSelectionChanged!";
+}
+
+void ARStrokeTreatmentView::ImageSelectionChanged()
+{
+  ARStrokeTreatmentView::InitializeRegistration();
+  m_Controls->m_ImageLabel->setText(m_Controls->m_DataStorageComboBox->GetSelectedNode()->GetName().c_str());
+  m_Controls->m_RegistrationWidget->setImageNode(m_Controls->m_DataStorageComboBox->GetSelectedNode());
+}
+
+void ARStrokeTreatmentView::InitializeRegistration()
+{
+  foreach (QmitkRenderWindow *renderWindow, this->GetRenderWindowPart()->GetQmitkRenderWindows().values())
+  {
+    this->m_Controls->m_RegistrationWidget->AddSliceNavigationController(renderWindow->GetSliceNavigationController());
+  }
+}
 
 void ARStrokeTreatmentView::UpdateLiveData()
 {
@@ -251,9 +290,7 @@ void ARStrokeTreatmentView::UpdateLiveData()
   {
     m_TrackingData = m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(
       m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID());
-    mitk::NavigationData::Pointer navData =
-      m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(0);
-    MITK_INFO << navData->GetPosition();
+    MITK_INFO << m_TrackingData->GetPosition();
   }
   if (m_VideoGrabbingActive)
   {
@@ -262,15 +299,15 @@ void ARStrokeTreatmentView::UpdateLiveData()
     m_ConversionFilter->SetOpenCVMat(frame);
     m_ConversionFilter->Update();
     m_imageNode->SetData(m_ConversionFilter->GetOutput());
-    //m_imageNode->GetData()->GetGeometry()->SetIndexToWorldTransform();
+    // m_imageNode->GetData()->GetGeometry()->SetIndexToWorldTransform();
     mitk::Vector3D setSpacing;
-    //setSpacing[0] = 1; //left-right
-    //setSpacing[1] = 1; //up
-    //setSpacing[2] = 1; //height
-    //m_imageNode->GetData()->GetGeometry()->SetSpacing(setSpacing);
+    // setSpacing[0] = 1; //left-right
+    // setSpacing[1] = 1; //up
+    // setSpacing[2] = 1; //height
+    // m_imageNode->GetData()->GetGeometry()->SetSpacing(setSpacing);
     m_imageNode->Modified();
-    //mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
-    //renderWindow->GetRenderingManager()->InitializeViews(
+    // mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
+    // renderWindow->GetRenderingManager()->InitializeViews(
     //  m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, false);
     this->RequestRenderWindowUpdate(mitk::RenderingManager::REQUEST_UPDATE_ALL);
   }
