@@ -266,7 +266,6 @@ void ARStrokeTreatmentView::PointerSelectionChanged()
   m_Controls->m_RegistrationWidget->setTrackerNavigationData(m_TrackingData);
   m_Controls->m_PointerLabel->setText(
     m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationTool()->GetToolName().c_str());
-  MITK_INFO << "PointerSelectionChanged!";
 }
 
 void ARStrokeTreatmentView::ImageSelectionChanged()
