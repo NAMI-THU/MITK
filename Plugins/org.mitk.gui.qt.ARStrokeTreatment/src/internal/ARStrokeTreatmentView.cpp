@@ -31,12 +31,11 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkIRenderingManager.h>
 #include <mitkImage.h>
 #include <mitkImageGenerator.h>
-#include <mitkOpenCVToMitkImageFilter.h>
-
-#include <mitkNodePredicateNot.h>
-#include <mitkNodePredicateProperty.h>
-#include <mitkNodePredicateOr.h>
 #include <mitkNodePredicateDataType.h>
+#include <mitkNodePredicateNot.h>
+#include <mitkNodePredicateOr.h>
+#include <mitkNodePredicateProperty.h>
+#include <mitkOpenCVToMitkImageFilter.h>
 
 const std::string ARStrokeTreatmentView::VIEW_ID = "org.mitk.views.arstroketreatment";
 
@@ -67,8 +66,9 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
 
   m_Controls->m_DataStorageComboBox->SetDataStorage(this->GetDataStorage());
   m_Controls->m_DataStorageComboBox->SetAutoSelectNewItems(false);
-  //m_Controls->m_DataStorageComboBox->SetPredicate(
-  //  mitk::NodePredicateOr::New(mitk::NodePredicateDataType::New("Surface"), mitk::NodePredicateDataType::New("Image")));
+  // m_Controls->m_DataStorageComboBox->SetPredicate(
+  //  mitk::NodePredicateOr::New(mitk::NodePredicateDataType::New("Surface"),
+  //  mitk::NodePredicateDataType::New("Image")));
 }
 
 void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*source*/,
@@ -118,7 +118,7 @@ void ARStrokeTreatmentView::OnTrackingGrabberPushed()
 
 void ARStrokeTreatmentView::OnVideoGrabberPushed()
 {
-  if (m_VideoGrabbingActive == false)
+  if (!m_VideoGrabbingActive)
   {
     m_Controls->m_VideoGrabbingPushButton->setText("Stop Video");
     // Initialize new video grabber
@@ -130,133 +130,19 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
     mitk::Image::Pointer dummyImage = mitk::ImageGenerator::GenerateRandomImage<float>(100, 100, 1, 1, 1, 1, 1, 255, 0);
     m_imageNode->SetData(dummyImage);
     this->GetDataStorage()->Add(m_imageNode);
-    m_VideoCapture = new cv::VideoCapture("C:/Tools/7.avi");
+    // select video source
+    m_VideoCapture = new cv::VideoCapture("C:/Tools/12.avi");
+    // m_VideoCapture = new cv::VideoCapture(0);
     mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
     renderWindow->GetRenderingManager()->InitializeViews(
       m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true);
   }
-  if (m_VideoGrabbingActive == true)
+  if (m_VideoGrabbingActive)
   {
-    m_Controls->m_VideoGrabbingPushButton->setText("Start Video");
+    ARStrokeTreatmentView::DisableVideoData();
   }
   m_VideoGrabbingActive = !m_VideoGrabbingActive;
 }
-
-// void ARStrokeTreatmentView::OnAddRegistrationTrackingFiducial()
-//{
-//  mitk::NavigationData::Pointer nd = m_InstrumentNavigationData;
-//
-//  if (nd.IsNull() || !nd->IsDataValid())
-//  {
-//    QMessageBox::warning(
-//      nullptr, "Invalid tracking data", "Navigation data is not available or invalid!", QMessageBox::Ok);
-//    return;
-//  }
-//
-//  if (m_TrackerFiducialsDataNode.IsNotNull() && m_TrackerFiducialsDataNode->GetData() != nullptr)
-//  {
-//    mitk::PointSet::Pointer ps = dynamic_cast<mitk::PointSet *>(m_TrackerFiducialsDataNode->GetData());
-//    ps->InsertPoint(ps->GetSize(), nd->GetPosition());
-//  }
-//  else
-//    QMessageBox::warning(
-//      nullptr, "IGTSurfaceTracker: Error", "Can not access Tracker Fiducials. Adding fiducial not possible!");
-//}
-
-// void ARStrokeTreatmentView::OnRegistrationPushed()
-//{
-//
-//  mitk::PointSet::Pointer imageFiducials = dynamic_cast<mitk::PointSet *>(m_ImageFiducialsDataNode->GetData());
-//  mitk::PointSet::Pointer trackerFiducials = dynamic_cast<mitk::PointSet *>(m_TrackerFiducialsDataNode->GetData());
-//
-//  //############### conversion to vtk data types (we will use the vtk landmark based transform)
-//  //########################## convert point sets to vtk poly data
-//  vtkSmartPointer<vtkPoints> sourcePoints = vtkSmartPointer<vtkPoints>::New();
-//  vtkSmartPointer<vtkPoints> targetPoints = vtkSmartPointer<vtkPoints>::New();
-//  for (int i = 0; i < imageFiducials->GetSize(); i++)
-//  {
-//    double point[3] = {imageFiducials->GetPoint(i)[0], imageFiducials->GetPoint(i)[1],
-//    imageFiducials->GetPoint(i)[2]}; sourcePoints->InsertNextPoint(point); double point_targets[3] = {
-//      trackerFiducials->GetPoint(i)[0], trackerFiducials->GetPoint(i)[1], trackerFiducials->GetPoint(i)[2]};
-//    targetPoints->InsertNextPoint(point_targets);
-//  }
-//
-//  //########################### here, the actual transform is computed ##########################
-//  // compute transform
-//  vtkSmartPointer<vtkLandmarkTransform> transform = vtkSmartPointer<vtkLandmarkTransform>::New();
-//  transform->SetSourceLandmarks(sourcePoints);
-//  transform->SetTargetLandmarks(targetPoints);
-//  transform->SetModeToRigidBody();
-//  transform->Modified();
-//  transform->Update();
-//  // compute FRE of transform
-//  double FRE = mitk::StaticIGTHelperFunctions::ComputeFRE(imageFiducials, trackerFiducials, transform);
-//  m_Controls.m_RegistrationWidget->SetQualityDisplayText("FRE: " + QString::number(FRE) + " mm");
-//  //#############################################################################################
-//
-//  //############### conversion back to itk/mitk data types ##########################
-//  // convert from vtk to itk data types
-//  itk::Matrix<float, 3, 3> rotationFloat = itk::Matrix<float, 3, 3>();
-//  itk::Vector<float, 3> translationFloat = itk::Vector<float, 3>();
-//  itk::Matrix<double, 3, 3> rotationDouble = itk::Matrix<double, 3, 3>();
-//  itk::Vector<double, 3> translationDouble = itk::Vector<double, 3>();
-//
-//  vtkSmartPointer<vtkMatrix4x4> m = transform->GetMatrix();
-//  for (int k = 0; k < 3; k++)
-//    for (int l = 0; l < 3; l++)
-//    {
-//      rotationFloat[k][l] = m->GetElement(k, l);
-//      rotationDouble[k][l] = m->GetElement(k, l);
-//    }
-//  for (int k = 0; k < 3; k++)
-//  {
-//    translationFloat[k] = m->GetElement(k, 3);
-//    translationDouble[k] = m->GetElement(k, 3);
-//  }
-//  // create affine transform 3D surface
-//  mitk::AffineTransform3D::Pointer mitkTransform = mitk::AffineTransform3D::New();
-//  mitkTransform->SetMatrix(rotationDouble);
-//  mitkTransform->SetOffset(translationDouble);
-//  //#############################################################################################
-//
-//  //############### object is transformed ##########################
-//  // save transform
-//  m_T_ObjectReg = mitk::NavigationData::New(
-//    mitkTransform); // this is stored in a member because it is needed for permanent registration later on
-//
-//  // transform surface
-//  if (m_Controls.m_SurfaceActive->isChecked() && m_Controls.m_ObjectComboBox->GetSelectedNode().IsNotNull())
-//  {
-//    m_Controls.m_ObjectComboBox->GetSelectedNode()->GetData()->GetGeometry()->SetIndexToWorldTransform(mitkTransform);
-//  }
-//  //################################################################
-//
-//  //############### if activated: ct image is also transformed ##########################
-//  // transform ct image
-//  // todo: Explain that AffineTransform3D is used, because NavigationData does not support spacing!
-//  if (m_Controls.m_ImageActive->isChecked() && m_Controls.m_ImageComboBox->GetSelectedNode().IsNotNull())
-//  {
-//    // first we have to store the original ct image transform to compose it with the new transform later
-//    mitk::AffineTransform3D::Pointer imageTransform =
-//      m_Controls.m_ImageComboBox->GetSelectedNode()->GetData()->GetGeometry()->GetIndexToWorldTransform();
-//    m_T_ImageGeo = mitk::AffineTransform3D::New(); // this is also stored in a member because it is needed for
-//                                                   // permanent registration later on
-//    // now the new transform of the ct image is computed
-//    m_T_ImageGeo->Compose(imageTransform);
-//    imageTransform->Compose(mitkTransform);
-//    mitk::AffineTransform3D::Pointer newImageTransform =
-//      mitk::AffineTransform3D::New(); // create new image transform... setting the composed directly leads to an error
-//    itk::Matrix<mitk::ScalarType, 3, 3> rotationFloatNew = imageTransform->GetMatrix();
-//    itk::Vector<mitk::ScalarType, 3> translationFloatNew = imageTransform->GetOffset();
-//    newImageTransform->SetMatrix(rotationFloatNew);
-//    newImageTransform->SetOffset(translationFloatNew);
-//    m_Controls.m_ImageComboBox->GetSelectedNode()->GetData()->GetGeometry()->SetIndexToWorldTransform(
-//      newImageTransform);
-//    m_T_ImageReg =
-//    m_Controls.m_ImageComboBox->GetSelectedNode()->GetData()->GetGeometry()->GetIndexToWorldTransform();
-//  }
-//  //################################################################
-//}
 
 void ARStrokeTreatmentView::PointerSelectionChanged()
 {
@@ -294,22 +180,38 @@ void ARStrokeTreatmentView::UpdateLiveData()
   if (m_VideoGrabbingActive)
   {
     cv::Mat frame;
-    m_VideoCapture->read(frame);
-    m_ConversionFilter->SetOpenCVMat(frame);
-    m_ConversionFilter->Update();
-    m_imageNode->SetData(m_ConversionFilter->GetOutput());
-    // m_imageNode->GetData()->GetGeometry()->SetIndexToWorldTransform();
-    mitk::Vector3D setSpacing;
-    // setSpacing[0] = 1; //left-right
-    // setSpacing[1] = 1; //up
-    // setSpacing[2] = 1; //height
-    // m_imageNode->GetData()->GetGeometry()->SetSpacing(setSpacing);
-    m_imageNode->Modified();
-    // mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
-    // renderWindow->GetRenderingManager()->InitializeViews(
-    //  m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, false);
-    this->RequestRenderWindowUpdate(mitk::RenderingManager::REQUEST_UPDATE_ALL);
+    if (m_VideoCapture->read(frame))
+    {
+      // m_VideoCapture->read(frame);
+      m_ConversionFilter->SetOpenCVMat(frame);
+      m_ConversionFilter->Update();
+      m_imageNode->SetData(m_ConversionFilter->GetOutput());
+      //m_imageNode->GetData()->GetGeometry()->SetIndexToWorldTransform();
+      mitk::Vector3D setSpacing;
+      setSpacing[0] = 0.1; //left-right
+      setSpacing[1] = 0.1; //up
+      setSpacing[2] = 0.1; //height
+      m_imageNode->GetData()->GetGeometry()->SetSpacing(setSpacing);
+      m_imageNode->Modified();
+      // mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
+      // renderWindow->GetRenderingManager()->InitializeViews(
+      //  m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, false);
+      this->RequestRenderWindowUpdate(mitk::RenderingManager::REQUEST_UPDATE_ALL);
+    }
+    else
+    {
+      MITK_ERROR << "No Image could be read. Video Source not found or finished!";
+      ARStrokeTreatmentView::DisableVideoData();
+    }
   }
+  return;
+}
+
+void ARStrokeTreatmentView::DisableVideoData()
+{
+  m_VideoGrabbingActive = false;
+  m_VideoCapture = new cv::VideoCapture;
+  m_Controls->m_VideoGrabbingPushButton->setText("Start Video");
   return;
 }
 

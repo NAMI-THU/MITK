@@ -102,6 +102,8 @@ protected slots:
 
   // prints a small text through MITK_INFO, for testing purposes
   void TestText();
+
+  void ARStrokeTreatmentView::DisableVideoData();
 };
 
 #endif // ARStrokeTreatmentView_h
