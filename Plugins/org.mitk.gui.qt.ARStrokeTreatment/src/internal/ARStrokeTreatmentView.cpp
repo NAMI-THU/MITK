@@ -66,6 +66,8 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
 
   m_Controls->m_DataStorageComboBox->SetDataStorage(this->GetDataStorage());
   m_Controls->m_DataStorageComboBox->SetAutoSelectNewItems(false);
+
+  m_Controls->m_VideoPausePushButton->setDisabled(true);
   // m_Controls->m_DataStorageComboBox->SetPredicate(
   //  mitk::NodePredicateOr::New(mitk::NodePredicateDataType::New("Surface"),
   //  mitk::NodePredicateDataType::New("Image")));
@@ -94,6 +96,7 @@ void ARStrokeTreatmentView::CreateConnections()
   //        SLOT(OnSetupNavigation()));
   connect(m_Controls->m_TrackerGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnTrackingGrabberPushed()));
   connect(m_Controls->m_VideoGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnVideoGrabberPushed()));
+  connect(m_Controls->m_VideoPausePushButton, SIGNAL(clicked()), this, SLOT(OnVideoPausePushButton()));
   connect(m_UpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateLiveData()));
 
   // create connections for Registration Widget
@@ -106,13 +109,19 @@ void ARStrokeTreatmentView::OnTrackingGrabberPushed()
 {
   if (m_TrackingActive == false)
   {
+    if (m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID() == -1)
+    {
+      m_TrackingActive = false;
+      return;
+    }
     m_Controls->m_TrackerGrabbingPushButton->setText("Stop Tracking");
+    m_TrackingActive = true;
   }
-  if (m_TrackingActive == true)
+  else if (m_TrackingActive == true)
   {
     m_Controls->m_TrackerGrabbingPushButton->setText("Start Tracking");
+    m_TrackingActive = false;
   }
-  m_TrackingActive = !m_TrackingActive;
   return;
 }
 
@@ -130,12 +139,14 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
     mitk::Image::Pointer dummyImage = mitk::ImageGenerator::GenerateRandomImage<float>(100, 100, 1, 1, 1, 1, 1, 255, 0);
     m_imageNode->SetData(dummyImage);
     this->GetDataStorage()->Add(m_imageNode);
+
     // select video source
-    m_VideoCapture = new cv::VideoCapture("C:/Tools/12.avi");
-    // m_VideoCapture = new cv::VideoCapture(0);
+    //m_VideoCapture = new cv::VideoCapture("C:/Tools/7.avi");
+    m_VideoCapture = new cv::VideoCapture(0);
     mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
     renderWindow->GetRenderingManager()->InitializeViews(
       m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true);
+    m_Controls->m_VideoPausePushButton->setDisabled(false);
   }
   if (m_VideoGrabbingActive)
   {
@@ -171,13 +182,14 @@ void ARStrokeTreatmentView::InitializeRegistration()
 
 void ARStrokeTreatmentView::UpdateLiveData()
 {
+  m_Controls->m_TrackingDeviceSelectionWidget->update();
   if (m_TrackingActive)
   {
     m_TrackingData = m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(
       m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID());
     MITK_INFO << m_TrackingData->GetPosition();
   }
-  if (m_VideoGrabbingActive)
+  if (m_VideoGrabbingActive && m_UpdateVideoData)
   {
     cv::Mat frame;
     if (m_VideoCapture->read(frame))
@@ -186,11 +198,11 @@ void ARStrokeTreatmentView::UpdateLiveData()
       m_ConversionFilter->SetOpenCVMat(frame);
       m_ConversionFilter->Update();
       m_imageNode->SetData(m_ConversionFilter->GetOutput());
-      //m_imageNode->GetData()->GetGeometry()->SetIndexToWorldTransform();
+      // m_imageNode->GetData()->GetGeometry()->SetIndexToWorldTransform();
       mitk::Vector3D setSpacing;
-      setSpacing[0] = 0.1; //left-right
-      setSpacing[1] = 0.1; //up
-      setSpacing[2] = 0.1; //height
+      setSpacing[0] = 0.1; // left-right
+      setSpacing[1] = 0.1; // up
+      setSpacing[2] = 0.1; // height
       m_imageNode->GetData()->GetGeometry()->SetSpacing(setSpacing);
       m_imageNode->Modified();
       // mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
@@ -212,7 +224,22 @@ void ARStrokeTreatmentView::DisableVideoData()
   m_VideoGrabbingActive = false;
   m_VideoCapture = new cv::VideoCapture;
   m_Controls->m_VideoGrabbingPushButton->setText("Start Video");
+  m_Controls->m_VideoPausePushButton->setDisabled(true);
+  this->GetDataStorage()->Remove(m_imageNode);
   return;
+}
+
+void ARStrokeTreatmentView::OnVideoPausePushButton()
+{
+  m_UpdateVideoData = !m_UpdateVideoData;
+  if (m_UpdateVideoData)
+  {
+    m_Controls->m_VideoPausePushButton->setText("Pause Video");
+  }
+  if (!m_UpdateVideoData)
+  {
+    m_Controls->m_VideoPausePushButton->setText("Continue Video");
+  }
 }
 
 void ARStrokeTreatmentView::DoImageProcessing()

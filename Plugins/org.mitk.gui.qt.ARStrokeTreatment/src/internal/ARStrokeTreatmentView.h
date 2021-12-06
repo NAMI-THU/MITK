@@ -76,6 +76,8 @@ protected:
 
   bool m_VideoGrabbingActive = false;
 
+  bool m_UpdateVideoData = true;
+
   mitk::NavigationData::Pointer m_TrackingData;
 
   mitk::DataNode::Pointer m_imageNode;
@@ -96,9 +98,11 @@ protected slots:
 
   void ImageSelectionChanged();
 
-  void InitializeRegistration();
-
   void UpdateLiveData();
+
+  void OnVideoPausePushButton();
+
+  void InitializeRegistration();
 
   // prints a small text through MITK_INFO, for testing purposes
   void TestText();

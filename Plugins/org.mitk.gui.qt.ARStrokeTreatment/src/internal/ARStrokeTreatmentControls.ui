@@ -85,13 +85,13 @@
            <x>20</x>
            <y>20</y>
            <width>631</width>
-           <height>150</height>
+           <height>121</height>
           </rect>
          </property>
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>150</height>
+           <height>100</height>
           </size>
          </property>
         </widget>
@@ -250,45 +250,45 @@
           </item>
          </layout>
         </widget>
-       </widget>
-      </widget>
-      <widget class="QGroupBox" name="groupTracking">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>10</y>
-         <width>661</width>
-         <height>171</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>Choose Tracking:</string>
-       </property>
-       <widget class="QPushButton" name="m_VideoGrabbingPushButton">
-        <property name="geometry">
-         <rect>
-          <x>480</x>
-          <y>140</y>
-          <width>161</width>
-          <height>28</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Start Video</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="m_TrackerGrabbingPushButton">
-        <property name="geometry">
-         <rect>
-          <x>290</x>
-          <y>140</y>
-          <width>181</width>
-          <height>28</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Start Tracking</string>
-        </property>
+        <widget class="QWidget" name="horizontalLayoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>140</y>
+           <width>631</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QPushButton" name="m_TrackerGrabbingPushButton">
+            <property name="text">
+             <string>Start Tracking</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_VideoGrabbingPushButton">
+            <property name="text">
+             <string>Start Video</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_VideoPausePushButton">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Pause Video</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </widget>
      </widget>
