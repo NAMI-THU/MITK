@@ -32,7 +32,15 @@ namespace mitk
     void start(ctkPluginContext *context);
     void stop(ctkPluginContext *context);
 
+    static ctkPluginContext *GetContext();
+
+  private:
+    static ctkPluginContext *m_Context;
+
+
   }; // org_mitk_gui_qt_ARStrokeTreatment_Activator
+
+  typedef org_mitk_gui_qt_ARStrokeTreatment_Activator PluginActivator;
 }
 
 #endif // org_mitk_gui_qt_ARStrokeTreatment_Activator_h

@@ -37,7 +37,15 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkNodePredicateProperty.h>
 #include <mitkOpenCVToMitkImageFilter.h>
 
+#include "internal/org_mitk_gui_qt_ARStrokeTreatment_Activator.h"
+
+
 const std::string ARStrokeTreatmentView::VIEW_ID = "org.mitk.views.arstroketreatment";
+
+ARStrokeTreatmentView::ARStrokeTreatmentView(){
+  ctkPluginContext *pluginContext = mitk::PluginActivator::GetContext();
+};
+ARStrokeTreatmentView::~ARStrokeTreatmentView(){};
 
 void ARStrokeTreatmentView::SetFocus()
 {
@@ -52,7 +60,6 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
   // connect(m_Controls.buttonPerformImageProcessing, &QPushButton::clicked, this,
   // &ARStrokeTreatmentView::DoImageProcessing);
   // create timer for tracking and video grabbing
-  MITK_INFO << "timer started!";
   m_UpdateTimer = new QTimer(this);
   m_UpdateTimer->setInterval(100);
   m_UpdateTimer->start();
@@ -141,11 +148,12 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
     this->GetDataStorage()->Add(m_imageNode);
 
     // select video source
-    //m_VideoCapture = new cv::VideoCapture("C:/Tools/7.avi");
+    // m_VideoCapture = new cv::VideoCapture("C:/Tools/7.avi");
     m_VideoCapture = new cv::VideoCapture(0);
     mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
     renderWindow->GetRenderingManager()->InitializeViews(
-      m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true);
+      m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, false);
+    renderWindow->GetRenderingManager()->RequestUpdateAll();
     m_Controls->m_VideoPausePushButton->setDisabled(false);
   }
   if (m_VideoGrabbingActive)
@@ -197,17 +205,22 @@ void ARStrokeTreatmentView::UpdateLiveData()
       // m_VideoCapture->read(frame);
       m_ConversionFilter->SetOpenCVMat(frame);
       m_ConversionFilter->Update();
-      m_imageNode->SetData(m_ConversionFilter->GetOutput());
       // m_imageNode->GetData()->GetGeometry()->SetIndexToWorldTransform();
-      mitk::Vector3D setSpacing;
-      setSpacing[0] = 0.1; // left-right
-      setSpacing[1] = 0.1; // up
-      setSpacing[2] = 0.1; // height
+       mitk::Vector3D setSpacing;
+       setSpacing[0] = 0.5; // left-right
+       setSpacing[1] = 0.5; // up
+       setSpacing[2] = 0.5; // height
+
+      std::stringstream nodeName;
+      nodeName << "Live Image Stream";
+      m_imageNode->SetName(nodeName.str());
+      m_imageNode->SetData(m_ConversionFilter->GetOutput());
       m_imageNode->GetData()->GetGeometry()->SetSpacing(setSpacing);
       m_imageNode->Modified();
-      // mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
-      // renderWindow->GetRenderingManager()->InitializeViews(
-      //  m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, false);
+      /*mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
+      renderWindow->GetRenderingManager()->InitializeViews(
+        m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, false);
+      renderWindow->GetRenderingManager()->RequestUpdateAll();*/
       this->RequestRenderWindowUpdate(mitk::RenderingManager::REQUEST_UPDATE_ALL);
     }
     else
