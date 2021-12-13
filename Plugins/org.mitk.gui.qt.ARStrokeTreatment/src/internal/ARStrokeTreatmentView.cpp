@@ -36,6 +36,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkNodePredicateOr.h>
 #include <mitkNodePredicateProperty.h>
 #include <mitkOpenCVToMitkImageFilter.h>
+#include <mitkCone.h>
 
 #include "internal/org_mitk_gui_qt_ARStrokeTreatment_Activator.h"
 
@@ -66,6 +67,29 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
 
   CreateConnections();
 
+  // As we wish to visualize our tool we need to have a PolyData which shows us the movement of our tool.
+  // Here we take a cone shaped PolyData. In MITK you have to add the PolyData as a node into the DataStorage
+  // to show it inside of the rendering windows. After that you can change the properties of the cone
+  // to manipulate rendering, e.g. the position and orientation as in our case.
+  
+  mitk::Cone::Pointer cone = mitk::Cone::New(); // instantiate a new cone
+  double scale[] = {10.0, 10.0, 10.0};
+  cone->GetGeometry()->SetSpacing(scale);               // scale it a little that so we can see something
+  mitk::DataNode::Pointer node = mitk::DataNode::New(); // generate a new node to store the cone into
+  // the DataStorage.
+  node->SetData(cone);                // The data of that node is our cone.
+  node->SetName("My tracked object"); // The node has additional properties like a name
+  node->SetColor(1.0, 0.0, 0.0);      // or the color. Here we make it red.
+  this->GetDataStorage()->Add(node);  // After adding the Node with the cone in it to the
+
+
+  // DataStorage, MITK will show the cone in the
+  // render windows.
+
+  // m_Controls->m_DataStorageComboBox->SetPredicate(
+  //  mitk::NodePredicateOr::New(mitk::NodePredicateDataType::New("Surface"),
+  //  mitk::NodePredicateDataType::New("Image")));
+
   m_Controls->m_RegistrationWidget->setDataStorage(this->GetDataStorage());
   m_Controls->m_RegistrationWidget->HideStaticRegistrationRadioButton(true);
   m_Controls->m_RegistrationWidget->HideContinousRegistrationRadioButton(true);
@@ -75,9 +99,8 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
   m_Controls->m_DataStorageComboBox->SetAutoSelectNewItems(false);
 
   m_Controls->m_VideoPausePushButton->setDisabled(true);
-  // m_Controls->m_DataStorageComboBox->SetPredicate(
-  //  mitk::NodePredicateOr::New(mitk::NodePredicateDataType::New("Surface"),
-  //  mitk::NodePredicateDataType::New("Image")));
+
+
 }
 
 void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*source*/,
