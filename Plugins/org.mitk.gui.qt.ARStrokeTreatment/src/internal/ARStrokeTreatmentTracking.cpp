@@ -14,11 +14,13 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
+// Qmitk
 #include "ARStrokeTreatmentTracking.h"
+#include <mitkTrackingDeviceSourceConfigurator.h>
 
-ARStrokeTreatmentTracking::ARStrokeTreatmentTracking(){};
+ARStrokeTreatmentTracking::ARStrokeTreatmentTracking() {}
 
-ARStrokeTreatmentTracking::~ARStrokeTreatmentTracking(){};
+ARStrokeTreatmentTracking::~ARStrokeTreatmentTracking() {}
 
 void ARStrokeTreatmentTracking::SetWorkerMethod(WorkerMethod w)
 {
@@ -35,10 +37,10 @@ void ARStrokeTreatmentTracking::SetDataStorage(mitk::DataStorage::Pointer d)
   m_DataStorage = d;
 }
 
-// void ARStrokeTreatmentTracking::SetInverseMode(bool mode)
-//{
-//  m_InverseMode = mode;
-//}
+void ARStrokeTreatmentTracking::SetInverseMode(bool mode)
+{
+  m_InverseMode = mode;
+}
 
 void ARStrokeTreatmentTracking::SetTrackingDeviceData(mitk::TrackingDeviceData d)
 {
@@ -50,7 +52,7 @@ void ARStrokeTreatmentTracking::SetNavigationToolStorage(mitk::NavigationToolSto
   m_NavigationToolStorage = n;
 }
 
-//! [Thread]
+//! [Thread 7]
 void ARStrokeTreatmentTracking::ThreadFunc()
 {
   switch (m_WorkerMethod)
@@ -75,7 +77,7 @@ void ARStrokeTreatmentTracking::ThreadFunc()
       break;
   }
 }
-//! [Thread]
+//! [Thread 7]
 
 void ARStrokeTreatmentTracking::AutoDetectTools()
 {

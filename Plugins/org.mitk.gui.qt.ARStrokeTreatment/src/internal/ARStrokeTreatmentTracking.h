@@ -17,21 +17,18 @@ See LICENSE.txt or http://www.mitk.org for details.
 #ifndef ARStrokeTreatmentTracking_h
 #define ARStrokeTreatmentTracking_h
 
-
-#include "ui_ARStrokeTreatmentControls.h"
-
-
 #include <berryISelectionListener.h>
 
-//mitk headers
+// mitk headers
+#include <mitkNavigationDataObjectVisualizationFilter.h>
 #include <mitkNavigationToolStorage.h>
 #include <mitkTrackingDeviceSource.h>
-#include <mitkNavigationDataObjectVisualizationFilter.h>
 
-#include <mitkTrackingDeviceSourceConfigurator.h>
+// QT headers
+#include <QTimer>
 
 /**
- * Class to connect with the Tracking Device, used to connect to a tracking device with MITK-IGT
+ * Worker thread class for QmitkMITKIGTTrackingToolboxView view.
  */
 class ARStrokeTreatmentTracking : public QObject
 {
