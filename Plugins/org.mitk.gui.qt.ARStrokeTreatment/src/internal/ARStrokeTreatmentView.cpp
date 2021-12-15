@@ -36,7 +36,6 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkNodePredicateOr.h>
 #include <mitkNodePredicateProperty.h>
 #include <mitkOpenCVToMitkImageFilter.h>
-#include <mitkCone.h>
 
 const std::string ARStrokeTreatmentView::VIEW_ID = "org.mitk.views.arstroketreatment";
 
@@ -60,25 +59,6 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
 
   CreateConnections();
 
-  // As we wish to visualize our tool we need to have a PolyData which shows us the movement of our tool.
-  // Here we take a cone shaped PolyData. In MITK you have to add the PolyData as a node into the DataStorage
-  // to show it inside of the rendering windows. After that you can change the properties of the cone
-  // to manipulate rendering, e.g. the position and orientation as in our case.
-  
-  mitk::Cone::Pointer cone = mitk::Cone::New(); // instantiate a new cone
-  double scale[] = {10.0, 10.0, 10.0};
-  cone->GetGeometry()->SetSpacing(scale);               // scale it a little that so we can see something
-  mitk::DataNode::Pointer node = mitk::DataNode::New(); // generate a new node to store the cone into
-  // the DataStorage.
-  node->SetData(cone);                // The data of that node is our cone.
-  node->SetName("My tracked object"); // The node has additional properties like a name
-  node->SetColor(1.0, 0.0, 0.0);      // or the color. Here we make it red.
-  this->GetDataStorage()->Add(node);  // After adding the Node with the cone in it to the
-
-
-  // DataStorage, MITK will show the cone in the
-  // render windows.
-
   // m_Controls->m_DataStorageComboBox->SetPredicate(
   //  mitk::NodePredicateOr::New(mitk::NodePredicateDataType::New("Surface"),
   //  mitk::NodePredicateDataType::New("Image")));
@@ -92,8 +72,6 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
   m_Controls->m_DataStorageComboBox->SetAutoSelectNewItems(false);
 
   m_Controls->m_VideoPausePushButton->setDisabled(true);
-
-
 }
 
 void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*source*/,
@@ -139,6 +117,7 @@ void ARStrokeTreatmentView::OnTrackingGrabberPushed()
     }
     m_Controls->m_TrackerGrabbingPushButton->setText("Stop Tracking");
     m_TrackingActive = true;
+    this->InitializeConeView();
   }
   else if (m_TrackingActive == true)
   {
@@ -146,6 +125,18 @@ void ARStrokeTreatmentView::OnTrackingGrabberPushed()
     m_TrackingActive = false;
   }
   return;
+}
+
+void ARStrokeTreatmentView::InitializeConeView()
+{
+  m_Cone = mitk::Cone::New(); // instantiate a new cone
+  double scale[] = {20.0, 20.0, 20.0};
+  m_Cone->GetGeometry()->SetSpacing(scale);
+  m_ConeNode = mitk::DataNode::New();
+  m_ConeNode->SetColor(1.0, 0.0, 0.0);
+  m_ConeNode->SetName("My tracked object");
+
+  this->GetDataStorage()->Add(m_ConeNode);
 }
 
 void ARStrokeTreatmentView::OnVideoGrabberPushed()
@@ -164,7 +155,7 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
     this->GetDataStorage()->Add(m_imageNode);
 
     // select video source
-    //m_VideoCapture = new cv::VideoCapture("C:/Tools/7.avi");
+    // m_VideoCapture = new cv::VideoCapture("C:/Tools/7.avi");
     m_VideoCapture = new cv::VideoCapture(0);
     mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
     renderWindow->GetRenderingManager()->InitializeViews(
@@ -203,14 +194,30 @@ void ARStrokeTreatmentView::InitializeRegistration()
   }
 }
 
+void ARStrokeTreatmentView::UpdateTrackingData()
+{
+  m_TrackingData = m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(
+    m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID());
+  m_ConeNode = m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationTool()->GetDataNode();
+
+  m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource();
+
+  mitk::TrackingVolumeGenerator::Pointer volumeGenerator = mitk::TrackingVolumeGenerator::New();
+  // volumeGenerator->SetTrackingDeviceData(m_TrackingData);
+
+  m_ConeNode->SetData(m_Cone);
+  m_ConeNode->Modified();
+
+  // m_TrackingData->GetPosition();
+  // m_TrackingData->GetOrientation();
+}
+
 void ARStrokeTreatmentView::UpdateLiveData()
 {
   m_Controls->m_TrackingDeviceSelectionWidget->update();
   if (m_TrackingActive)
   {
-    m_TrackingData = m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(
-      m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID());
-    MITK_INFO << m_TrackingData->GetPosition();
+    UpdateTrackingData();
   }
   if (m_VideoGrabbingActive && m_UpdateVideoData)
   {

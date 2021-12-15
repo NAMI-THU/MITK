@@ -25,7 +25,9 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QmitkDataStorageComboBox.h>
 #include <QmitkRenderWindow.h>
 #include <berryISelectionListener.h>
+#include <mitkCone.h>
 #include <mitkOpenCVToMitkImageFilter.h>
+#include <mitkTrackingVolumeGenerator.h>
 
 /**
   \brief ARStrokeTreatmentView
@@ -81,6 +83,8 @@ protected:
   mitk::NavigationData::Pointer m_TrackingData;
 
   mitk::DataNode::Pointer m_imageNode;
+  mitk::DataNode::Pointer m_ConeNode;
+  mitk::Cone::Pointer m_Cone;
 
   // members for initial registration
   mitk::DataNode::Pointer m_ImageFiducialsDataNode;
@@ -100,9 +104,13 @@ protected slots:
 
   void UpdateLiveData();
 
+  void UpdateTrackingData();
+
   void OnVideoPausePushButton();
 
   void InitializeRegistration();
+
+  void InitializeConeView();
 
   // prints a small text through MITK_INFO, for testing purposes
   void TestText();
