@@ -5,6 +5,7 @@ set(SRC_CPP_FILES
 set(INTERNAL_CPP_FILES
   org_mitk_gui_qt_ARStrokeTreatment_Activator.cpp
   ARStrokeTreatmentView.cpp
+  ARStrokeTreatmentTracking.cpp
   ARStrokeTreatmentRegistration.cpp
 )
 
@@ -15,6 +16,7 @@ set(UI_FILES
 set(MOC_H_FILES
   src/internal/org_mitk_gui_qt_ARStrokeTreatment_Activator.h
   src/internal/ARStrokeTreatmentView.h
+  src/internal/ARStrokeTreatmentTracking.h
   src/internal/ARStrokeTreatmentRegistration.h
 )
 
