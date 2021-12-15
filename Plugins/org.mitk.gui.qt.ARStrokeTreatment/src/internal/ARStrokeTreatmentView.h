@@ -62,6 +62,9 @@ public:
   /// \connects all the buttons, labels, etc. of the Qt gui
   void CreateConnections();
 
+  ARStrokeTreatmentView();
+  ~ARStrokeTreatmentView();
+
   Ui::ARStrokeTreatmentControls *m_Controls; // automatically generated from ARStrokeTreatmentView.ui
 
 protected:
