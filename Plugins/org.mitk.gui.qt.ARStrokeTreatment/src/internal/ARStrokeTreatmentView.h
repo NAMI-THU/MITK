@@ -33,7 +33,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkNavigationDataObjectVisualizationFilter.h>
 #include <mitkNavigationDataRecorder.h>
 #include <mitkNavigationDataToIGTLMessageFilter.h>
-#include <mitkNavigationToolStorage.h>#include <mitkOpenCVToMitkImageFilter.h>
+#include <mitkNavigationToolStorage.h>
+#include <mitkOpenCVToMitkImageFilter.h>
 #include <mitkTrackingVolumeGenerator.h>
 
 /**
@@ -99,8 +100,6 @@ protected:
   mitk::NavigationData::Pointer m_TrackingData;
 
   mitk::DataNode::Pointer m_imageNode;
-  mitk::DataNode::Pointer m_ConeNode;
-  mitk::Cone::Pointer m_Cone;
 
   // members for initial registration
   mitk::DataNode::Pointer m_ImageFiducialsDataNode;
