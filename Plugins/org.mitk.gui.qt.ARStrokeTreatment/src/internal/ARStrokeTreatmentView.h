@@ -108,8 +108,6 @@ protected:
   // void ARStrokeTreatmentView::OnAddRegistrationTrackingFiducial();
 
 protected slots:
-  // starts/stops the tracking of the live tracking data
-  void OnTrackingGrabberPushed();
   // starts/stops the tracking of the live video data
   void OnVideoGrabberPushed();
 

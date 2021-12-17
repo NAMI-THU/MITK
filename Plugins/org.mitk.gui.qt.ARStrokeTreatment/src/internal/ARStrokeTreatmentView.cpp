@@ -215,7 +215,6 @@ void ARStrokeTreatmentView::CreateConnections()
   //        SIGNAL(NavigationDataSourceSelected(mitk::NavigationDataSource::Pointer)),
   //        this,
   //        SLOT(OnSetupNavigation()));
-  connect(m_Controls->m_TrackerGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnTrackingGrabberPushed()));
   connect(m_Controls->m_VideoGrabbingPushButton, SIGNAL(clicked()), this, SLOT(OnVideoGrabberPushed()));
   connect(m_Controls->m_VideoPausePushButton, SIGNAL(clicked()), this, SLOT(OnVideoPausePushButton()));
   connect(m_UpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateLiveData()));
@@ -375,26 +374,6 @@ void ARStrokeTreatmentView::CreateConnections()
   for (std::size_t i = 0; i < Compatibles.size(); i++)
   {
     m_Controls->m_VolumeSelectionBox->addItem(Compatibles[i].Model.c_str());
-  }
-  return;
-}
-
-void ARStrokeTreatmentView::OnTrackingGrabberPushed()
-{
-  if (m_TrackingActive == false)
-  {
-    if (m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID() == -1)
-    {
-      m_TrackingActive = false;
-      return;
-    }
-    m_Controls->m_TrackerGrabbingPushButton->setText("Stop Tracking");
-    m_TrackingActive = true;
-  }
-  else if (m_TrackingActive == true)
-  {
-    m_Controls->m_TrackerGrabbingPushButton->setText("Start Tracking");
-    m_TrackingActive = false;
   }
   return;
 }
