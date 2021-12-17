@@ -125,8 +125,6 @@ protected slots:
 
   void InitializeRegistration();
 
-  void InitializeConeView();
-
   // prints a small text through MITK_INFO, for testing purposes
   void TestText();
 

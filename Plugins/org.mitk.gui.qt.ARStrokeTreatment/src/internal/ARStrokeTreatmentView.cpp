@@ -390,7 +390,6 @@ void ARStrokeTreatmentView::OnTrackingGrabberPushed()
     }
     m_Controls->m_TrackerGrabbingPushButton->setText("Stop Tracking");
     m_TrackingActive = true;
-    this->InitializeConeView();
   }
   else if (m_TrackingActive == true)
   {
@@ -398,18 +397,6 @@ void ARStrokeTreatmentView::OnTrackingGrabberPushed()
     m_TrackingActive = false;
   }
   return;
-}
-
-void ARStrokeTreatmentView::InitializeConeView()
-{
-  m_Cone = mitk::Cone::New(); // instantiate a new cone
-  double scale[] = {20.0, 20.0, 20.0};
-  m_Cone->GetGeometry()->SetSpacing(scale);
-  m_ConeNode = mitk::DataNode::New();
-  m_ConeNode->SetColor(1.0, 0.0, 0.0);
-  m_ConeNode->SetName("My tracked object");
-
-  this->GetDataStorage()->Add(m_ConeNode);
 }
 
 void ARStrokeTreatmentView::OnVideoGrabberPushed()
@@ -472,15 +459,11 @@ void ARStrokeTreatmentView::UpdateTrackingData()
 {
   m_TrackingData = m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(
     m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID());
-  m_ConeNode = m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationTool()->GetDataNode();
 
   m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource();
 
   mitk::TrackingVolumeGenerator::Pointer volumeGenerator = mitk::TrackingVolumeGenerator::New();
   // volumeGenerator->SetTrackingDeviceData(m_TrackingData);
-
-  m_ConeNode->SetData(m_Cone);
-  m_ConeNode->Modified();
 
   // m_TrackingData->GetPosition();
   // m_TrackingData->GetOrientation();
