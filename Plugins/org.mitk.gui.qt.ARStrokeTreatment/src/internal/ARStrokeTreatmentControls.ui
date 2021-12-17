@@ -26,15 +26,15 @@
       <bool>false</bool>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>765</width>
-        <height>886</height>
+        <width>744</width>
+        <height>903</height>
        </rect>
       </property>
       <property name="acceptDrops">
@@ -43,7 +43,7 @@
       <attribute name="label">
        <string>Tracking and Video Input</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_6">
+      <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
         <widget class="QTabWidget" name="m_MainWidget">
          <property name="currentIndex">
@@ -944,6 +944,39 @@ Mode</string>
          </layout>
         </widget>
        </item>
+       <item row="2" column="0">
+        <widget class="QGroupBox" name="groupVideoInput">
+         <property name="title">
+          <string>Video Input</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_16">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QPushButton" name="m_VideoGrabbingPushButton">
+              <property name="text">
+               <string>Start Video</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="m_VideoPausePushButton">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>Pause Video</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="page_2">
@@ -989,30 +1022,6 @@ Mode</string>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
-             <item>
-              <widget class="QPushButton" name="m_VideoGrabbingPushButton">
-               <property name="text">
-                <string>Start Video</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="m_VideoPausePushButton">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="text">
-                <string>Pause Video</string>
-               </property>
-               <property name="checkable">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
            <item>
             <widget class="QmitkNavigationDataSourceSelectionWidget" name="m_TrackingDeviceSelectionWidget" native="true">
              <property name="minimumSize">
@@ -1155,8 +1164,8 @@ Mode</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>765</width>
-        <height>886</height>
+        <width>100</width>
+        <height>30</height>
        </rect>
       </property>
       <attribute name="label">
