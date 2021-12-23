@@ -1,4 +1,4 @@
-//*===================================================================
+/*===================================================================
 The Medical Imaging Interaction Toolkit (MITK)
 Copyright (c) German Cancer Research Center,
 Division of Medical and Biological Informatics.
@@ -1173,7 +1173,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::NumerateFiducialMarks()
         distances.at(2) > 41.53) //  -> characteristic Distance F with lower margin
       {
         MITK_INFO << "Found Fiducial 4 (PointSet number " << i << ")";
-        m_FiducialMarkerCentroids.insert(std::pair<int, mitk::Vector3D>(4, m_FiducialCandidates.at(i).first));
+        m_FiducialMarkerCentroids.insert(std::pair<int, mitk::Point3D>(4, m_FiducialCandidates.at(i).first));
         distanceVectorsFiducials.erase(distanceVectorsFiducials.begin() + i);
         m_FiducialCandidates.erase(m_FiducialCandidates.begin() + i);
         successFiducialNo4 = true;
@@ -1189,7 +1189,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::NumerateFiducialMarks()
       if (distances.at(0) <= characteristicDistanceAWithUpperMargin)
       {
         MITK_INFO << "Found Fiducial 3 (PointSet number " << i << ")";
-        m_FiducialMarkerCentroids.insert(std::pair<int, mitk::Vector3D>(3, m_FiducialCandidates.at(i).first));
+        m_FiducialMarkerCentroids.insert(std::pair<int, mitk::Point3D>(3, m_FiducialCandidates.at(i).first));
         distanceVectorsFiducials.erase(distanceVectorsFiducials.begin() + i);
         m_FiducialCandidates.erase(m_FiducialCandidates.begin() + i);
         successFiducialNo3 = true;
@@ -1205,7 +1205,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::NumerateFiducialMarks()
       if (distances.at(2) > 41.53) //  -> characteristic Distance F with lower margin
       {
         MITK_INFO << "Found Fiducial 2 (PointSet number " << i << ")";
-        m_FiducialMarkerCentroids.insert(std::pair<int, mitk::Vector3D>(2, m_FiducialCandidates.at(i).first));
+        m_FiducialMarkerCentroids.insert(std::pair<int, mitk::Point3D>(2, m_FiducialCandidates.at(i).first));
         distanceVectorsFiducials.erase(distanceVectorsFiducials.begin() + i);
         m_FiducialCandidates.erase(m_FiducialCandidates.begin() + i);
         successFiducialNo2 = true;
@@ -1225,7 +1225,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::NumerateFiducialMarks()
         distances.at(2) < 37.0)
       {
         MITK_INFO << "Found Fiducial 1 (PointSet number " << i << ")";
-        m_FiducialMarkerCentroids.insert(std::pair<int, mitk::Vector3D>(1, m_FiducialCandidates.at(i).first));
+        m_FiducialMarkerCentroids.insert(std::pair<int, mitk::Point3D>(1, m_FiducialCandidates.at(i).first));
         distanceVectorsFiducials.erase(distanceVectorsFiducials.begin() + i);
         m_FiducialCandidates.erase(m_FiducialCandidates.begin() + i);
         successFiducialNo1 = true;
@@ -1253,7 +1253,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::NumerateFiducialMarks()
 
   for (unsigned int counter = 1; counter <= m_FiducialMarkerCentroids.size(); ++counter)
   {
-    m_MarkerImageToRegisterCoordinateSystemPointSet->InsertPoint(counter - 1, m_FiducialMarkerCentroids.at(counter));
+    m_MarkerImageToRegisterCoordinateSystemPointSet->InsertPoint(counter -1, m_FiducialMarkerCentroids.at(counter));
   }
 
   mitk::DataNode::Pointer node = mitk::DataNode::New();
@@ -1334,7 +1334,7 @@ bool QmitkAutomaticFiducialmarkerRegistrationWidget::FindFiducialNo1(std::vector
       distances.at(1) <= characteristicDistanceAWithUpperMargin)
     {
       MITK_INFO << "Found Fiducial 1 (PointSet number " << i << ")";
-      m_FiducialMarkerCentroids.insert(std::pair<int, mitk::Vector3D>(1, m_FiducialCandidates.at(i).first));
+      m_FiducialMarkerCentroids.insert(std::pair<int, mitk::Point3D>(1, m_FiducialCandidates.at(i).first));
       distanceVectorsFiducials.erase(distanceVectorsFiducials.begin() + i);
       m_FiducialCandidates.erase(m_FiducialCandidates.begin() + i);
       return true;
@@ -1352,8 +1352,8 @@ bool QmitkAutomaticFiducialmarkerRegistrationWidget::FindFiducialNo2And3()
   }
 
   mitk::Point3D fiducialNo1(m_FiducialMarkerCentroids.at(1));
-  mitk::Vector3D fiducialVectorA;
-  mitk::Vector3D fiducialVectorB;
+  mitk::Point3D fiducialVectorA;
+  mitk::Point3D fiducialVectorB;
   mitk::Point3D fiducialPointA;
   mitk::Point3D fiducialPointB;
   bool foundFiducialA = false;
@@ -1455,7 +1455,7 @@ bool QmitkAutomaticFiducialmarkerRegistrationWidget::FindFiducialNo4(std::vector
       distances.at(1) <= characteristicDistanceBWithUpperMargin)
     {
       MITK_INFO << "Found Fiducial 4 (PointSet number " << i << ")";
-      m_FiducialMarkerCentroids.insert(std::pair<int, mitk::Vector3D>(4, m_FiducialCandidates.at(i).first));
+      m_FiducialMarkerCentroids.insert(std::pair<int, mitk::Point3D>(4, m_FiducialCandidates.at(i).first));
       distanceVectorsFiducials.erase(distanceVectorsFiducials.begin() + i);
       m_FiducialCandidates.erase(m_FiducialCandidates.begin() + i);
       return true;

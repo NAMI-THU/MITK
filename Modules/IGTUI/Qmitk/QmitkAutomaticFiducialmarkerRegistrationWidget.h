@@ -1,4 +1,4 @@
-//*===================================================================
+/*===================================================================
 The Medical Imaging Interaction Toolkit (MITK)
 Copyright (c) German Cancer Research Center,
 Division of Medical and Biological Informatics.
@@ -60,7 +60,7 @@ typedef itk::LaplacianRecursiveGaussianImageFilter<ImageType, ImageType> Laplaci
 typedef itk::VotingBinaryIterativeHoleFillingImageFilter<ImageType> VotingBinaryIterativeHoleFillingImageFilterType;
 typedef itk::BinaryImageToShapeLabelMapFilter<ImageType> BinaryImageToShapeLabelMapFilterType;
 typedef BinaryImageToShapeLabelMapFilterType::OutputImageType::LabelObjectType ShapeLabelObjectType;
-typedef std::pair<mitk::Vector3D, BinaryImageToShapeLabelMapFilterType::OutputImageType::LabelObjectType *> FiducialCandidatePairType;
+typedef std::pair<mitk::Point3D, BinaryImageToShapeLabelMapFilterType::OutputImageType::LabelObjectType *> FiducialCandidatePairType;
 
 
 
@@ -168,7 +168,7 @@ private:
   std::map<double, mitk::Vector3D> m_EigenVectorsFiducialCandidates;
   std::vector<double> m_EigenValuesFiducialCandidates;
   mitk::Vector3D m_MeanCentroidFiducialCandidates;
-  std::map<int, mitk::Vector3D> m_FiducialMarkerCentroids;
+  std::map<int, mitk::Point3D> m_FiducialMarkerCentroids;
 
 
   mitk::AffineTransform3D::Pointer m_TransformMarkerCSToImageCS;
