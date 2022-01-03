@@ -1,6 +1,6 @@
 MITK_CREATE_MODULE(
   INCLUDE_DIRS Qmitk
-  DEPENDS MitkIGT MitkQtWidgetsExt MitkPersistence
+  DEPENDS MitkIGT MitkQtWidgetsExt MitkPersistence ITKLabelMap
 )
 
 add_subdirectory(autoload/ConfigurationWidgetRegistry)
