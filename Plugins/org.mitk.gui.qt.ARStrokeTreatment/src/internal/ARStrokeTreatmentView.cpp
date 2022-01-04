@@ -197,6 +197,7 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
 void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*source*/,
                                                const QList<mitk::DataNode::Pointer> &nodes)
 {
+  m_Controls->m_AutomaticRegistrationWidget->Initialize(this->GetDataStorage());
   // iterate all selected objects, adjust warning visibility
   foreach (mitk::DataNode::Pointer node, nodes)
   {
