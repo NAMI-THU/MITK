@@ -26,14 +26,14 @@
       <bool>false</bool>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>744</width>
+        <width>370</width>
         <height>903</height>
        </rect>
       </property>
@@ -984,8 +984,8 @@ Mode</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>765</width>
-        <height>886</height>
+        <width>109</width>
+        <height>109</height>
        </rect>
       </property>
       <attribute name="label">
@@ -1017,8 +1017,8 @@ Mode</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>720</width>
-            <height>862</height>
+            <width>439</width>
+            <height>674</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -1164,14 +1164,18 @@ Mode</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>100</width>
-        <height>30</height>
+        <width>765</width>
+        <height>886</height>
        </rect>
       </property>
       <attribute name="label">
        <string>Page</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_4"/>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QmitkAutomaticFiducialmarkerRegistrationWidget" name="m_AutomaticRegistrationWidget" native="true"/>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
@@ -1214,6 +1218,11 @@ Mode</string>
    <extends>QComboBox</extends>
    <header>QmitkDataStorageComboBox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QmitkAutomaticFiducialmarkerRegistrationWidget</class>
+   <extends>QWidget</extends>
+   <header>qmitkautomaticfiducialmarkerregistrationwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -375,7 +375,7 @@ void ARStrokeTreatmentView::CreateConnections()
   {
     m_Controls->m_VolumeSelectionBox->addItem(Compatibles[i].Model.c_str());
   }
-  return;
+ return;
 }
 
 void ARStrokeTreatmentView::OnVideoGrabberPushed()
@@ -1634,7 +1634,7 @@ void ARStrokeTreatmentView::DisableTrackingConfigurationButtons()
 }
 
 void ARStrokeTreatmentView::ReplaceCurrentToolStorage(mitk::NavigationToolStorage::Pointer newStorage,
-                                                                std::string newStorageName)
+                                                      std::string newStorageName)
 {
   // first: get rid of the old one
   // don't reset if there is no tool storage. BugFix #17793

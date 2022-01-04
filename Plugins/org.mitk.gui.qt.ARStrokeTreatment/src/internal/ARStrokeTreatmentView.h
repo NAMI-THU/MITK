@@ -25,6 +25,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QmitkAbstractView.h>
 #include <QmitkDataStorageComboBox.h>
 #include <QmitkRenderWindow.h>
+#include <QmitkAutomaticFiducialmarkerRegistrationWidget.h>
 #include <berryISelectionListener.h>
 #include <ctkServiceEvent.h>
 #include <ctkServiceReference.h>
