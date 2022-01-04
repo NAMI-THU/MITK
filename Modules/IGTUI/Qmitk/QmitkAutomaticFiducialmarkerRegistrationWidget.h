@@ -134,11 +134,11 @@ protected:
   void DefineDataStorageImageFilter();
 
   void CreateQtPartControl( QWidget *parent );
-  Ui::QmitkAutomaticFiducialmarkerRegistrationWidget* ui;
+  Ui::QmitkAutomaticFiducialmarkerRegistrationWidget* m_Controls;
 
 
 protected slots:
-  void OnImageToRegisterComboBoxSelectionChanged(const mitk::DataNode* node);
+  void OnImageToRegisterComboBoxSelectionChanged(const mitk::DataNode *node);
   void OnRegisterMarkerCSToImageCS();
   void OnLocalizeFiducials();
 

@@ -41,26 +41,26 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 QmitkAutomaticFiducialmarkerRegistrationWidget::QmitkAutomaticFiducialmarkerRegistrationWidget(QWidget* parent)
   : QWidget(parent),
-  ui(new Ui::QmitkAutomaticFiducialmarkerRegistrationWidget),
+  m_Controls(nullptr),
   m_TransformMarkerCSToSensorCS(mitk::AffineTransform3D::New()),
   m_TransformMarkerCSToImageCS(mitk::AffineTransform3D::New()),
   m_DataStorage(nullptr)
 {
-  this->CreateQtPartControl( this );
   this->UnsetFloatingImageGeometry();
   this->DefineDataStorageImageFilter();
+  this->CreateQtPartControl( this );
 }
 
 QmitkAutomaticFiducialmarkerRegistrationWidget::~QmitkAutomaticFiducialmarkerRegistrationWidget()
 {
-  delete ui;
+  delete m_Controls;
 }
 
 void QmitkAutomaticFiducialmarkerRegistrationWidget::Initialize(itk::SmartPointer<mitk::DataStorage> dataStorage)
 {
   MITK_INFO << "Initialize()";
-  ui->selectedImageComboBox->SetDataStorage(dataStorage);
-  ui->selectedSurfaceComboBox->SetDataStorage(dataStorage);
+  m_Controls->selectedImageComboBox->SetDataStorage(dataStorage);
+  m_Controls->selectedSurfaceComboBox->SetDataStorage(dataStorage);
   this->m_DataStorage = dataStorage;
 }
 
@@ -84,7 +84,7 @@ mitk::AffineTransform3D::Pointer QmitkAutomaticFiducialmarkerRegistrationWidget:
     m_TransformMarkerCSToSensorCS = mitk::AffineTransform3D::New();
   }
 
-  if (ui->selectedTrackerComboBox->currentIndex() == 0 ) // Use the NDI disc tracker for performing the registration:
+  if (m_Controls->selectedTrackerComboBox->currentIndex() == 0 ) // Use the NDI disc tracker for performing the registration:
   {
     MITK_INFO << "Use NDI disc tracker for performing the CT-to-US-registration";
     mitk::Vector3D translationNDI;
@@ -159,19 +159,24 @@ mitk::AffineTransform3D::Pointer QmitkAutomaticFiducialmarkerRegistrationWidget:
 
 void QmitkAutomaticFiducialmarkerRegistrationWidget::CreateQtPartControl(QWidget *parent)
 {
-  ui->setupUi(parent);
-  ui->selectedImageComboBox->SetPredicate(m_IsAPatientImagePredicate);
-  ui->selectedSurfaceComboBox->SetPredicate(m_IsASurfacePredicate);
+  if (!m_Controls)
+  {
+    m_Controls = new Ui::QmitkAutomaticFiducialmarkerRegistrationWidget;
+  }
+  m_Controls->setupUi(parent);
+  m_Controls->selectedImageComboBox->SetPredicate(m_IsAPatientImagePredicate);
+  m_Controls->selectedSurfaceComboBox->SetPredicate(m_IsASurfacePredicate);
 
 
   // create signal/slot connections
-  connect(ui->selectedImageComboBox,
-    SIGNAL(OnSelectionChanged(const mitk::DataNode *)),
-    this,
-    SLOT(OnFloatingImageComboBoxSelectionChanged(const mitk::DataNode *)));
-  connect(
-    ui->doRegistrationMarkerToImagePushButton, SIGNAL(clicked()), this, SLOT(OnRegisterMarkerToFloatingImageCS()));
-  connect(ui->localizeFiducialMarkerPushButton, SIGNAL(clicked()), this, SLOT(OnLocalizeFiducials()));
+  connect(m_Controls->selectedImageComboBox,
+          SIGNAL(OnSelectionChanged(const mitk::DataNode *)),
+          this,
+          SLOT(OnImageToRegisterComboBoxSelectionChanged(const mitk::DataNode *)));
+  connect(m_Controls->doRegistrationMarkerToImagePushButton,
+          SIGNAL(clicked()),
+          this, SLOT(OnRegisterMarkerCSToImageCS()));
+  connect(m_Controls->localizeFiducialMarkerPushButton, SIGNAL(clicked()), this, SLOT(OnLocalizeFiducials()));
 }
 
 void QmitkAutomaticFiducialmarkerRegistrationWidget::OnImageToRegisterComboBoxSelectionChanged(const mitk::DataNode *node)
@@ -190,7 +195,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::OnImageToRegisterComboBoxSe
     return;
   }
 
-  mitk::DataNode *selectedFloatingImage = ui->selectedImageComboBox->GetSelectedNode();
+  mitk::DataNode *selectedFloatingImage = m_Controls->selectedImageComboBox->GetSelectedNode();
   if (selectedFloatingImage == nullptr)
   {
     this->UnsetFloatingImageGeometry();
@@ -336,13 +341,13 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::OnLocalizeFiducials()
 
   int numberTrialsNonReducingFiducialCandidates = 0;
   for (int i = 0;
-    (m_FiducialCandidates.size() > 8 && ui->fiducialMarkerConfigurationComboBox->currentIndex() <= 1 && i < 100) ||
-    (m_FiducialCandidates.size() > 4 && ui->fiducialMarkerConfigurationComboBox->currentIndex() == 2 && i < 100);
+    (m_FiducialCandidates.size() > 8 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() <= 1 && i < 100) ||
+    (m_FiducialCandidates.size() > 4 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() == 2 && i < 100);
     ++i)
   {
     MITK_INFO << "Size centroids fiducial candidates: " << m_FiducialCandidates.size();
     unsigned int oldNumberFiducialCandidates = m_FiducialCandidates.size();
-    if (ui->fiducialMarkerConfigurationComboBox->currentIndex() <= 1)
+    if (m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() <= 1)
     {
       if (!this->EliminateFiducialCandidatesByEuclideanDistances() ||
         m_FiducialCandidates.size() < 8)
@@ -356,7 +361,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::OnLocalizeFiducials()
         return;
       }
     }
-    else if (ui->fiducialMarkerConfigurationComboBox->currentIndex() == 2)
+    else if (m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() == 2)
     {
       if (!this->EliminateFiducialCandidatesByEuclideanDistances() ||
         m_FiducialCandidates.size() < 4)
@@ -388,8 +393,8 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::OnLocalizeFiducials()
   // correspond to a true fiducial, these false candidates can be eliminated, which
   // reduces the total amount of fiducial candidates.
   for (int i = 0;
-    (m_FiducialCandidates.size() > 8 && ui->fiducialMarkerConfigurationComboBox->currentIndex() <= 1 && (i < 50) ||
-    (m_FiducialCandidates.size() > 4 && ui->fiducialMarkerConfigurationComboBox->currentIndex() == 2 && (i < 50)));
+    (m_FiducialCandidates.size() > 8 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() <= 1 && (i < 50) ||
+    (m_FiducialCandidates.size() > 4 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() == 2 && (i < 50)));
     ++i)
   {
     this->EliminateNearFiducialCandidatesByMaxDistanceToCentroids();
@@ -459,7 +464,7 @@ bool QmitkAutomaticFiducialmarkerRegistrationWidget::FilterImage()
   m_LaplacianFilter2->SetInput(m_LaplacianFilter1->GetOutput());
 
   // Dynamically adjust lower threshold of binary filter only for MRI images:
-  if (ui->selectedModalityComboBox->currentIndex() == 1 ) // 1 means MRI
+  if (m_Controls->selectedModalityComboBox->currentIndex() == 1 ) // 1 means MRI
   {
     m_LaplacianFilter2->Update();
     mitk::CastToMitkImage(m_LaplacianFilter2->GetOutput(), m_ImageToRegister);
@@ -509,7 +514,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::InitializeImageFilters()
   m_ThresholdFilter = itk::ThresholdImageFilter<ImageType>::New();
   m_ThresholdFilter->SetOutsideValue(0);
 
-  if (ui->selectedModalityComboBox->currentIndex() == 1) // 1 means MRI
+  if (m_Controls->selectedModalityComboBox->currentIndex() == 1) // 1 means MRI
   {
     m_ThresholdFilter->SetLower(floor(m_ImageToRegister->GetScalarValueMax() * 0.05));
     m_ThresholdFilter->SetUpper(1800);
@@ -517,7 +522,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::InitializeImageFilters()
   else
   {
     m_ThresholdFilter->SetLower(500);
-    if (ui->selectedModalityComboBox->currentIndex() == 2) // 2 means 3D Fluoroskopie:
+    if (m_Controls->selectedModalityComboBox->currentIndex() == 2) // 2 means 3D Fluoroskopie:
     {
       m_ThresholdFilter->SetUpper(40000);
     }
@@ -531,7 +536,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::InitializeImageFilters()
   m_BinaryThresholdFilter = BinaryThresholdImageFilterType::New();
   m_BinaryThresholdFilter->SetOutsideValue(0);
   m_BinaryThresholdFilter->SetInsideValue(1);
-  if (ui->selectedModalityComboBox->currentIndex() == 1) // 1 means MRI
+  if (m_Controls->selectedModalityComboBox->currentIndex() == 1) // 1 means MRI
   {
     //Lower threshold is configured dynamically during image processing
     m_BinaryThresholdFilter->SetUpperThreshold(500);
@@ -562,7 +567,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::InitializeImageFilters()
 
 double QmitkAutomaticFiducialmarkerRegistrationWidget::GetCharacteristicDistanceAWithUpperMargin()
 {
-  switch (ui->fiducialMarkerConfigurationComboBox->currentIndex())
+  switch (m_Controls->fiducialMarkerConfigurationComboBox->currentIndex())
   {
     // case 0 is equal to fiducial marker configuration 15mm distance
   case 0:
@@ -581,7 +586,7 @@ double QmitkAutomaticFiducialmarkerRegistrationWidget::GetCharacteristicDistance
 
 double QmitkAutomaticFiducialmarkerRegistrationWidget::GetCharacteristicDistanceBWithLowerMargin()
 {
-  switch (ui->fiducialMarkerConfigurationComboBox->currentIndex())
+  switch (m_Controls->fiducialMarkerConfigurationComboBox->currentIndex())
   {
     // case 0 is equal to fiducial marker configuration 15mm distance
   case 0:
@@ -600,7 +605,7 @@ double QmitkAutomaticFiducialmarkerRegistrationWidget::GetCharacteristicDistance
 
 double QmitkAutomaticFiducialmarkerRegistrationWidget::GetCharacteristicDistanceBWithUpperMargin()
 {
-  switch (ui->fiducialMarkerConfigurationComboBox->currentIndex())
+  switch (m_Controls->fiducialMarkerConfigurationComboBox->currentIndex())
   {
     // case 0 is equal to fiducial marker configuration 15mm distance
   case 0:
@@ -619,7 +624,7 @@ double QmitkAutomaticFiducialmarkerRegistrationWidget::GetCharacteristicDistance
 
 double QmitkAutomaticFiducialmarkerRegistrationWidget::GetMinimalFiducialConfigurationDistance()
 {
-  switch (ui->fiducialMarkerConfigurationComboBox->currentIndex())
+  switch (m_Controls->fiducialMarkerConfigurationComboBox->currentIndex())
   {
      // case 0 is equal to fiducial marker configuration 15mm distance
   case 0:
@@ -656,7 +661,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::CreateMarkerModelCoordinate
   mitk::Point3D fiducial7;
   mitk::Point3D fiducial8;
 
-  switch (ui->fiducialMarkerConfigurationComboBox->currentIndex())
+  switch (m_Controls->fiducialMarkerConfigurationComboBox->currentIndex())
   {
     // case 0 is equal to fiducial marker configuration 15mm distance
   case 0:
@@ -750,12 +755,12 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::EliminateTooSmallLabeledObj
   double fiducialVolume;
   unsigned int numberOfPixels;
 
-  if (ui->selectedModalityComboBox->currentIndex() == 1) // 1 means MRI
+  if (m_Controls->selectedModalityComboBox->currentIndex() == 1) // 1 means MRI
   {
     fiducialVolume = this->GetFiducialVolume(3.0);
     numberOfPixels = ceil(fiducialVolume / voxelVolume);
   }
-  else if (ui->fiducialDiameter3mmRadioButton->isChecked())
+  else if (m_Controls->fiducialDiameter3mmRadioButton->isChecked())
   {
     fiducialVolume = this->GetFiducialVolume(1.5);
     numberOfPixels = ceil(fiducialVolume / voxelVolume);
@@ -780,7 +785,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::EliminateTooSmallLabeledObj
     BinaryImageToShapeLabelMapFilterType::OutputImageType::LabelObjectType *labelObject =
       labelMap->GetNthLabelObject(i);
 
-    if (labelObject->Size() < numberOfPixels * 0.6 || (labelObject->Size() > numberOfPixels * 2 && ui->selectedModalityComboBox->currentIndex() == 1))
+    if (labelObject->Size() < numberOfPixels * 0.6 || (labelObject->Size() > numberOfPixels * 2 && m_Controls->selectedModalityComboBox->currentIndex() == 1))
     {
       /*for (unsigned int pixelId = 0; pixelId < labelObject->Size(); pixelId++)
       {
@@ -793,8 +798,8 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::EliminateTooSmallLabeledObj
 
 bool QmitkAutomaticFiducialmarkerRegistrationWidget::EliminateFiducialCandidatesByEuclideanDistances()
 {
-  if ((m_FiducialCandidates.size() < 8 && ui->fiducialMarkerConfigurationComboBox->currentIndex() <= 1) ||
-    (m_FiducialCandidates.size() < 4 && ui->fiducialMarkerConfigurationComboBox->currentIndex() == 2))
+  if ((m_FiducialCandidates.size() < 8 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() <= 1) ||
+    (m_FiducialCandidates.size() < 4 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() == 2))
   {
     return false;
   }
@@ -819,7 +824,7 @@ bool QmitkAutomaticFiducialmarkerRegistrationWidget::EliminateFiducialCandidates
       mitk::Point3D otherCentroid(m_FiducialCandidates.at(position).first);
       double distance = fiducialCentroid.EuclideanDistanceTo(otherCentroid);
 
-      switch (ui->fiducialMarkerConfigurationComboBox->currentIndex())
+      switch (m_Controls->fiducialMarkerConfigurationComboBox->currentIndex())
       {
         // case 0 is equal to fiducial marker configuration 15mm distance
       case 0:
@@ -847,13 +852,13 @@ bool QmitkAutomaticFiducialmarkerRegistrationWidget::EliminateFiducialCandidates
     }
     // The amountOfAcceptedFiducials must be at least 7 for cases 0-1 and at least 3 for case 2. Otherwise delete the fiducial candidate
     // from the list of candidates.
-    if ((amountOfAcceptedFiducials < 7 && ui->fiducialMarkerConfigurationComboBox->currentIndex() <= 1) ||
-      (amountOfAcceptedFiducials < 3 && ui->fiducialMarkerConfigurationComboBox->currentIndex() == 2))
+    if ((amountOfAcceptedFiducials < 7 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() <= 1) ||
+      (amountOfAcceptedFiducials < 3 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() == 2))
     {
       MITK_INFO << "Deleting fiducial candidate at position: " << m_FiducialCandidates.at(counter).first;
       m_FiducialCandidates.erase(m_FiducialCandidates.begin() + counter);
-      if ((m_FiducialCandidates.size() < 8 && ui->fiducialMarkerConfigurationComboBox->currentIndex() <= 1) ||
-        (m_FiducialCandidates.size() < 4 && ui->fiducialMarkerConfigurationComboBox->currentIndex() == 2))
+      if ((m_FiducialCandidates.size() < 8 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() <= 1) ||
+        (m_FiducialCandidates.size() < 4 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() == 2))
       {
         return false;
       }
@@ -861,8 +866,8 @@ bool QmitkAutomaticFiducialmarkerRegistrationWidget::EliminateFiducialCandidates
     }
   }
 
-  if ((m_FiducialCandidates.size() > 8 && ui->fiducialMarkerConfigurationComboBox->currentIndex() <= 1) ||
-    (m_FiducialCandidates.size() > 4 && ui->fiducialMarkerConfigurationComboBox->currentIndex() == 2))
+  if ((m_FiducialCandidates.size() > 8 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() <= 1) ||
+    (m_FiducialCandidates.size() > 4 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() == 2))
   {
     // Classify the rested fiducial candidates by its characteristic Euclidean distances
     // between the canidates and remove all candidates with a false distance configuration:
@@ -951,7 +956,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::ClassifyFiducialCandidates(
     for (unsigned int number = 0; number < distances.size(); ++number)
     {
       double &distance = distances.at(number);
-      switch (ui->fiducialMarkerConfigurationComboBox->currentIndex())
+      switch (m_Controls->fiducialMarkerConfigurationComboBox->currentIndex())
       {
         // case 0 is equal to fiducial marker configuration 15mm distance
       case 0:
@@ -1067,7 +1072,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::ClassifyFiducialCandidates(
       // one of the distances A - E. However, false fiducial candidates outside
       // the fiducial marker does not have the right distance configuration:
 
-    switch (ui->fiducialMarkerConfigurationComboBox->currentIndex())
+    switch (m_Controls->fiducialMarkerConfigurationComboBox->currentIndex())
     {
       // case 0 is equal to fiducial marker configuration 15mm distance
     case 0:
@@ -1141,7 +1146,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::NumerateFiducialMarks()
   std::vector<std::vector<double>> distanceVectorsFiducials;
   this->CalculateDistancesBetweenFiducials(distanceVectorsFiducials);
 
-  if (ui->fiducialMarkerConfigurationComboBox->currentIndex() <= 1)
+  if (m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() <= 1)
   {
     successFiducialNo1 = this->FindFiducialNo1(distanceVectorsFiducials);
     successFiducialNo4 = this->FindFiducialNo4(distanceVectorsFiducials);
@@ -1160,7 +1165,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::NumerateFiducialMarks()
       return;
     }
   }
-  else if (ui->fiducialMarkerConfigurationComboBox->currentIndex() == 2)
+  else if (m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() == 2)
   {
     double characteristicDistanceAWithUpperMargin = this->GetCharacteristicDistanceAWithUpperMargin();
 
@@ -1322,8 +1327,8 @@ bool QmitkAutomaticFiducialmarkerRegistrationWidget::FindFiducialNo1(std::vector
   for (unsigned int i = 0; i < distanceVectorsFiducials.size(); ++i)
   {
     std::vector<double> &distances = distanceVectorsFiducials.at(i);
-    if ((distances.size() < 7 && ui->fiducialMarkerConfigurationComboBox->currentIndex() <= 1) ||
-      (distances.size() < 3 && ui->fiducialMarkerConfigurationComboBox->currentIndex() == 2))
+    if ((distances.size() < 7 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() <= 1) ||
+      (distances.size() < 3 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() == 2))
     {
       MITK_WARN << "Cannot find fiducial 1, there aren't found enough fiducial candidates.";
       return false;
@@ -1442,8 +1447,8 @@ bool QmitkAutomaticFiducialmarkerRegistrationWidget::FindFiducialNo4(std::vector
   for (unsigned int i = 0; i < distanceVectorsFiducials.size(); ++i)
   {
     std::vector<double> &distances = distanceVectorsFiducials.at(i);
-    if ((distances.size() < 7 && ui->fiducialMarkerConfigurationComboBox->currentIndex() <= 1) ||
-      (distances.size() < 3 && ui->fiducialMarkerConfigurationComboBox->currentIndex() == 2))
+    if ((distances.size() < 7 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() <= 1) ||
+      (distances.size() < 3 && m_Controls->fiducialMarkerConfigurationComboBox->currentIndex() == 2))
     {
       MITK_WARN << "Cannot find fiducial 4, there aren't found enough fiducial candidates.";
       return false;
