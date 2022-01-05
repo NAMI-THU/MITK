@@ -318,6 +318,10 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::OnRegisterMarkerCSToImageCS
 
 }
 
+mitk::DataNode::Pointer QmitkAutomaticFiducialmarkerRegistrationWidget::GetImageNode() {
+  return m_Controls->selectedImageComboBox->GetSelectedNode();
+}
+
 void QmitkAutomaticFiducialmarkerRegistrationWidget::OnLocalizeFiducials()
 {
   m_FiducialMarkerCentroids.clear();
@@ -1255,7 +1259,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::NumerateFiducialMarks()
   {
     m_MarkerImageToRegisterCoordinateSystemPointSet->Clear();
   }
-
+  MITK_INFO << m_FiducialMarkerCentroids.size();
   for (unsigned int counter = 1; counter <= m_FiducialMarkerCentroids.size(); ++counter)
   {
     m_MarkerImageToRegisterCoordinateSystemPointSet->InsertPoint(counter -1, m_FiducialMarkerCentroids.at(counter));
@@ -1266,7 +1270,6 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::NumerateFiducialMarks()
   node->SetName("MarkerFloatingImageCSPointSet");
   node->SetFloatProperty("pointsize", 5.0);
   this->m_DataStorage->Add(node);
-
 }
 
 void QmitkAutomaticFiducialmarkerRegistrationWidget::CalculateDistancesBetweenFiducials(std::vector<std::vector<double>>& distanceVectorsFiducials)

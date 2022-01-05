@@ -94,6 +94,8 @@ public:
 
   mitk::AffineTransform3D::Pointer GetInverseTransform(mitk::AffineTransform3D::Pointer transform);
 
+  mitk::DataNode::Pointer GetImageNode();
+
 signals:
 
 public slots:
@@ -141,7 +143,6 @@ protected slots:
   void OnImageToRegisterComboBoxSelectionChanged(const mitk::DataNode *node);
   void OnRegisterMarkerCSToImageCS();
   void OnLocalizeFiducials();
-
 
 private:
 

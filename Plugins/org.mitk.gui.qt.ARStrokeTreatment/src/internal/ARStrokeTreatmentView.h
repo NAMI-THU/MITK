@@ -124,6 +124,8 @@ protected slots:
 
   void InitializeRegistration();
 
+  void OnTransformClicked();
+
   // prints a small text through MITK_INFO, for testing purposes
   void TestText();
 

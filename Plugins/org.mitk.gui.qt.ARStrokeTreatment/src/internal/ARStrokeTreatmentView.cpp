@@ -212,6 +212,8 @@ void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*
 
 void ARStrokeTreatmentView::CreateConnections()
 {
+  connect(m_Controls->m_Transform, SIGNAL(clicked()), this, SLOT(OnTransformClicked()));
+
   // connect(m_Controls.m_TrackingDeviceSelectionWidget,
   //        SIGNAL(NavigationDataSourceSelected(mitk::NavigationDataSource::Pointer)),
   //        this,
@@ -376,7 +378,43 @@ void ARStrokeTreatmentView::CreateConnections()
   {
     m_Controls->m_VolumeSelectionBox->addItem(Compatibles[i].Model.c_str());
   }
- return;
+  return;
+}
+
+void ARStrokeTreatmentView::OnTransformClicked()
+{
+  MITK_INFO << "Started Transformation!";
+ mitk::AffineTransform3D::Pointer AffineTransformImageToMarker =  m_Controls->m_AutomaticRegistrationWidget->GetInverseTransform(
+    m_Controls->m_AutomaticRegistrationWidget->GetTransformMarkerCSToImageCS());
+  {
+    // first we have to store the original ct image transform to compose it with the new transform later
+    mitk::AffineTransform3D::Pointer imageTransform =
+      m_Controls->m_AutomaticRegistrationWidget->GetImageNode()->GetData()->GetGeometry()->GetIndexToWorldTransform();
+    imageTransform->Compose(AffineTransformImageToMarker);
+    mitk::AffineTransform3D::Pointer newImageTransform =
+      mitk::AffineTransform3D::New(); // create new image transform... setting the composed directly leads to an error
+    itk::Matrix<mitk::ScalarType, 3, 3> rotationFloatNew = imageTransform->GetMatrix();
+    itk::Vector<mitk::ScalarType, 3> translationFloatNew = imageTransform->GetOffset();
+    newImageTransform->SetMatrix(rotationFloatNew);
+    newImageTransform->SetOffset(translationFloatNew);
+    m_Controls->m_AutomaticRegistrationWidget->GetImageNode()->GetData()->GetGeometry()->SetIndexToWorldTransform(
+      newImageTransform);
+  }
+  AffineTransformImageToMarker = m_Controls->m_AutomaticRegistrationWidget->GetTransformMarkerCSToSensorCS();
+  // first we have to store the original ct image transform to compose it with the new transform later
+  mitk::AffineTransform3D::Pointer imageTransform =
+    m_Controls->m_AutomaticRegistrationWidget->GetImageNode()->GetData()->GetGeometry()->GetIndexToWorldTransform();
+  imageTransform->Compose(AffineTransformImageToMarker);
+  mitk::AffineTransform3D::Pointer newImageTransform =
+    mitk::AffineTransform3D::New(); // create new image transform... setting the composed directly leads to an error
+  itk::Matrix<mitk::ScalarType, 3, 3> rotationFloatNew = imageTransform->GetMatrix();
+  itk::Vector<mitk::ScalarType, 3> translationFloatNew = imageTransform->GetOffset();
+  newImageTransform->SetMatrix(rotationFloatNew);
+  newImageTransform->SetOffset(translationFloatNew);
+  m_Controls->m_AutomaticRegistrationWidget->GetImageNode()->GetData()->GetGeometry()->SetIndexToWorldTransform(
+    newImageTransform);
+  MITK_INFO << "Ended Transformation";
+  GlobalReinit();
 }
 
 void ARStrokeTreatmentView::OnVideoGrabberPushed()
