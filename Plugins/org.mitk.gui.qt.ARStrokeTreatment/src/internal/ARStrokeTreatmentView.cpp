@@ -650,12 +650,6 @@ void ARStrokeTreatmentView::DoImageProcessing()
   }
 }
 
-void ARStrokeTreatmentView::TestText()
-{
-  MITK_INFO << "TestText succesfully printed! Yay!";
-  return;
-}
-
 void ARStrokeTreatmentView::OnLoadTools()
 {
   // read in filename

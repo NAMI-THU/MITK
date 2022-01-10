@@ -134,9 +134,6 @@ protected slots:
 
   void OnScalingComboBoxChanged();
 
-  // prints a small text through MITK_INFO, for testing purposes
-  void TestText();
-
   void ARStrokeTreatmentView::DisableVideoData();
 
 protected slots:
