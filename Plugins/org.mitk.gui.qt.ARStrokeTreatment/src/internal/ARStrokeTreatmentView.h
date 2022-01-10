@@ -23,9 +23,9 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QTime>
 #include <QTimer>
 #include <QmitkAbstractView.h>
+#include <QmitkAutomaticFiducialmarkerRegistrationWidget.h>
 #include <QmitkDataStorageComboBox.h>
 #include <QmitkRenderWindow.h>
-#include <QmitkAutomaticFiducialmarkerRegistrationWidget.h>
 #include <berryISelectionListener.h>
 #include <ctkServiceEvent.h>
 #include <ctkServiceReference.h>
@@ -133,6 +133,7 @@ protected slots:
 
 protected slots:
 
+  void OnChangeDisplayStyle();
   /** @brief changes name of the filename when switching fileextension by radio button */
   void OnToggleFileExtension();
   /** @brief This slot is called if the user wants to load a new tool file. A new window opens where the user can choose

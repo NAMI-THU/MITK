@@ -457,6 +457,8 @@ bool QmitkAutomaticFiducialmarkerRegistrationWidget::FilterImage()
   {
     return false;
   }
+  ImageType::Pointer itkImageOld;
+  mitk::CastToItkImage(m_ImageToRegister, itkImageOld);
 
   ImageType::Pointer itkImage1 = ImageType::New();
   mitk::CastToItkImage(m_ImageToRegister, itkImage1);
@@ -508,7 +510,7 @@ bool QmitkAutomaticFiducialmarkerRegistrationWidget::FilterImage()
 
   this->EliminateTooSmallLabeledObjects(binaryImage);
   mitk::CastToMitkImage(binaryImage, m_ImageToRegister);
-
+  //mitk::CastToMitkImage(itkImageOld, m_ImageToRegister);
   return true;
 }
 

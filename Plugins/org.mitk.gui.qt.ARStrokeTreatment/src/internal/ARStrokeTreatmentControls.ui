@@ -26,14 +26,14 @@
       <bool>false</bool>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>370</width>
+        <width>744</width>
         <height>903</height>
        </rect>
       </property>
@@ -972,6 +972,13 @@ Mode</string>
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QPushButton" name="m_ChangeDisplayPushButton">
+              <property name="text">
+               <string>Change Display Style</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
          </layout>
@@ -984,8 +991,8 @@ Mode</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>109</width>
-        <height>109</height>
+        <width>765</width>
+        <height>886</height>
        </rect>
       </property>
       <attribute name="label">
@@ -1017,8 +1024,8 @@ Mode</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>439</width>
-            <height>674</height>
+            <width>720</width>
+            <height>862</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">

@@ -213,7 +213,7 @@ void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*
 void ARStrokeTreatmentView::CreateConnections()
 {
   connect(m_Controls->m_Transform, SIGNAL(clicked()), this, SLOT(OnTransformClicked()));
-
+  connect(m_Controls->m_ChangeDisplayPushButton, SIGNAL(clicked()), this, SLOT(OnChangeDisplayStyle()));
   // connect(m_Controls.m_TrackingDeviceSelectionWidget,
   //        SIGNAL(NavigationDataSourceSelected(mitk::NavigationDataSource::Pointer)),
   //        this,
@@ -383,38 +383,64 @@ void ARStrokeTreatmentView::CreateConnections()
 
 void ARStrokeTreatmentView::OnTransformClicked()
 {
-  MITK_INFO << "Started Transformation!";
- mitk::AffineTransform3D::Pointer AffineTransformImageToMarker =  m_Controls->m_AutomaticRegistrationWidget->GetInverseTransform(
-    m_Controls->m_AutomaticRegistrationWidget->GetTransformMarkerCSToImageCS());
+  if (m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID() == -1)
   {
-    // first we have to store the original ct image transform to compose it with the new transform later
-    mitk::AffineTransform3D::Pointer imageTransform =
-      m_Controls->m_AutomaticRegistrationWidget->GetImageNode()->GetData()->GetGeometry()->GetIndexToWorldTransform();
-    imageTransform->Compose(AffineTransformImageToMarker);
-    mitk::AffineTransform3D::Pointer newImageTransform =
-      mitk::AffineTransform3D::New(); // create new image transform... setting the composed directly leads to an error
-    itk::Matrix<mitk::ScalarType, 3, 3> rotationFloatNew = imageTransform->GetMatrix();
-    itk::Vector<mitk::ScalarType, 3> translationFloatNew = imageTransform->GetOffset();
-    newImageTransform->SetMatrix(rotationFloatNew);
-    newImageTransform->SetOffset(translationFloatNew);
-    m_Controls->m_AutomaticRegistrationWidget->GetImageNode()->GetData()->GetGeometry()->SetIndexToWorldTransform(
-      newImageTransform);
+    MITK_INFO << "Could not find a tool, please select a tool in the TrackingDeviceSelectionWidget! ;-)";
+    return;
   }
-  AffineTransformImageToMarker = m_Controls->m_AutomaticRegistrationWidget->GetTransformMarkerCSToSensorCS();
+  MITK_INFO << m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID();
+  mitk::NavigationData::Pointer transformSensorCSToTracking =
+    m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(0); // get first tool
+  mitk::AffineTransform3D::Pointer totalTransformation = mitk::AffineTransform3D::New();
+  totalTransformation->SetIdentity();
+  mitk::AffineTransform3D::Pointer T1 = m_Controls->m_AutomaticRegistrationWidget->GetTransformMarkerCSToImageCS();
+  totalTransformation->Compose(m_Controls->m_AutomaticRegistrationWidget->GetInverseTransform(T1));
+  mitk::AffineTransform3D::Pointer T2 = m_Controls->m_AutomaticRegistrationWidget->GetTransformMarkerCSToSensorCS();
+  totalTransformation->Compose(T2);
+  totalTransformation->Compose(transformSensorCSToTracking->GetAffineTransform3D());
+  totalTransformation->Modified();
   // first we have to store the original ct image transform to compose it with the new transform later
-  mitk::AffineTransform3D::Pointer imageTransform =
-    m_Controls->m_AutomaticRegistrationWidget->GetImageNode()->GetData()->GetGeometry()->GetIndexToWorldTransform();
-  imageTransform->Compose(AffineTransformImageToMarker);
-  mitk::AffineTransform3D::Pointer newImageTransform =
-    mitk::AffineTransform3D::New(); // create new image transform... setting the composed directly leads to an error
-  itk::Matrix<mitk::ScalarType, 3, 3> rotationFloatNew = imageTransform->GetMatrix();
-  itk::Vector<mitk::ScalarType, 3> translationFloatNew = imageTransform->GetOffset();
-  newImageTransform->SetMatrix(rotationFloatNew);
-  newImageTransform->SetOffset(translationFloatNew);
+  MITK_INFO << "bananarama";
+  mitk::AffineTransform3D::Pointer imageTransformNew = mitk::AffineTransform3D::New();
+  // create new image transform... setting the composed directly leads to an error
+  itk::Matrix<mitk::ScalarType, 3, 3> rotationFloatNew = totalTransformation->GetMatrix();
+  itk::Vector<mitk::ScalarType, 3> translationFloatNew = totalTransformation->GetOffset();
+  imageTransformNew->SetMatrix(rotationFloatNew);
+  imageTransformNew->SetOffset(translationFloatNew);
+  m_Controls->m_AutomaticRegistrationWidget;
+  this->GetDataStorage()->GetNamedNode("Sphere")->GetData()->GetGeometry()->SetIndexToWorldTransform(imageTransformNew);
   m_Controls->m_AutomaticRegistrationWidget->GetImageNode()->GetData()->GetGeometry()->SetIndexToWorldTransform(
-    newImageTransform);
-  MITK_INFO << "Ended Transformation";
+    imageTransformNew);
   GlobalReinit();
+}
+
+void ARStrokeTreatmentView::OnChangeDisplayStyle()
+{
+  const char *img = "Image";
+  mitk::NodePredicateDataType::Pointer npImage = mitk::NodePredicateDataType::New(img);
+  itk::SmartPointer<const mitk::DataStorage::SetOfObjects> dnPointer = this->GetDataStorage()->GetAll();
+  dnPointer->Size();
+  for (size_t i = 0; i < dnPointer->Size(); i++)
+  {
+    if (npImage->CheckNode(dnPointer->ElementAt(i)))
+    {
+      dnPointer->ElementAt(i)->SetOpacity(0.5);
+    }
+  }
+
+  QmitkRenderWindow *renderWindow =
+    this->GetRenderWindowPart()->GetQmitkRenderWindow(mitk::BaseRenderer::ViewDirection(2));
+  this->GetRenderWindowPart()
+    ->GetQmitkRenderWindow(mitk::BaseRenderer::ViewDirection(2))
+    ->GetCameraRotationController();
+
+  MITK_INFO << int(renderWindow->GetLayoutIndex());
+  renderWindow->SetLayoutIndex(mitk::BaseRenderer::ViewDirection(3));
+  MITK_INFO << int(renderWindow->GetLayoutIndex());
+  renderWindow->updateBehavior();
+
+  this->GlobalReinit();
+  return;
 }
 
 void ARStrokeTreatmentView::OnVideoGrabberPushed()
