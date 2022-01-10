@@ -212,6 +212,8 @@ void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*
 
 void ARStrokeTreatmentView::CreateConnections()
 {
+  connect(m_Controls->m_ScalingPushButton, SIGNAL(clicked()), this, SLOT(OnScalingChanged()));
+  connect(m_Controls->m_ScalingComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(OnScalingComboBoxChanged()));
   connect(m_Controls->m_Transform, SIGNAL(clicked()), this, SLOT(OnTransformClicked()));
   connect(m_Controls->m_ChangeDisplayPushButton, SIGNAL(clicked()), this, SLOT(OnChangeDisplayStyle()));
   // connect(m_Controls.m_TrackingDeviceSelectionWidget,
@@ -459,13 +461,14 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
     this->GetDataStorage()->Add(m_imageNode);
 
     // select video source
-    // m_VideoCapture = new cv::VideoCapture("C:/Tools/7.avi");
-    m_VideoCapture = new cv::VideoCapture(0);
+    m_VideoCapture = new cv::VideoCapture("C:/Tools/7.avi");
+    // m_VideoCapture = new cv::VideoCapture(0);
     mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
     renderWindow->GetRenderingManager()->InitializeViews(
       m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, false);
     renderWindow->GetRenderingManager()->RequestUpdateAll();
     m_Controls->m_VideoPausePushButton->setDisabled(false);
+    this->GlobalReinit();
   }
   if (m_VideoGrabbingActive)
   {
@@ -513,6 +516,43 @@ void ARStrokeTreatmentView::UpdateTrackingData()
   // m_TrackingData->GetOrientation();
 }
 
+void ARStrokeTreatmentView::OnScalingComboBoxChanged()
+{
+  if (m_Controls->m_ScalingComboBox->currentIndex() == 2)
+  {
+    m_Controls->m_ScalingDoubleSpinBox->setEnabled(true);
+    return;
+  }
+  else
+  {
+    m_Controls->m_ScalingDoubleSpinBox->setEnabled(false);
+    return;
+  }
+  return;
+}
+
+void ARStrokeTreatmentView::OnScalingChanged()
+{
+  mitk::Vector3D setSpacing;
+  m_ScalingChanged = true;
+  if (m_Controls->m_ScalingDoubleSpinBox->isEnabled())
+  {
+    m_ScalingFactor = m_Controls->m_ScalingDoubleSpinBox->value();
+  }
+  if (m_Controls->m_ScalingComboBox->currentIndex() == 0)
+  {
+    m_ScalingFactor = 1;
+  }
+  if (m_Controls->m_ScalingComboBox->currentIndex() == 1)
+  {
+    m_ScalingFactor = 0.17;
+  }
+  setSpacing[0] = m_ScalingFactor; // left-right
+  setSpacing[1] = m_ScalingFactor; // up
+  setSpacing[2] = m_ScalingFactor; // height
+  return;
+}
+
 void ARStrokeTreatmentView::UpdateLiveData()
 {
   m_Controls->m_TrackingDeviceSelectionWidget->update();
@@ -528,22 +568,13 @@ void ARStrokeTreatmentView::UpdateLiveData()
       // m_VideoCapture->read(frame);
       m_ConversionFilter->SetOpenCVMat(frame);
       m_ConversionFilter->Update();
-      // m_imageNode->GetData()->GetGeometry()->SetIndexToWorldTransform();
-      mitk::Vector3D setSpacing;
-      setSpacing[0] = 0.5; // left-right
-      setSpacing[1] = 0.5; // up
-      setSpacing[2] = 0.5; // height
 
       std::stringstream nodeName;
       nodeName << "Live Image Stream";
       m_imageNode->SetName(nodeName.str());
       m_imageNode->SetData(m_ConversionFilter->GetOutput());
-      m_imageNode->GetData()->GetGeometry()->SetSpacing(setSpacing);
+      m_imageNode->GetData()->GetGeometry()->SetSpacing(m_ScalingFactor);
       m_imageNode->Modified();
-      /*mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
-      renderWindow->GetRenderingManager()->InitializeViews(
-        m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, false);
-      renderWindow->GetRenderingManager()->RequestUpdateAll();*/
       this->RequestRenderWindowUpdate(mitk::RenderingManager::REQUEST_UPDATE_ALL);
     }
     else

@@ -98,6 +98,10 @@ protected:
 
   bool m_UpdateVideoData = true;
 
+  bool m_ScalingChanged = false;
+
+  double m_ScalingFactor{(1, 1, 1)};
+
   mitk::NavigationData::Pointer m_TrackingData;
 
   mitk::DataNode::Pointer m_imageNode;
@@ -122,9 +126,13 @@ protected slots:
 
   void OnVideoPausePushButton();
 
+  void OnScalingChanged();
+
   void InitializeRegistration();
 
   void OnTransformClicked();
+
+  void OnScalingComboBoxChanged();
 
   // prints a small text through MITK_INFO, for testing purposes
   void TestText();
