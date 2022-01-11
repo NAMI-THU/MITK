@@ -413,6 +413,8 @@ void ARStrokeTreatmentView::OnTransformClicked()
   this->GetDataStorage()->GetNamedNode("Sphere")->GetData()->GetGeometry()->SetIndexToWorldTransform(imageTransformNew);
   m_Controls->m_AutomaticRegistrationWidget->GetImageNode()->GetData()->GetGeometry()->SetIndexToWorldTransform(
     imageTransformNew);
+  m_AffineTransform = imageTransformNew;
+  m_TransformationSet = true;
   GlobalReinit();
 }
 
@@ -461,12 +463,11 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
     this->GetDataStorage()->Add(m_imageNode);
 
     // select video source
-    m_VideoCapture = new cv::VideoCapture("C:/Tools/7.avi");
-    // m_VideoCapture = new cv::VideoCapture(0);
+    // m_VideoCapture = new cv::VideoCapture("C:/Tools/7.avi");
+    m_VideoCapture = new cv::VideoCapture(0);
     mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
     renderWindow->GetRenderingManager()->InitializeViews(
       m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, false);
-    renderWindow->GetRenderingManager()->RequestUpdateAll();
     m_Controls->m_VideoPausePushButton->setDisabled(false);
     this->GlobalReinit();
   }
@@ -506,14 +507,7 @@ void ARStrokeTreatmentView::UpdateTrackingData()
 {
   m_TrackingData = m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(
     m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID());
-
-  m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource();
-
-  mitk::TrackingVolumeGenerator::Pointer volumeGenerator = mitk::TrackingVolumeGenerator::New();
-  // volumeGenerator->SetTrackingDeviceData(m_TrackingData);
-
-  // m_TrackingData->GetPosition();
-  // m_TrackingData->GetOrientation();
+  return;
 }
 
 void ARStrokeTreatmentView::OnScalingComboBoxChanged()
@@ -533,7 +527,7 @@ void ARStrokeTreatmentView::OnScalingComboBoxChanged()
 
 void ARStrokeTreatmentView::OnScalingChanged()
 {
-  mitk::Vector3D setSpacing;
+  double m_ScalingFactor;
   m_ScalingChanged = true;
   if (m_Controls->m_ScalingDoubleSpinBox->isEnabled())
   {
@@ -545,11 +539,11 @@ void ARStrokeTreatmentView::OnScalingChanged()
   }
   if (m_Controls->m_ScalingComboBox->currentIndex() == 1)
   {
-    m_ScalingFactor = 0.17;
+    m_ScalingFactor = 0.48;
   }
-  setSpacing[0] = m_ScalingFactor; // left-right
-  setSpacing[1] = m_ScalingFactor; // up
-  setSpacing[2] = m_ScalingFactor; // height
+  m_SetSpacing[0] = m_ScalingFactor; // left-right
+  m_SetSpacing[1] = m_ScalingFactor; // up
+  m_SetSpacing[2] = m_ScalingFactor; // height
   return;
 }
 
@@ -565,22 +559,24 @@ void ARStrokeTreatmentView::UpdateLiveData()
     cv::Mat frame;
     if (m_VideoCapture->read(frame))
     {
+      m_AffineTransform = m_imageNode->GetData()->GetGeometry()->GetIndexToWorldTransform();
       // m_VideoCapture->read(frame);
       m_ConversionFilter->SetOpenCVMat(frame);
       m_ConversionFilter->Update();
-
+      m_imageNode->SetData(m_ConversionFilter->GetOutput());
       std::stringstream nodeName;
       nodeName << "Live Image Stream";
       m_imageNode->SetName(nodeName.str());
-      m_imageNode->SetData(m_ConversionFilter->GetOutput());
-      m_imageNode->GetData()->GetGeometry()->SetSpacing(m_ScalingFactor);
-      m_imageNode->Modified();
+      m_imageNode->GetData()->GetGeometry()->SetIndexToWorldTransform(m_AffineTransform);
+      m_imageNode->GetData()->GetGeometry()->SetSpacing(m_SetSpacing);
+      m_imageNode->Update();
       this->RequestRenderWindowUpdate(mitk::RenderingManager::REQUEST_UPDATE_ALL);
     }
     else
     {
       MITK_ERROR << "No Image could be read. Video Source not found or finished!";
       ARStrokeTreatmentView::DisableVideoData();
+      m_TransformationSet = false;
     }
   }
   return;

@@ -37,6 +37,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkNavigationToolStorage.h>
 #include <mitkOpenCVToMitkImageFilter.h>
 #include <mitkTrackingVolumeGenerator.h>
+#include <mitkImageWriteAccessor.h>
+#include <mitkImageReadAccessor.h>
 
 /**
   \brief ARStrokeTreatmentView
@@ -100,7 +102,9 @@ protected:
 
   bool m_ScalingChanged = false;
 
-  double m_ScalingFactor{(1, 1, 1)};
+  mitk::AffineTransform3D::Pointer m_AffineTransform;
+
+  bool m_TransformationSet = false;
 
   mitk::NavigationData::Pointer m_TrackingData;
 
@@ -134,7 +138,7 @@ protected slots:
 
   void OnScalingComboBoxChanged();
 
-  void ARStrokeTreatmentView::DisableVideoData();
+  void DisableVideoData();
 
 protected slots:
 
@@ -340,6 +344,7 @@ private:
   ctkServiceReference m_DeviceTypeServiceReference;
   mitk::TrackingDeviceTypeCollection *m_DeviceTypeCollection;
   mitk::DataNode::Pointer m_ToolProjectionNode;
+  mitk::Vector3D m_SetSpacing{(1, 1, 1)};
 };
 
 #endif // ARStrokeTreatmentView_h
