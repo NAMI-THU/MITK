@@ -197,6 +197,7 @@ void ARStrokeTreatmentView::CreateQtPartControl(QWidget *parent)
 void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*source*/,
                                                const QList<mitk::DataNode::Pointer> &nodes)
 {
+  m_Controls->m_AutomaticRegistrationWidget->Initialize(this->GetDataStorage());
   // iterate all selected objects, adjust warning visibility
   foreach (mitk::DataNode::Pointer node, nodes)
   {
@@ -211,6 +212,10 @@ void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*
 
 void ARStrokeTreatmentView::CreateConnections()
 {
+  connect(m_Controls->m_ScalingPushButton, SIGNAL(clicked()), this, SLOT(OnScalingChanged()));
+  connect(m_Controls->m_ScalingComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(OnScalingComboBoxChanged()));
+  connect(m_Controls->m_Transform, SIGNAL(clicked()), this, SLOT(OnTransformClicked()));
+  connect(m_Controls->m_ChangeDisplayPushButton, SIGNAL(clicked()), this, SLOT(OnChangeDisplayStyle()));
   // connect(m_Controls.m_TrackingDeviceSelectionWidget,
   //        SIGNAL(NavigationDataSourceSelected(mitk::NavigationDataSource::Pointer)),
   //        this,
@@ -378,6 +383,70 @@ void ARStrokeTreatmentView::CreateConnections()
   return;
 }
 
+void ARStrokeTreatmentView::OnTransformClicked()
+{
+  if (m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID() == -1)
+  {
+    MITK_INFO << "Could not find a tool, please select a tool in the TrackingDeviceSelectionWidget! ;-)";
+    return;
+  }
+  MITK_INFO << m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID();
+  mitk::NavigationData::Pointer transformSensorCSToTracking =
+    m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(0); // get first tool
+  mitk::AffineTransform3D::Pointer totalTransformation = mitk::AffineTransform3D::New();
+  totalTransformation->SetIdentity();
+  mitk::AffineTransform3D::Pointer T1 = m_Controls->m_AutomaticRegistrationWidget->GetTransformMarkerCSToImageCS();
+  totalTransformation->Compose(m_Controls->m_AutomaticRegistrationWidget->GetInverseTransform(T1));
+  mitk::AffineTransform3D::Pointer T2 = m_Controls->m_AutomaticRegistrationWidget->GetTransformMarkerCSToSensorCS();
+  totalTransformation->Compose(T2);
+  totalTransformation->Compose(transformSensorCSToTracking->GetAffineTransform3D());
+  totalTransformation->Modified();
+  // first we have to store the original ct image transform to compose it with the new transform later
+  MITK_INFO << "bananarama";
+  mitk::AffineTransform3D::Pointer imageTransformNew = mitk::AffineTransform3D::New();
+  // create new image transform... setting the composed directly leads to an error
+  itk::Matrix<mitk::ScalarType, 3, 3> rotationFloatNew = totalTransformation->GetMatrix();
+  itk::Vector<mitk::ScalarType, 3> translationFloatNew = totalTransformation->GetOffset();
+  imageTransformNew->SetMatrix(rotationFloatNew);
+  imageTransformNew->SetOffset(translationFloatNew);
+  m_Controls->m_AutomaticRegistrationWidget;
+  this->GetDataStorage()->GetNamedNode("Sphere")->GetData()->GetGeometry()->SetIndexToWorldTransform(imageTransformNew);
+  m_Controls->m_AutomaticRegistrationWidget->GetImageNode()->GetData()->GetGeometry()->SetIndexToWorldTransform(
+    imageTransformNew);
+  m_AffineTransform = imageTransformNew;
+  m_TransformationSet = true;
+  GlobalReinit();
+}
+
+void ARStrokeTreatmentView::OnChangeDisplayStyle()
+{
+  const char *img = "Image";
+  mitk::NodePredicateDataType::Pointer npImage = mitk::NodePredicateDataType::New(img);
+  itk::SmartPointer<const mitk::DataStorage::SetOfObjects> dnPointer = this->GetDataStorage()->GetAll();
+  dnPointer->Size();
+  for (size_t i = 0; i < dnPointer->Size(); i++)
+  {
+    if (npImage->CheckNode(dnPointer->ElementAt(i)))
+    {
+      dnPointer->ElementAt(i)->SetOpacity(0.5);
+    }
+  }
+
+  QmitkRenderWindow *renderWindow =
+    this->GetRenderWindowPart()->GetQmitkRenderWindow(mitk::BaseRenderer::ViewDirection(2));
+  this->GetRenderWindowPart()
+    ->GetQmitkRenderWindow(mitk::BaseRenderer::ViewDirection(2))
+    ->GetCameraRotationController();
+
+  MITK_INFO << int(renderWindow->GetLayoutIndex());
+  renderWindow->SetLayoutIndex(mitk::BaseRenderer::ViewDirection(3));
+  MITK_INFO << int(renderWindow->GetLayoutIndex());
+  renderWindow->updateBehavior();
+
+  this->GlobalReinit();
+  return;
+}
+
 void ARStrokeTreatmentView::OnVideoGrabberPushed()
 {
   if (!m_VideoGrabbingActive)
@@ -399,8 +468,8 @@ void ARStrokeTreatmentView::OnVideoGrabberPushed()
     mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
     renderWindow->GetRenderingManager()->InitializeViews(
       m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, false);
-    renderWindow->GetRenderingManager()->RequestUpdateAll();
     m_Controls->m_VideoPausePushButton->setDisabled(false);
+    this->GlobalReinit();
   }
   if (m_VideoGrabbingActive)
   {
@@ -438,14 +507,44 @@ void ARStrokeTreatmentView::UpdateTrackingData()
 {
   m_TrackingData = m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource()->GetOutput(
     m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedToolID());
+  return;
+}
 
-  m_Controls->m_TrackingDeviceSelectionWidget->GetSelectedNavigationDataSource();
+void ARStrokeTreatmentView::OnScalingComboBoxChanged()
+{
+  if (m_Controls->m_ScalingComboBox->currentIndex() == 2)
+  {
+    m_Controls->m_ScalingDoubleSpinBox->setEnabled(true);
+    return;
+  }
+  else
+  {
+    m_Controls->m_ScalingDoubleSpinBox->setEnabled(false);
+    return;
+  }
+  return;
+}
 
-  mitk::TrackingVolumeGenerator::Pointer volumeGenerator = mitk::TrackingVolumeGenerator::New();
-  // volumeGenerator->SetTrackingDeviceData(m_TrackingData);
-
-  // m_TrackingData->GetPosition();
-  // m_TrackingData->GetOrientation();
+void ARStrokeTreatmentView::OnScalingChanged()
+{
+  double m_ScalingFactor;
+  m_ScalingChanged = true;
+  if (m_Controls->m_ScalingDoubleSpinBox->isEnabled())
+  {
+    m_ScalingFactor = m_Controls->m_ScalingDoubleSpinBox->value();
+  }
+  if (m_Controls->m_ScalingComboBox->currentIndex() == 0)
+  {
+    m_ScalingFactor = 1;
+  }
+  if (m_Controls->m_ScalingComboBox->currentIndex() == 1)
+  {
+    m_ScalingFactor = 0.48;
+  }
+  m_SetSpacing[0] = m_ScalingFactor; // left-right
+  m_SetSpacing[1] = m_ScalingFactor; // up
+  m_SetSpacing[2] = m_ScalingFactor; // height
+  return;
 }
 
 void ARStrokeTreatmentView::UpdateLiveData()
@@ -460,31 +559,24 @@ void ARStrokeTreatmentView::UpdateLiveData()
     cv::Mat frame;
     if (m_VideoCapture->read(frame))
     {
+      m_AffineTransform = m_imageNode->GetData()->GetGeometry()->GetIndexToWorldTransform();
       // m_VideoCapture->read(frame);
       m_ConversionFilter->SetOpenCVMat(frame);
       m_ConversionFilter->Update();
-      // m_imageNode->GetData()->GetGeometry()->SetIndexToWorldTransform();
-      mitk::Vector3D setSpacing;
-      setSpacing[0] = 0.5; // left-right
-      setSpacing[1] = 0.5; // up
-      setSpacing[2] = 0.5; // height
-
+      m_imageNode->SetData(m_ConversionFilter->GetOutput());
       std::stringstream nodeName;
       nodeName << "Live Image Stream";
       m_imageNode->SetName(nodeName.str());
-      m_imageNode->SetData(m_ConversionFilter->GetOutput());
-      m_imageNode->GetData()->GetGeometry()->SetSpacing(setSpacing);
-      m_imageNode->Modified();
-      /*mitk::IRenderWindowPart *renderWindow = this->GetRenderWindowPart();
-      renderWindow->GetRenderingManager()->InitializeViews(
-        m_imageNode->GetData()->GetGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, false);
-      renderWindow->GetRenderingManager()->RequestUpdateAll();*/
+      m_imageNode->GetData()->GetGeometry()->SetIndexToWorldTransform(m_AffineTransform);
+      m_imageNode->GetData()->GetGeometry()->SetSpacing(m_SetSpacing);
+      m_imageNode->Update();
       this->RequestRenderWindowUpdate(mitk::RenderingManager::REQUEST_UPDATE_ALL);
     }
     else
     {
       MITK_ERROR << "No Image could be read. Video Source not found or finished!";
       ARStrokeTreatmentView::DisableVideoData();
+      m_TransformationSet = false;
     }
   }
   return;
@@ -552,12 +644,6 @@ void ARStrokeTreatmentView::DoImageProcessing()
       // actually do something here...
     }
   }
-}
-
-void ARStrokeTreatmentView::TestText()
-{
-  MITK_INFO << "TestText succesfully printed! Yay!";
-  return;
 }
 
 void ARStrokeTreatmentView::OnLoadTools()
@@ -1634,7 +1720,7 @@ void ARStrokeTreatmentView::DisableTrackingConfigurationButtons()
 }
 
 void ARStrokeTreatmentView::ReplaceCurrentToolStorage(mitk::NavigationToolStorage::Pointer newStorage,
-                                                                std::string newStorageName)
+                                                      std::string newStorageName)
 {
   // first: get rid of the old one
   // don't reset if there is no tool storage. BugFix #17793

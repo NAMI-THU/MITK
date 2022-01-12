@@ -23,6 +23,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QTime>
 #include <QTimer>
 #include <QmitkAbstractView.h>
+#include <QmitkAutomaticFiducialmarkerRegistrationWidget.h>
 #include <QmitkDataStorageComboBox.h>
 #include <QmitkRenderWindow.h>
 #include <berryISelectionListener.h>
@@ -36,6 +37,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkNavigationToolStorage.h>
 #include <mitkOpenCVToMitkImageFilter.h>
 #include <mitkTrackingVolumeGenerator.h>
+#include <mitkImageWriteAccessor.h>
+#include <mitkImageReadAccessor.h>
 
 /**
   \brief ARStrokeTreatmentView
@@ -97,6 +100,12 @@ protected:
 
   bool m_UpdateVideoData = true;
 
+  bool m_ScalingChanged = false;
+
+  mitk::AffineTransform3D::Pointer m_AffineTransform;
+
+  bool m_TransformationSet = false;
+
   mitk::NavigationData::Pointer m_TrackingData;
 
   mitk::DataNode::Pointer m_imageNode;
@@ -121,15 +130,19 @@ protected slots:
 
   void OnVideoPausePushButton();
 
+  void OnScalingChanged();
+
   void InitializeRegistration();
 
-  // prints a small text through MITK_INFO, for testing purposes
-  void TestText();
+  void OnTransformClicked();
 
-  void ARStrokeTreatmentView::DisableVideoData();
+  void OnScalingComboBoxChanged();
+
+  void DisableVideoData();
 
 protected slots:
 
+  void OnChangeDisplayStyle();
   /** @brief changes name of the filename when switching fileextension by radio button */
   void OnToggleFileExtension();
   /** @brief This slot is called if the user wants to load a new tool file. A new window opens where the user can choose
@@ -331,6 +344,7 @@ private:
   ctkServiceReference m_DeviceTypeServiceReference;
   mitk::TrackingDeviceTypeCollection *m_DeviceTypeCollection;
   mitk::DataNode::Pointer m_ToolProjectionNode;
+  mitk::Vector3D m_SetSpacing{(1, 1, 1)};
 };
 
 #endif // ARStrokeTreatmentView_h
