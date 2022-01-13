@@ -96,6 +96,8 @@ public:
 
   mitk::DataNode::Pointer GetImageNode();
 
+  mitk::DataNode::Pointer GetSurfaceNode();
+
 signals:
 
 public slots:

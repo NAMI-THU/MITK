@@ -322,6 +322,10 @@ mitk::DataNode::Pointer QmitkAutomaticFiducialmarkerRegistrationWidget::GetImage
   return m_Controls->selectedImageComboBox->GetSelectedNode();
 }
 
+mitk::DataNode::Pointer QmitkAutomaticFiducialmarkerRegistrationWidget::GetSurfaceNode() {
+  return m_Controls->selectedSurfaceComboBox->GetSelectedNode();
+}
+
 void QmitkAutomaticFiducialmarkerRegistrationWidget::OnLocalizeFiducials()
 {
   m_FiducialMarkerCentroids.clear();

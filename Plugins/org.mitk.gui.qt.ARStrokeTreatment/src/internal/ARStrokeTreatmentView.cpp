@@ -410,7 +410,9 @@ void ARStrokeTreatmentView::OnTransformClicked()
   imageTransformNew->SetMatrix(rotationFloatNew);
   imageTransformNew->SetOffset(translationFloatNew);
   m_Controls->m_AutomaticRegistrationWidget;
-  this->GetDataStorage()->GetNamedNode("Sphere")->GetData()->GetGeometry()->SetIndexToWorldTransform(imageTransformNew);
+  m_Controls->m_AutomaticRegistrationWidget;
+  m_Controls->m_AutomaticRegistrationWidget->GetSurfaceNode()->GetData()->GetGeometry()->SetIndexToWorldTransform(
+    imageTransformNew);
   m_Controls->m_AutomaticRegistrationWidget->GetImageNode()->GetData()->GetGeometry()->SetIndexToWorldTransform(
     imageTransformNew);
   m_AffineTransform = imageTransformNew;
