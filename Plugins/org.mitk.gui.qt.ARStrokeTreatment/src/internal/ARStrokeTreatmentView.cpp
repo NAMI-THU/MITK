@@ -212,6 +212,11 @@ void ARStrokeTreatmentView::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*
 
 void ARStrokeTreatmentView::CreateConnections()
 {
+  connect(m_Controls->m_LandmarkRegistrationMatrixPushButton,
+          SIGNAL(clicked()),
+          this,
+          SLOT(OnLandmarkRegistrationMatrixPushButtonPushed()));
+  connect(m_Controls->m_ShowTransform, SIGNAL(clicked()), this, SLOT(OnShowTransformClicked()));
   connect(m_Controls->m_ScalingPushButton, SIGNAL(clicked()), this, SLOT(OnScalingChanged()));
   connect(m_Controls->m_ScalingComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(OnScalingComboBoxChanged()));
   connect(m_Controls->m_Transform, SIGNAL(clicked()), this, SLOT(OnTransformClicked()));
@@ -402,7 +407,6 @@ void ARStrokeTreatmentView::OnTransformClicked()
   totalTransformation->Compose(transformSensorCSToTracking->GetAffineTransform3D());
   totalTransformation->Modified();
   // first we have to store the original ct image transform to compose it with the new transform later
-  MITK_INFO << "bananarama";
   mitk::AffineTransform3D::Pointer imageTransformNew = mitk::AffineTransform3D::New();
   // create new image transform... setting the composed directly leads to an error
   itk::Matrix<mitk::ScalarType, 3, 3> rotationFloatNew = totalTransformation->GetMatrix();
@@ -418,6 +422,20 @@ void ARStrokeTreatmentView::OnTransformClicked()
   m_AffineTransform = imageTransformNew;
   m_TransformationSet = true;
   GlobalReinit();
+  SetTotalTransformation(totalTransformation);
+  m_Controls->m_ShowTransform->setEnabled(true);
+  return;
+}
+
+void ARStrokeTreatmentView::SetTotalTransformation(mitk::AffineTransform3D::Pointer transform)
+{
+  m_TotalTransformation = transform;
+  return;
+}
+
+mitk::AffineTransform3D::Pointer ARStrokeTreatmentView::GetTotalTransformation()
+{
+  return m_TotalTransformation;
 }
 
 void ARStrokeTreatmentView::OnChangeDisplayStyle()
@@ -1860,4 +1878,24 @@ void ARStrokeTreatmentView::AutoSaveToolStorage()
   m_ToolStorageFilename = m_AutoSaveFilename;
   mitk::NavigationToolStorageSerializer::Pointer mySerializer = mitk::NavigationToolStorageSerializer::New();
   mySerializer->Serialize(m_ToolStorageFilename.toStdString(), m_toolStorage);
+}
+
+void ARStrokeTreatmentView::OnShowTransformClicked()
+{
+  MITK_INFO << GetTotalTransformation();
+  return;
+}
+
+void ARStrokeTreatmentView::OnLandmarkRegistrationMatrixPushButtonPushed()
+{
+  if (m_Controls->m_DataStorageComboBox->GetSelectedNode()->GetData()->GetGeometry()->GetIndexToWorldTransform() == NULL)
+  {
+    MITK_INFO << "No image Node selected";
+    return;
+  }
+  MITK_INFO << "Transformation of image / object / moving fiducials:";
+  mitk::AffineTransform3D::Pointer transf =
+    m_Controls->m_DataStorageComboBox->GetSelectedNode()->GetData()->GetGeometry()->GetIndexToWorldTransform();
+  MITK_INFO << transf;
+  return;
 }

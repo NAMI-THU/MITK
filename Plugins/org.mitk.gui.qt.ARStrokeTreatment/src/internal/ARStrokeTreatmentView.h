@@ -31,14 +31,14 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <ctkServiceReference.h>
 #include <mitkIGTLMessageProvider.h>
 #include <mitkIGTLServer.h>
+#include <mitkImageReadAccessor.h>
+#include <mitkImageWriteAccessor.h>
 #include <mitkNavigationDataObjectVisualizationFilter.h>
 #include <mitkNavigationDataRecorder.h>
 #include <mitkNavigationDataToIGTLMessageFilter.h>
 #include <mitkNavigationToolStorage.h>
 #include <mitkOpenCVToMitkImageFilter.h>
 #include <mitkTrackingVolumeGenerator.h>
-#include <mitkImageWriteAccessor.h>
-#include <mitkImageReadAccessor.h>
 
 /**
   \brief ARStrokeTreatmentView
@@ -117,6 +117,14 @@ protected:
   // void ARStrokeTreatmentView::OnAddRegistrationTrackingFiducial();
 
 protected slots:
+
+  void OnLandmarkRegistrationMatrixPushButtonPushed();
+
+  mitk::AffineTransform3D::Pointer GetTotalTransformation();
+
+  void SetTotalTransformation(mitk::AffineTransform3D::Pointer transform);
+
+  void OnShowTransformClicked();
   // starts/stops the tracking of the live video data
   void OnVideoGrabberPushed();
 
@@ -345,6 +353,7 @@ private:
   mitk::TrackingDeviceTypeCollection *m_DeviceTypeCollection;
   mitk::DataNode::Pointer m_ToolProjectionNode;
   mitk::Vector3D m_SetSpacing{(1, 1, 1)};
+  mitk::AffineTransform3D::Pointer m_TotalTransformation;
 };
 
 #endif // ARStrokeTreatmentView_h

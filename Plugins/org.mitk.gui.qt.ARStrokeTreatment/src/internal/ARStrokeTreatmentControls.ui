@@ -26,13 +26,13 @@
       <bool>false</bool>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-76</y>
+        <y>0</y>
         <width>744</width>
         <height>962</height>
        </rect>
@@ -1079,7 +1079,7 @@ Mode</string>
             <x>0</x>
             <y>0</y>
             <width>720</width>
-            <height>862</height>
+            <height>827</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -1218,6 +1218,13 @@ Mode</string>
          </widget>
         </widget>
        </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="m_LandmarkRegistrationMatrixPushButton">
+         <property name="text">
+          <string>Show Transformation on Console</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="page_5">
@@ -1233,13 +1240,23 @@ Mode</string>
        <string>Page</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0">
-        <widget class="QmitkAutomaticFiducialmarkerRegistrationWidget" name="m_AutomaticRegistrationWidget" native="true"/>
-       </item>
        <item row="1" column="0">
         <widget class="QPushButton" name="m_Transform">
          <property name="text">
           <string>Transform!</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QmitkAutomaticFiducialmarkerRegistrationWidget" name="m_AutomaticRegistrationWidget" native="true"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="m_ShowTransform">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Show Transformation on console</string>
          </property>
         </widget>
        </item>
