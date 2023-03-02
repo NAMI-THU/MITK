@@ -80,7 +80,7 @@ protected slots:
 *   3: point set recording is based on another filter which needs to be
 *      updated when activated
 */
-void UpdateTimer();
+void StopTimer();
 
 //############## Configuration Step #####################
 

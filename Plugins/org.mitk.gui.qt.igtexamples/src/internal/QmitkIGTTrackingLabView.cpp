@@ -70,7 +70,7 @@ QmitkIGTTrackingLabView::QmitkIGTTrackingLabView()
 //###############################################################################################
 //###############################################################################################
 
-void QmitkIGTTrackingLabView::UpdateTimer()
+void QmitkIGTTrackingLabView::StopTimer()
 {
   if (m_PermanentRegistration && m_PermanentRegistrationFilter.IsNotNull())
   {
@@ -579,7 +579,7 @@ void QmitkIGTTrackingLabView::CreateConnections()
   m_Timer = new QTimer(this);
 
   //create connections
-  connect(m_Timer, SIGNAL(timeout()), this, SLOT(UpdateTimer()));
+  connect(m_Timer, SIGNAL(timeout()), this, SLOT(StopTimer()));
   connect( m_Controls.m_UsePermanentRegistrationToggle, SIGNAL(toggled(bool)), this, SLOT(OnPermanentRegistration(bool)) );
   connect( m_Controls.m_TrackingDeviceSelectionWidget, SIGNAL(NavigationDataSourceSelected(mitk::NavigationDataSource::Pointer)), this, SLOT(OnSetupNavigation()) );
   connect( m_Controls.m_UseAsPointerButton, SIGNAL(clicked()), this, SLOT(OnInstrumentSelected()) );

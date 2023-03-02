@@ -1,0 +1,5 @@
+set(Plugin-Name "Splinevisualisationplugin")
+set(Plugin-Version "0.1")
+set(Plugin-Vendor "THU")
+set(Plugin-ContactAddress "alexander.mroncz@gmail.com")
+set(Require-Plugin org.mitk.gui.qt.common)

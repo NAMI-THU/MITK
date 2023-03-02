@@ -1,0 +1,6 @@
+mitk::VtkLoggingAdapter::Initialize();
+    vtkOutputWindow::GetInstance()->DisplayText("Test Vtk Info Message");
+    vtkOutputWindow::GetInstance()->DisplayDebugText("Test Vtk Debug Message");
+    vtkOutputWindow::GetInstance()->DisplayGenericWarningText("Test Vtk Generic Warning Message");
+    vtkOutputWindow::GetInstance()->DisplayWarningText("Test Vtk Warning Message");
+    vtkOutputWindow::GetInstance()->DisplayErrorText("Test Vtk Error Message");

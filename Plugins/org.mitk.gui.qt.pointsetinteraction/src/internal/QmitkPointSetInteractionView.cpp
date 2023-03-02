@@ -11,9 +11,7 @@ found in the LICENSE file.
 ============================================================================*/
 
 #include "QmitkPointSetInteractionView.h"
-
 #include <QInputDialog>
-
 #include <mitkNodePredicateAnd.h>
 #include <mitkNodePredicateDataType.h>
 #include <mitkNodePredicateNot.h>

@@ -1,0 +1,1786 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SplineVisualisationPluginControls</class>
+ <widget class="QWidget" name="SplineVisualisationPluginControls">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>804</width>
+    <height>890</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>QmitkTemplate</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QVBoxLayout" name="subcategories">
+     <item>
+      <widget class="QTabWidget" name="AllQTabsWidget">
+       <property name="currentIndex">
+        <number>2</number>
+       </property>
+       <widget class="QWidget" name="threeDsplineInstrumentTracking">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <attribute name="title">
+         <string>Static Spline Evaluation</string>
+        </attribute>
+        <widget class="QLabel" name="labelWarning">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>10</y>
+           <width>291</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="text">
+          <string>Please select a Pointset or a CSV File first!</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="PointsetReaderLabel">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>700</y>
+           <width>661</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Click on the Evaluate Points Button to activate the CSV Data or Selected Pointset Reader		</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="ToogleSplinesButton">
+         <property name="geometry">
+          <rect>
+           <x>440</x>
+           <y>780</y>
+           <width>141</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Deactivate Splines </string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="EvaluatePointsSplinesGen">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>780</y>
+           <width>141</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Evaluate Points</string>
+         </property>
+        </widget>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>110</y>
+           <width>711</width>
+           <height>331</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Current pointset</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QmitkPointListWidget" name="pointSplineSetListWidget" native="true"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QLabel" name="PointsetReaderLabel_2">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>510</y>
+           <width>661</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Select the Visualisation Method</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="VisMethodcomboBox">
+         <property name="geometry">
+          <rect>
+           <x>360</x>
+           <y>520</y>
+           <width>271</width>
+           <height>22</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="PointsetReaderLabel_4">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>460</y>
+           <width>661</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Visualisation Selection Configuration</string>
+         </property>
+        </widget>
+        <widget class="QmitkSingleNodeSelectionWidget" name="selectedPointSetWidget" native="true">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>60</y>
+           <width>591</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QLabel" name="selectedPointSetLabel">
+         <property name="geometry">
+          <rect>
+           <x>7</x>
+           <y>60</y>
+           <width>101</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Selected point set</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="checkBoxVTKVisualisation">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>740</y>
+           <width>261</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Activate VTK RenderWindow </string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="SavePointsetasCSV">
+         <property name="geometry">
+          <rect>
+           <x>410</x>
+           <y>460</y>
+           <width>241</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Save selected pointset as CSV </string>
+         </property>
+        </widget>
+        <widget class="Line" name="line_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>690</y>
+           <width>741</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="Line" name="line_3">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>440</y>
+           <width>741</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="checkBoxEnableAnchorselection">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>620</y>
+           <width>70</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="checkBoxEnableReferencePointDistance">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>660</y>
+           <width>70</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QWidget" name="verticalLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>610</y>
+           <width>561</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="AnchorpointSelectionLayout">
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="PointsetReaderLabel_5">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>20</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>(Optional) Select the number of total Anchorpoints generated</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="totalAnchorpointsSpinBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>5</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>1000000</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="maximum">
+             <number>20</number>
+            </property>
+            <property name="value">
+             <number>8</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>660</y>
+           <width>561</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="ReferencePointLayout">
+          <property name="rightMargin">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="ReferencePointDistancestatic">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>(Optional)  Reference Point Distance [mm]</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="m_PSReferenceSplineComboBox"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="NumberOfReferencePointsLabel">
+            <property name="text">
+             <string>Count of Ref Points : 40</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="verticalLayoutWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>560</y>
+           <width>561</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="EMTrackinDisplaySelectionLayout">
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="EmtrackingSensorLayout">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>(Optional) Select the number of EM Tracking Sensors (for Endpiece)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="NumEMTrackSensorCombobox"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QCheckBox" name="checkBoxEnableTipEMTracking">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>570</y>
+           <width>70</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="IGTMeasurementRT">
+        <attribute name="title">
+         <string>Realtime Spline Evaluation </string>
+        </attribute>
+        <widget class="Line" name="line">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>771</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QGroupBox" name="Configuration">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>10</y>
+           <width>761</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>Configuration</string>
+         </property>
+         <widget class="QComboBox" name="m_TrackingPointerSelectionBox">
+          <property name="geometry">
+           <rect>
+            <x>360</x>
+            <y>30</y>
+            <width>308</width>
+            <height>20</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="SplineVisConfigIGTLabel">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>30</y>
+            <width>201</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Choose Spline Visualisation: </string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="m_TrackingControlsFrame">
+         <property name="geometry">
+          <rect>
+           <x>50</x>
+           <y>510</y>
+           <width>671</width>
+           <height>241</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="spacing">
+             <number>6</number>
+            </property>
+            <property name="topMargin">
+             <number>1</number>
+            </property>
+            <property name="bottomMargin">
+             <number>7</number>
+            </property>
+            <item>
+             <widget class="QCheckBox" name="checkBoxVTKVisRT">
+              <property name="text">
+               <string>Activate VTK RenderWindow </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Reference Point Distance [mm]</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="m_PSRTReferenceSplineComboBox"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="NumberOfReferencePointsLabelRT">
+              <property name="text">
+               <string>Count of Ref Points : 40</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="m_checkboxAllPointsSpline">
+            <property name="text">
+             <string>Show the whole endoscope travel path</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="m_TrackingControlLabel">
+            <property name="text">
+             <string>Status: disconnected</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="ToogleSplinesButtonIGTRTT">
+            <property name="text">
+             <string>Activate Visualisation</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <item>
+             <spacer name="horizontalSpacer_11">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="m_SpTrackingFrozenLabel">
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Tracking Frozen!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="m_SpFreezeUnfreezeTrackingButton">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>142</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Freeze Standard View</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QmitkNavigationDataSourceSelectionWidget" name="m_SplineTrackingDeviceSelectionWidget" native="true">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>110</y>
+           <width>681</width>
+           <height>241</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_9">
+         <property name="geometry">
+          <rect>
+           <x>50</x>
+           <y>370</y>
+           <width>653</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Configure ROI  </string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="m_globalROISelectionBox">
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>440</y>
+           <width>601</width>
+           <height>20</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_10">
+         <property name="geometry">
+          <rect>
+           <x>50</x>
+           <y>410</y>
+           <width>653</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Choose for Global ROI type with predefined transformations and adjustments: </string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_8">
+         <property name="geometry">
+          <rect>
+           <x>50</x>
+           <y>480</y>
+           <width>653</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Tracking Control</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="Logging">
+        <attribute name="title">
+         <string>Combined Recordings Evaluation</string>
+        </attribute>
+        <widget class="QWidget" name="m_simpleWidget" native="true">
+         <property name="geometry">
+          <rect>
+           <x>249</x>
+           <y>892</y>
+           <width>303</width>
+           <height>70</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_25">
+            <item>
+             <widget class="QPushButton" name="m_SpConnectSimpleMode">
+              <property name="minimumSize">
+               <size>
+                <width>70</width>
+                <height>50</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Connect</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="m_SpStartTrackingSimpleMode">
+              <property name="minimumSize">
+               <size>
+                <width>70</width>
+                <height>50</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Start
+Tracking</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_21">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="m_SpadvancedUI">
+              <property name="minimumSize">
+               <size>
+                <width>70</width>
+                <height>50</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Advanced
+Mode</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>10</y>
+           <width>721</width>
+           <height>13</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Combined Dataset for Spline Visualisation  </string>
+         </property>
+        </widget>
+        <widget class="QmitkSingleNodeSelectionWidget" name="EmtrackerPointSetWidget_1" native="true">
+         <property name="geometry">
+          <rect>
+           <x>123</x>
+           <y>160</y>
+           <width>591</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QLabel" name="EMTrackerPointSetLabel_1">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>160</y>
+           <width>111</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>EM Tracker 1 Pointset</string>
+         </property>
+        </widget>
+        <widget class="QmitkSingleNodeSelectionWidget" name="EmtrackerPointSetWidget_2" native="true">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>220</y>
+           <width>591</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QLabel" name="EMTrackerPointSetLabel_2">
+         <property name="geometry">
+          <rect>
+           <x>7</x>
+           <y>220</y>
+           <width>111</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>EM Tracker 2 Pointset</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="EMTrackerPointSetLabel_3">
+         <property name="geometry">
+          <rect>
+           <x>7</x>
+           <y>290</y>
+           <width>111</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>EM Tracker 3 Pointset</string>
+         </property>
+        </widget>
+        <widget class="QmitkSingleNodeSelectionWidget" name="EmtrackerPointSetWidget_3" native="true">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>290</y>
+           <width>591</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QmitkSingleNodeSelectionWidget" name="EmtrackerPointSetWidget_4" native="true">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>350</y>
+           <width>591</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QLabel" name="EMTrackerPointSetLabel_4">
+         <property name="geometry">
+          <rect>
+           <x>7</x>
+           <y>350</y>
+           <width>111</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>EM Tracker 4 Pointset</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="EMTrackerPointSetLabel_5">
+         <property name="geometry">
+          <rect>
+           <x>7</x>
+           <y>410</y>
+           <width>111</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>EM Tracker 5 Pointset</string>
+         </property>
+        </widget>
+        <widget class="QmitkSingleNodeSelectionWidget" name="EmtrackerPointSetWidget_5" native="true">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>410</y>
+           <width>591</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QLabel" name="EMTrackerPointSetLabel_6">
+         <property name="geometry">
+          <rect>
+           <x>7</x>
+           <y>480</y>
+           <width>111</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>EM Tracker 6 Pointset</string>
+         </property>
+        </widget>
+        <widget class="QmitkSingleNodeSelectionWidget" name="EmtrackerPointSetWidget_6" native="true">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>480</y>
+           <width>591</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QLabel" name="EMTrackerPointSetLabel_7">
+         <property name="geometry">
+          <rect>
+           <x>7</x>
+           <y>540</y>
+           <width>111</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>EM Tracker 7 Pointset</string>
+         </property>
+        </widget>
+        <widget class="QmitkSingleNodeSelectionWidget" name="EmtrackerPointSetWidget_7" native="true">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>540</y>
+           <width>591</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QLabel" name="EMTrackerPointSetLabel_8">
+         <property name="geometry">
+          <rect>
+           <x>7</x>
+           <y>600</y>
+           <width>111</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>EM Tracker 8 Pointset</string>
+         </property>
+        </widget>
+        <widget class="QmitkSingleNodeSelectionWidget" name="EmtrackerPointSetWidget_8" native="true">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>600</y>
+           <width>591</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="startProcessing">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>670</y>
+           <width>591</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Start Processing</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="CombinedSensorReadingsWarning">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>40</y>
+           <width>561</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="text">
+          <string>Please select upto 8 EM Tracker Readings first! (Minimum 3 Datasets)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="ProcessLabel">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>710</y>
+           <width>721</width>
+           <height>13</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Processing Complete!</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="SplineVisConfigIGTLabel_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>90</y>
+           <width>201</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Choose Spline Visualisation: </string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="m_CombinedTrackingPointerSelectionBox">
+         <property name="geometry">
+          <rect>
+           <x>360</x>
+           <y>100</y>
+           <width>308</width>
+           <height>20</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="m_CombinedEvaluateButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>780</y>
+           <width>591</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Evaluate Spline</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="m_selectedAnchorpointscheckBox">
+         <property name="geometry">
+          <rect>
+           <x>470</x>
+           <y>710</y>
+           <width>231</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Show only current Anchorpoints</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="NumberOfReferencePointsLabelRT_Comb">
+         <property name="geometry">
+          <rect>
+           <x>570</x>
+           <y>730</y>
+           <width>116</width>
+           <height>45</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Count of Ref Points : 40</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="RefPointslabel">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>730</y>
+           <width>148</width>
+           <height>45</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Reference Point Distance [mm]</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="m_PSRTReferenceSplineComboBox_Combined">
+         <property name="geometry">
+          <rect>
+           <x>370</x>
+           <y>740</y>
+           <width>69</width>
+           <height>20</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="Options">
+        <attribute name="title">
+         <string>Options</string>
+        </attribute>
+        <widget class="QGroupBox" name="m_UpdateRateOptionsGroupBox">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>50</y>
+           <width>711</width>
+           <height>134</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title">
+          <string>Update Rate Options</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_14">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLabel" name="m_SpOptionsUpdateRateLabel">
+              <property name="text">
+               <string>Update Rate [per second]</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="m_SpUpdateRate">
+              <property name="maximum">
+               <number>100</number>
+              </property>
+              <property name="value">
+               <number>10</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="m_SpUseDifferentUpdateRates">
+            <property name="text">
+             <string>Use different Render and Log Update Rates</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,0,0">
+            <item>
+             <widget class="QLabel" name="m_SpOptionsRenderUpdateRateLabel">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Render Update Rate [fps]</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="m_SpRenderUpdateRate">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="minimum">
+               <number>0</number>
+              </property>
+              <property name="maximum">
+               <number>100</number>
+              </property>
+              <property name="value">
+               <number>30</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <item>
+             <widget class="QLabel" name="m_SpOptionsLogUpdateRateLabel">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Log Update Rate [per second]</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_8">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="m_SpLogUpdateRate">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>120</number>
+              </property>
+              <property name="singleStep">
+               <number>10</number>
+              </property>
+              <property name="value">
+               <number>60</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QCheckBox" name="m_DisableAllTimers">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>27</y>
+           <width>161</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Disable All Timers</string>
+         </property>
+        </widget>
+        <widget class="QGroupBox" name="m_SpOtherOptionsGroupBox">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>700</y>
+           <width>721</width>
+           <height>191</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="title">
+          <string>Other Options</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_12">
+          <item>
+           <widget class="QCheckBox" name="m_SpShowToolQuaternions">
+            <property name="text">
+             <string>Show Tool Quaternions</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="m_SpInverseMode">
+            <property name="text">
+             <string>Inverse mode (Quaternions are stored inverse)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="m_SpShowHideToolProjectionCheckBox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Show Tool Projection</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="m_Sptoolselector"/>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="m_SpShowHideToolAxisCheckBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Show Tool Axis</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QLabel" name="m_RenderWarningLabel">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>510</x>
+           <y>30</y>
+           <width>161</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Rendering Disabled!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::AutoText</enum>
+         </property>
+        </widget>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>190</y>
+           <width>711</width>
+           <height>121</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>Tracking Volume Options</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="QCheckBox" name="m_SpShowTrackingVolume">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Show Tracking Volume</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_5">
+            <property name="maximumSize">
+             <size>
+              <width>12000</width>
+              <height>12000</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Select Model:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="m_SpVolumeSelectionBox"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QScrollArea" name="m_globalROIAreaScrollContext">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>410</y>
+           <width>141</width>
+           <height>261</height>
+          </rect>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>139</width>
+            <height>259</height>
+           </rect>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QLabel" name="regionOfIntrestLabel">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>330</y>
+           <width>151</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Region of Intrest Options</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="globalConstextLabel">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>370</y>
+           <width>151</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Global ROI Context</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="globalConstextLabel_2">
+         <property name="geometry">
+          <rect>
+           <x>430</x>
+           <y>370</y>
+           <width>151</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Local ROI Context</string>
+         </property>
+        </widget>
+        <widget class="QScrollArea" name="m_localROIContextScrollContext">
+         <property name="geometry">
+          <rect>
+           <x>430</x>
+           <y>410</y>
+           <width>141</width>
+           <height>261</height>
+          </rect>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents_2">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>139</width>
+            <height>259</height>
+           </rect>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QPushButton" name="m_addGloblaContextButton">
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>510</y>
+           <width>75</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Add</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="m_removeGlobalContextButton">
+         <property name="geometry">
+          <rect>
+           <x>300</x>
+           <y>510</y>
+           <width>75</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Remove</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="m_hideGlobalContextRadioB">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>540</y>
+           <width>691</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Hide Global Context</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="m_hideGlobalContextRadioB_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>580</x>
+           <y>540</y>
+           <width>691</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Hide Local Context</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="m_GlobalROISelectionBox">
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>450</y>
+           <width>181</width>
+           <height>20</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="m_removeLocalROIButton">
+         <property name="geometry">
+          <rect>
+           <x>680</x>
+           <y>510</y>
+           <width>75</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Remove</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="m_addLocalContextButton">
+         <property name="geometry">
+          <rect>
+           <x>580</x>
+           <y>510</y>
+           <width>75</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Add</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="m_localROIContextSelectionBox">
+         <property name="geometry">
+          <rect>
+           <x>580</x>
+           <y>450</y>
+           <width>181</width>
+           <height>20</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="m_DebuggingCheckBox">
+         <property name="geometry">
+          <rect>
+           <x>190</x>
+           <y>27</y>
+           <width>691</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Debugging</string>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QmitkPointListWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">QmitkPointListWidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QmitkSingleNodeSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">QmitkSingleNodeSelectionWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QmitkNavigationDataSourceSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>QmitkNavigationDataSourceSelectionWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

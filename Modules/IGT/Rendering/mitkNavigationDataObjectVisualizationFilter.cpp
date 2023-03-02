@@ -10,7 +10,6 @@ found in the LICENSE file.
 
 ============================================================================*/
 #include "mitkNavigationDataObjectVisualizationFilter.h"
-
 #include "mitkDataStorage.h"
 #include <vector>
 

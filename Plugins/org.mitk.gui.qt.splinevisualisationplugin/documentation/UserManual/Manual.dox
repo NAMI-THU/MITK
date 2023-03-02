@@ -1,0 +1,17 @@
+/**
+\page org_mitk_gui_qt_splinevisualisationplugin The Splinevisualisationplugin
+
+\imageMacro{icon.png,"Icon of Splinevisualisationplugin",2.00}
+
+\tableofcontents
+
+\section org_mitk_gui_qt_splinevisualisationpluginOverview Overview
+The Spline Visualisation Plug-in allows for Online EM Tracking of flexible minimal invasive Instruments such as Endoscopes to  visulaise via CT images (.dct) and the IGTTool and 
+<ul>
+<li> Visualisation for flexible endoscopy
+<li> Spline shows curvature of tool  
+<li> positional information for clinical operation 
+<li> Vectors, Normals, Binormals for direction of the instrument
+</ul>
+
+*/

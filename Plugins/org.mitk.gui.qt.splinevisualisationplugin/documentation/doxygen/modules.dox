@@ -1,0 +1,18 @@
+/**
+  \defgroup org_mitk_gui_qt_splinevisualisationplugin org.mitk.gui.qt.splinevisualisationplugin
+  \ingroup MITKPlugins
+
+  \brief The Spline Visualisation Plugin is both a static and dynamic tracking mechanism of (EM) Sensors, to deliver a coherent continuous representation of vtk inherited spline methods 
+  for path visualisation of possible endoscopic equipment while traveling through a patients abdomen. Several diffrent predefined options for targeting the correct region of interest, sensor count and visualisation method (2D and 3D) 
+  exist. 
+
+*/
+
+/**
+  \defgroup org_mitk_gui_qt_splinevisualisationplugin_internal Internal
+  \ingroup org_mitk_gui_qt_splinevisualisationplugin
+
+  \brief This subcategory includes the internal classes of the org.mitk.gui.qt.splinevisualisationplugin plugin. Other
+  plugins must not rely on these classes. They contain implementation details and their interface
+  may change at any time.
+*/

@@ -1,0 +1,1 @@
+  MODULE_DEPENDS MitkCore MitkQtWidgetsExt MitkIGT MitkIGTUI MitkOpenCL MitkLegacyGL MitkOpenCL MitkDICOM MitkContourModel MitkRenderWindowManager 
