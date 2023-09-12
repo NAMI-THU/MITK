@@ -10,14 +10,15 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKHISTOGRAM_H
-#define QMITKHISTOGRAM_H
+#ifndef QmitkHistogram_h
+#define QmitkHistogram_h
 
 #include <qcolor.h>
 #include <qglobal.h>
 
 #include <qwt_plot_item.h>
 #include <qwt_series_data.h>
+#include <qwt_text.h>
 
 /**
 \brief Used to create a histogram that can be shown in a Qwt Plot.

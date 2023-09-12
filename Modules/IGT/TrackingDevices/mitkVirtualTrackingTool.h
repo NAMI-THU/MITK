@@ -11,13 +11,12 @@ found in the LICENSE file.
 ============================================================================*/
 
 
-#ifndef MITKVirtualTrackingTool_H_HEADER_INCLUDED_
-#define MITKVirtualTrackingTool_H_HEADER_INCLUDED_
+#ifndef mitkVirtualTrackingTool_h
+#define mitkVirtualTrackingTool_h
 
 #include <mitkTrackingTool.h>
 #include <MitkIGTExports.h>
 #include <mitkNumericTypes.h>
-#include <itkFastMutexLock.h>
 #include <mitkItkNonUniformBSpline.h>
 
 namespace mitk {
@@ -60,4 +59,4 @@ namespace mitk {
     mitk::ScalarType m_Velocity;
   };
 } // namespace mitk
-#endif /* MITKVirtualTrackingTool_H_HEADER_INCLUDED_ */
+#endif

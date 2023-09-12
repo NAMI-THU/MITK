@@ -15,6 +15,7 @@ found in the LICENSE file.
 #include "mitkProperties.h"
 #include "mitkToolManager.h"
 
+#include "mitkInteractionPositionEvent.h"
 // us
 #include <usGetModuleContext.h>
 #include <usModule.h>
@@ -25,10 +26,10 @@ found in the LICENSE file.
 #include "mitkImageAccessByItk.h"
 #include "mitkImageCast.h"
 #include "mitkImageTimeSelector.h"
-#include "mitkImageTimeSelector.h"
 
+#include <itkImage.h>
 #include <itkConnectedThresholdImageFilter.h>
-
+#include <itkOrImageFilter.h>
 #include <mitkLabelSetImage.h>
 
 namespace mitk
@@ -36,48 +37,13 @@ namespace mitk
   MITK_TOOL_MACRO(MITKSEGMENTATION_EXPORT, PickingTool, "PickingTool");
 }
 
-mitk::PickingTool::PickingTool() : m_WorkingData(nullptr)
+mitk::PickingTool::PickingTool() : SegWithPreviewTool(false, "PressMoveReleaseAndPointSetting")
 {
-  m_PointSetNode = mitk::DataNode::New();
-  m_PointSetNode->GetPropertyList()->SetProperty("name", mitk::StringProperty::New("Picking_Seedpoint"));
-  m_PointSetNode->GetPropertyList()->SetProperty("helper object", mitk::BoolProperty::New(true));
-  m_PointSet = mitk::PointSet::New();
-  m_PointSetNode->SetData(m_PointSet);
-
-  // Watch for point added or modified
-  itk::SimpleMemberCommand<PickingTool>::Pointer pointAddedCommand = itk::SimpleMemberCommand<PickingTool>::New();
-  pointAddedCommand->SetCallbackFunction(this, &mitk::PickingTool::OnPointAdded);
-  m_PointSetAddObserverTag = m_PointSet->AddObserver(mitk::PointSetAddEvent(), pointAddedCommand);
-
-  // create new node for picked region
-  m_ResultNode = mitk::DataNode::New();
-  // set some properties
-  m_ResultNode->SetProperty("name", mitk::StringProperty::New("result"));
-  m_ResultNode->SetProperty("helper object", mitk::BoolProperty::New(true));
-  m_ResultNode->SetProperty("color", mitk::ColorProperty::New(0, 1, 0));
-  m_ResultNode->SetProperty("layer", mitk::IntProperty::New(1));
-  m_ResultNode->SetProperty("opacity", mitk::FloatProperty::New(0.33f));
+  this->ResetsToEmptyPreviewOn();
 }
 
 mitk::PickingTool::~PickingTool()
 {
-  m_PointSet->RemoveObserver(m_PointSetAddObserverTag);
-}
-
-bool mitk::PickingTool::CanHandle(const BaseData* referenceData, const BaseData* workingData) const
-{
-  if (!Superclass::CanHandle(referenceData,workingData))
-    return false;
-
-  auto* image = dynamic_cast<const Image*>(referenceData);
-
-  if (image == nullptr)
-    return false;
-
-  if (image->GetTimeSteps() > 1) //release quickfix for T28248
-    return false;
-
-  return true;
 }
 
 const char **mitk::PickingTool::GetXPM() const
@@ -93,7 +59,7 @@ const char *mitk::PickingTool::GetName() const
 us::ModuleResource mitk::PickingTool::GetIconResource() const
 {
   us::Module *module = us::GetModuleContext()->GetModule();
-  us::ModuleResource resource = module->GetResource("Pick_48x48.png");
+  us::ModuleResource resource = module->GetResource("Picking.svg");
   return resource;
 }
 
@@ -101,132 +67,162 @@ void mitk::PickingTool::Activated()
 {
   Superclass::Activated();
 
-  DataStorage *dataStorage = this->GetDataStorage();
-  m_WorkingData = this->GetWorkingData();
+  m_PointSet = mitk::PointSet::New();
+  //ensure that the seed points are visible for all timepoints.
+  dynamic_cast<ProportionalTimeGeometry*>(m_PointSet->GetTimeGeometry())->SetStepDuration(std::numeric_limits<TimePointType>::max());
 
-  // add to datastorage and enable interaction
-  if (!dataStorage->Exists(m_PointSetNode))
-    dataStorage->Add(m_PointSetNode, m_WorkingData);
+  m_PointSetNode = mitk::DataNode::New();
+  m_PointSetNode->SetData(m_PointSet);
+  m_PointSetNode->SetName(std::string(this->GetName()) + "_PointSet");
+  m_PointSetNode->SetBoolProperty("helper object", true);
+  m_PointSetNode->SetColor(0.0, 1.0, 0.0);
+  m_PointSetNode->SetVisibility(true);
 
-  m_SeedPointInteractor = mitk::SinglePointDataInteractor::New();
-  m_SeedPointInteractor->LoadStateMachine("PointSet.xml");
-  m_SeedPointInteractor->SetEventConfig("PointSetConfig.xml");
-  m_SeedPointInteractor->SetDataNode(m_PointSetNode);
-
-  // now add result to data tree
-  dataStorage->Add(m_ResultNode, m_WorkingData);
+  this->GetDataStorage()->Add(m_PointSetNode, this->GetToolManager()->GetWorkingData(0));
 }
 
 void mitk::PickingTool::Deactivated()
 {
-  m_PointSet->Clear();
+  this->ClearSeeds();
+
   // remove from data storage and disable interaction
   GetDataStorage()->Remove(m_PointSetNode);
-  GetDataStorage()->Remove(m_ResultNode);
+  m_PointSetNode = nullptr;
+  m_PointSet = nullptr;
 
   Superclass::Deactivated();
 }
 
-mitk::DataNode *mitk::PickingTool::GetReferenceData()
+void mitk::PickingTool::ConnectActionsAndFunctions()
 {
-  return this->m_ToolManager->GetReferenceData(0);
+  CONNECT_FUNCTION("ShiftSecondaryButtonPressed", OnAddPoint);
+  CONNECT_FUNCTION("ShiftPrimaryButtonPressed", OnAddPoint);
+  CONNECT_FUNCTION("DeletePoint", OnDelete);
 }
 
-mitk::DataStorage *mitk::PickingTool::GetDataStorage()
+void mitk::PickingTool::OnAddPoint(StateMachineAction*, InteractionEvent* interactionEvent)
 {
-  return this->m_ToolManager->GetDataStorage();
-}
-
-mitk::DataNode *mitk::PickingTool::GetWorkingData()
-{
-  return this->m_ToolManager->GetWorkingData(0);
-}
-
-mitk::DataNode::Pointer mitk::PickingTool::GetPointSetNode()
-{
-  return m_PointSetNode;
-}
-
-void mitk::PickingTool::OnPointAdded()
-{
-  if (m_WorkingData != this->GetWorkingData())
+  if (!this->IsUpdating() && m_PointSet.IsNotNull())
   {
-    DataStorage *dataStorage = this->GetDataStorage();
+    const auto positionEvent = dynamic_cast<mitk::InteractionPositionEvent*>(interactionEvent);
 
-    if (dataStorage->Exists(m_PointSetNode))
+    if (positionEvent != nullptr)
     {
-      dataStorage->Remove(m_PointSetNode);
-      dataStorage->Add(m_PointSetNode, this->GetWorkingData());
+      m_PointSet->InsertPoint(m_PointSet->GetSize(), positionEvent->GetPositionInWorld());
+      this->UpdatePreview();
     }
-
-    if (dataStorage->Exists(m_ResultNode))
-    {
-      dataStorage->Remove(m_ResultNode);
-      dataStorage->Add(m_ResultNode, this->GetWorkingData());
-    }
-
-    m_WorkingData = this->GetWorkingData();
   }
+}
 
-  // Perform region growing/picking
-
-  int timeStep =
-    mitk::BaseRenderer::GetInstance(mitk::BaseRenderer::GetRenderWindowByName("stdmulti.widget0"))->GetTimeStep();
-
-  mitk::PointSet::PointType seedPoint = m_PointSet->GetPointSet(timeStep)->GetPoints()->Begin().Value();
-
-  // as we want to pick a region from our segmentation image use the working data from ToolManager
-  mitk::Image::Pointer orgImage = dynamic_cast<mitk::Image *>(m_ToolManager->GetWorkingData(0)->GetData());
-
-  if (orgImage.IsNotNull())
+void mitk::PickingTool::OnDelete(StateMachineAction*, InteractionEvent* /*interactionEvent*/)
+{
+  if (!this->IsUpdating() && m_PointSet.IsNotNull())
   {
-    if (orgImage->GetDimension() == 4)
-    { // there may be 4D segmentation data even though we currently don't support that
-      mitk::ImageTimeSelector::Pointer timeSelector = mitk::ImageTimeSelector::New();
-      timeSelector->SetInput(orgImage);
-      timeSelector->SetTimeNr(timeStep);
-      timeSelector->UpdateLargestPossibleRegion();
-      mitk::Image *timedImage = timeSelector->GetOutput();
-
-      AccessByItk_2(timedImage, StartRegionGrowing, timedImage->GetGeometry(), seedPoint);
-    }
-    else if (orgImage->GetDimension() == 3)
+    // delete last seed point
+    if (this->m_PointSet->GetSize() > 0)
     {
-      AccessByItk_2(orgImage, StartRegionGrowing, orgImage->GetGeometry(), seedPoint);
+      m_PointSet->RemovePointAtEnd(0);
+
+      this->UpdatePreview();
     }
-    this->m_PointSet->Clear();
+  }
+}
+
+void mitk::PickingTool::ClearPicks()
+{
+  this->ClearSeeds();
+  this->UpdatePreview();
+}
+
+bool mitk::PickingTool::HasPicks() const
+{
+  return this->m_PointSet.IsNotNull() && this->m_PointSet->GetSize()>0;
+}
+
+void mitk::PickingTool::ClearSeeds()
+{
+  if (this->m_PointSet.IsNotNull())
+  {
+    // renew pointset
+    this->m_PointSet = mitk::PointSet::New();
+    //ensure that the seed points are visible for all timepoints.
+    dynamic_cast<ProportionalTimeGeometry*>(m_PointSet->GetTimeGeometry())->SetStepDuration(std::numeric_limits<TimePointType>::max());
+    this->m_PointSetNode->SetData(this->m_PointSet);
   }
 }
 
 template <typename TPixel, unsigned int VImageDimension>
-void mitk::PickingTool::StartRegionGrowing(itk::Image<TPixel, VImageDimension> *itkImage,
-                                           mitk::BaseGeometry *imageGeometry,
-                                           mitk::PointSet::PointType seedPoint)
+void DoITKRegionGrowing(const itk::Image<TPixel, VImageDimension>* oldSegImage,
+  mitk::Image* segmentation,
+  const mitk::PointSet* seedPoints,
+  unsigned int timeStep, const mitk::BaseGeometry* inputGeometry, const mitk::Label::PixelType outputValue,
+  const mitk::Label::PixelType backgroundValue,
+  bool& emptyTimeStep)
 {
   typedef itk::Image<TPixel, VImageDimension> InputImageType;
+  typedef itk::Image<mitk::Label::PixelType, VImageDimension> OutputImageType;
   typedef typename InputImageType::IndexType IndexType;
-  typedef itk::ConnectedThresholdImageFilter<InputImageType, InputImageType> RegionGrowingFilterType;
-  typename RegionGrowingFilterType::Pointer regionGrower = RegionGrowingFilterType::New();
+  typedef itk::ConnectedThresholdImageFilter<InputImageType, OutputImageType> RegionGrowingFilterType;
+
+  using IndexMapType = std::map < mitk::Label::PixelType, std::vector<IndexType> >;
+
+  IndexMapType indexMap;
 
   // convert world coordinates to image indices
-  IndexType seedIndex;
-  imageGeometry->WorldToIndex(seedPoint, seedIndex);
+  for (auto pos = seedPoints->Begin(); pos != seedPoints->End(); ++pos)
+  {
+    IndexType seedIndex;
+    inputGeometry->WorldToIndex(pos->Value(), seedIndex);
+    const auto selectedLabel = oldSegImage->GetPixel(seedIndex);
 
-  // perform region growing in desired segmented region
-  regionGrower->SetInput(itkImage);
-  regionGrower->AddSeed(seedIndex);
+    if (selectedLabel != backgroundValue)
+    {
+      indexMap[selectedLabel].push_back(seedIndex);
+    }
+  }
 
-  // TODO: conversion added to silence warning and
-  // maintain existing behaviour, should be fixed
-  // since it's not correct e.g. for signed char
-  regionGrower->SetLower(static_cast<typename InputImageType::PixelType>(1));
-  regionGrower->SetUpper(static_cast<typename InputImageType::PixelType>(255));
+  typename OutputImageType::Pointer itkResultImage;
 
   try
   {
-    regionGrower->Update();
+    bool first = true;
+    typename RegionGrowingFilterType::Pointer regionGrower = RegionGrowingFilterType::New();
+    regionGrower->SetInput(oldSegImage);
+    regionGrower->SetReplaceValue(outputValue);
+
+    for (const auto& [label, indeces] : indexMap)
+    {
+      // perform region growing in desired segmented region
+      regionGrower->ClearSeeds();
+      for (const auto& index : indeces)
+      {
+        regionGrower->AddSeed(index);
+      }
+
+      regionGrower->SetLower(label);
+      regionGrower->SetUpper(label);
+
+      regionGrower->Update();
+
+      if (first)
+      {
+        itkResultImage = regionGrower->GetOutput();
+      }
+      else
+      {
+        typename itk::OrImageFilter<OutputImageType, OutputImageType>::Pointer orFilter =
+          itk::OrImageFilter<OutputImageType, OutputImageType>::New();
+        orFilter->SetInput1(regionGrower->GetOutput());
+        orFilter->SetInput2(itkResultImage);
+
+        orFilter->Update();
+        itkResultImage = orFilter->GetOutput();
+      }
+      first = false;
+      itkResultImage->DisconnectPipeline();
+    }
   }
-  catch (const itk::ExceptionObject &)
+  catch (const itk::ExceptionObject&)
   {
     return; // can't work
   }
@@ -235,35 +231,29 @@ void mitk::PickingTool::StartRegionGrowing(itk::Image<TPixel, VImageDimension> *
     return;
   }
 
-  // Store result and preview
-  mitk::Image::Pointer resultImage = mitk::ImportItkImage(regionGrower->GetOutput(), imageGeometry)->Clone();
-  mitk::LabelSetImage::Pointer resultLabelSetImage = mitk::LabelSetImage::New();
-  resultLabelSetImage->InitializeByLabeledImage(resultImage);
+  if (itkResultImage.IsNotNull())
+  {
+    segmentation->SetVolume((void*)(itkResultImage->GetPixelContainer()->GetBufferPointer()),timeStep);
+  }
+  emptyTimeStep = itkResultImage.IsNull();
 
-  m_ResultNode->SetData(resultLabelSetImage);
-
-  mitk::RenderingManager::GetInstance()->RequestUpdateAll();
 }
 
-void mitk::PickingTool::ConfirmSegmentation()
+void mitk::PickingTool::DoUpdatePreview(const Image* /*inputAtTimeStep*/, const Image* oldSegAtTimeStep, LabelSetImage* previewImage, TimeStepType timeStep)
 {
-  mitk::DataNode::Pointer newNode = mitk::DataNode::New();
-  newNode->SetProperty("name", mitk::StringProperty::New(m_WorkingData->GetName() + "_picked"));
+  if (nullptr != oldSegAtTimeStep && nullptr != previewImage && m_PointSet.IsNotNull())
+  {
+    bool emptyTimeStep = true;
+    if (this->HasPicks())
+    {
+      const auto activeValue = this->GetActiveLabelValueOfPreview();
+      this->SetSelectedLabels({activeValue});
 
-  float rgb[3] = {1.0f, 0.0f, 0.0f};
-  m_WorkingData->GetColor(rgb);
-  newNode->SetProperty("color", mitk::ColorProperty::New(rgb));
-
-  float opacity = 1.0f;
-  m_WorkingData->GetOpacity(opacity, nullptr);
-  newNode->SetProperty("opacity", mitk::FloatProperty::New(opacity));
-
-  newNode->SetData(m_ResultNode->GetData());
-
-  GetDataStorage()->Add(newNode, this->GetReferenceData());
-  m_WorkingData->SetVisibility(false);
-
-  m_ResultNode->SetData(nullptr);
-
-  mitk::RenderingManager::GetInstance()->RequestUpdateAll();
+      AccessFixedDimensionByItk_n(oldSegAtTimeStep, DoITKRegionGrowing, 3, (previewImage, this->m_PointSet, timeStep, oldSegAtTimeStep->GetGeometry(), activeValue, mitk::LabelSetImage::UnlabeledValue, emptyTimeStep));
+    }
+    if (emptyTimeStep)
+    {
+      this->ResetPreviewContentAtTimeStep(timeStep);
+    }
+  }
 }

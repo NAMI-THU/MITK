@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKARRAY_H_
-#define MITKARRAY_H_
+#ifndef mitkArray_h
+#define mitkArray_h
 
 #include <itkFixedArray.h>
 
@@ -38,7 +38,6 @@ namespace mitk
   template <typename ArrayType, typename TCoordRep, unsigned int NVectorDimension>
   void FillArray(itk::FixedArray<TCoordRep, NVectorDimension> &toArray, const ArrayType &array)
   {
-    itk::FixedArray<TCoordRep, NVectorDimension> vectorOrPoint;
     for (unsigned short int var = 0; var < NVectorDimension; ++var)
     {
       toArray[var] = array[var];
@@ -140,4 +139,4 @@ namespace mitk
   }
 }
 
-#endif /* MITKARRAY_H_ */
+#endif

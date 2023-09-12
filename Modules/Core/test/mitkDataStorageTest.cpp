@@ -31,7 +31,6 @@ found in the LICENSE file.
 #include "mitkNodePredicateNot.h"
 #include "mitkNodePredicateOr.h"
 #include "mitkNodePredicateProperty.h"
-#include "mitkNodePredicateSource.h"
 #include "mitkStandaloneDataStorage.h"
 //#include "mitkPicFileReader.h"
 #include "mitkTestingMacros.h"
@@ -226,7 +225,7 @@ void TestDataStorage(mitk::DataStorage *ds, std::string filename)
   }
   catch (...)
   {
-    MITK_TEST_FAILED_MSG(<< "Exeption during object creation");
+    MITK_TEST_FAILED_MSG(<< "Exception during object creation");
   }
 
   try /* object retrieval methods */
@@ -545,7 +544,7 @@ void TestDataStorage(mitk::DataStorage *ds, std::string filename)
   } // object retrieval methods
   catch (...)
   {
-    MITK_TEST_FAILED_MSG(<< "Exeption during object retrieval (GetXXX() Methods)");
+    MITK_TEST_FAILED_MSG(<< "Exception during object retrieval (GetXXX() Methods)");
   }
 
   try /* object removal methods */
@@ -700,7 +699,7 @@ void TestDataStorage(mitk::DataStorage *ds, std::string filename)
   }
   catch (...)
   {
-    MITK_TEST_FAILED_MSG(<< "Exeption during object removal methods");
+    MITK_TEST_FAILED_MSG(<< "Exception during object removal methods");
   }
 
   /* Checking for node is it's own parent exception */

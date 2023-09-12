@@ -9,7 +9,7 @@ set(MODULE_TESTS
   # mark it as critical.
 
   ################## DISABLED TESTS #################################################
-  #mitkAbstractTransformGeometryTest.cpp #seems as tested class mitkExternAbstractTransformGeometry doesnt exist any more
+  #mitkAbstractTransformGeometryTest.cpp #seems as tested class mitkExternAbstractTransformGeometry doesn't exist any more
   #mitkStateMachineContainerTest.cpp #rewrite test, indirect since no longer exported Bug 14529
   #mitkRegistrationBaseTest.cpp #tested class  mitkRegistrationBase doesn't exist any more
   #mitkSegmentationInterpolationTest.cpp #file doesn't exist!
@@ -77,7 +77,6 @@ set(MODULE_TESTS
   mitkRenderingManagerTest.cpp
   mitkCompositePixelValueToStringTest.cpp
   vtkMitkThickSlicesFilterTest.cpp
-  mitkNodePredicateSourceTest.cpp
   mitkNodePredicateDataPropertyTest.cpp
   mitkNodePredicateFunctionTest.cpp
   mitkVectorTest.cpp
@@ -111,7 +110,7 @@ set(MODULE_TESTS
   mitkLineTest.cpp
   mitkArbitraryTimeGeometryTest.cpp
   mitkItkImageIOTest.cpp
-  mitkLevelWindowManagerCppUnitTest.cpp
+  mitkLevelWindowManagerTest.cpp
   mitkVectorPropertyTest.cpp
   mitkTemporoSpatialStringPropertyTest.cpp
   mitkPropertyNameHelperTest.cpp
@@ -121,6 +120,7 @@ set(MODULE_TESTS
   mitkGenericIDRelationRuleTest.cpp
   mitkSourceImageRelationRuleTest.cpp
   mitkTemporalJoinImagesFilterTest.cpp
+  mitkPreferencesTest.cpp
 )
 
 set(MODULE_RENDERING_TESTS

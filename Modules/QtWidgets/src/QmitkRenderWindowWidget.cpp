@@ -23,23 +23,21 @@ QmitkRenderWindowWidget::QmitkRenderWindowWidget(QWidget* parent/* = nullptr*/,
   , m_WidgetName(widgetName)
   , m_DataStorage(dataStorage)
   , m_RenderWindow(nullptr)
-  , m_PointSetNode(nullptr)
-  , m_PointSet(nullptr)
+  , m_CrosshairManager(nullptr)
 {
   this->InitializeGUI();
 }
 
 QmitkRenderWindowWidget::~QmitkRenderWindowWidget()
 {
-  auto sliceNavigationController = m_RenderWindow->GetSliceNavigationController();
+  auto sliceNavigationController = this->GetSliceNavigationController();
   if (nullptr != sliceNavigationController)
   {
-    sliceNavigationController->SetCrosshairEvent.RemoveListener(mitk::MessageDelegate1<QmitkRenderWindowWidget, mitk::Point3D>(this, &QmitkRenderWindowWidget::SetCrosshair));
+    sliceNavigationController->SetCrosshairEvent.RemoveListener(
+      mitk::MessageDelegate1<QmitkRenderWindowWidget, const mitk::Point3D &>(
+        this, &QmitkRenderWindowWidget::SetCrosshairPosition));
   }
-  if (nullptr != m_DataStorage)
-  {
-    m_DataStorage->Remove(m_PointSetNode);
-  }
+  this->DisableCrosshair();
 }
 
 void QmitkRenderWindowWidget::SetDataStorage(mitk::DataStorage* dataStorage)
@@ -69,6 +67,11 @@ void QmitkRenderWindowWidget::RequestUpdate()
 void QmitkRenderWindowWidget::ForceImmediateUpdate()
 {
   mitk::RenderingManager::GetInstance()->ForceImmediateUpdate(m_RenderWindow->renderWindow());
+}
+
+void QmitkRenderWindowWidget::AddUtilityWidget(QWidget* utilityWidget)
+{
+  m_Layout->insertWidget(0, utilityWidget);
 }
 
 void QmitkRenderWindowWidget::SetGradientBackgroundColors(const mitk::Color& upper, const mitk::Color& lower)
@@ -148,34 +151,35 @@ bool QmitkRenderWindowWidget::IsRenderWindowMenuActivated() const
   return m_RenderWindow->GetActivateMenuWidgetFlag();
 }
 
-void QmitkRenderWindowWidget::ActivateCrosshair(bool activate)
+void QmitkRenderWindowWidget::SetCrosshairVisibility(bool visible)
 {
-  if (nullptr == m_DataStorage)
-  {
-    return;
-  }
+  m_CrosshairManager->SetCrosshairVisibility(visible, m_RenderWindow->GetRenderer());
+  this->RequestUpdate();
+}
 
-  if (activate)
-  {
-    try
-    {
-      m_DataStorage->Add(m_PointSetNode);
-    }
-    catch(std::invalid_argument& /*e*/)
-    {
-      // crosshair already existing
-      return;
-    }
-  }
-  else
-  {
-    m_DataStorage->Remove(m_PointSetNode);
-  }
+bool QmitkRenderWindowWidget::GetCrosshairVisibility()
+{
+  return m_CrosshairManager->GetCrosshairVisibility(m_RenderWindow->GetRenderer());
+}
+
+void QmitkRenderWindowWidget::SetCrosshairGap(unsigned int gapSize)
+{
+  m_CrosshairManager->SetCrosshairGap(gapSize);
+}
+
+void QmitkRenderWindowWidget::EnableCrosshair()
+{
+  m_CrosshairManager->AddCrosshairNodeToDataStorage(m_DataStorage);
+}
+
+void QmitkRenderWindowWidget::DisableCrosshair()
+{
+  m_CrosshairManager->RemoveCrosshairNodeFromDataStorage(m_DataStorage);
 }
 
 void QmitkRenderWindowWidget::InitializeGUI()
 {
-  m_Layout = new QHBoxLayout(this);
+  m_Layout = new QVBoxLayout(this);
   m_Layout->setMargin(0);
   setLayout(m_Layout);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -190,31 +194,30 @@ void QmitkRenderWindowWidget::InitializeGUI()
 
   // create render window for this render window widget
   m_RenderWindow = new QmitkRenderWindow(this, m_WidgetName, nullptr);
-  m_RenderWindow->SetLayoutIndex(mitk::BaseRenderer::ViewDirection::SAGITTAL);
-  m_RenderWindow->GetSliceNavigationController()->SetDefaultViewDirection(mitk::SliceNavigationController::Sagittal);
-  m_RenderWindow->GetSliceNavigationController()->SetCrosshairEvent.AddListener(mitk::MessageDelegate1<QmitkRenderWindowWidget, mitk::Point3D>(this, &QmitkRenderWindowWidget::SetCrosshair));
+  m_RenderWindow->SetLayoutIndex(mitk::AnatomicalPlane::Sagittal);
+  connect(m_RenderWindow, &QmitkRenderWindow::ResetGeometry,
+    this, &QmitkRenderWindowWidget::OnResetGeometry);
 
-  connect(m_RenderWindow, &QmitkRenderWindow::mouseEvent, this, &QmitkRenderWindowWidget::MouseEvent);
+  auto* sliceNavigationController = this->GetSliceNavigationController();
+  sliceNavigationController->SetDefaultViewDirection(mitk::AnatomicalPlane::Sagittal);
 
-  mitk::TimeGeometry::ConstPointer timeGeometry = m_DataStorage->ComputeBoundingGeometry3D(m_DataStorage->GetAll());
-  mitk::RenderingManager::GetInstance()->InitializeViews(timeGeometry);
   m_Layout->addWidget(m_RenderWindow);
-
-  // add point set as a crosshair
-  m_PointSetNode = mitk::DataNode::New();
-  m_PointSetNode->SetProperty("name", mitk::StringProperty::New("Crosshair of render window " + m_WidgetName.toStdString()));
-  m_PointSetNode->SetProperty("helper object", mitk::BoolProperty::New(true)); // crosshair-node should typically be invisible
-
-  // set the crosshair only visible for this specific renderer
-  m_PointSetNode->SetBoolProperty("fixedLayer", true, m_RenderWindow->GetRenderer());
-  m_PointSetNode->SetVisibility(true, m_RenderWindow->GetRenderer());
-  m_PointSetNode->SetVisibility(false);
-
-  m_PointSet = mitk::PointSet::New();
-  m_PointSetNode->SetData(m_PointSet);
 
   // set colors and corner annotation
   InitializeDecorations();
+
+  // use crosshair manager
+  m_CrosshairManager = mitk::CrosshairManager::New(m_RenderWindow->GetRenderer());
+  sliceNavigationController->SetCrosshairEvent.AddListener(
+    mitk::MessageDelegate1<QmitkRenderWindowWidget, const mitk::Point3D &>(
+      this, &QmitkRenderWindowWidget::SetCrosshairPosition));
+
+  // finally add observer, after all relevant objects have been created / initialized
+  sliceNavigationController->ConnectGeometrySendEvent(this);
+  sliceNavigationController->ConnectGeometrySliceEvent(this);
+
+  mitk::TimeGeometry::ConstPointer timeGeometry = m_DataStorage->ComputeBoundingGeometry3D(m_DataStorage->GetAll());
+  mitk::RenderingManager::GetInstance()->InitializeView(m_RenderWindow->GetVtkRenderWindow(), timeGeometry);
 }
 
 void QmitkRenderWindowWidget::InitializeDecorations()
@@ -229,26 +232,91 @@ void QmitkRenderWindowWidget::InitializeDecorations()
   float black[3] = { 0.0f, 0.0f, 0.0f };
   SetGradientBackgroundColors(black, black);
 
-  // initialize decoration color, rectangle and annotation text
-  float white[3] = { 1.0f, 1.0f, 1.0f };
-  m_DecorationColor = white;
-
+  // initialize annotation text and decoration color
   setFrameStyle(QFrame::Box | QFrame::Plain);
-  QColor hexColor(m_DecorationColor[0] * 255, m_DecorationColor[1] * 255, m_DecorationColor[2] * 255);
-  setStyleSheet("border: 2px solid " + hexColor.name(QColor::HexRgb));
 
   m_CornerAnnotation = vtkSmartPointer<vtkCornerAnnotation>::New();
   m_CornerAnnotation->SetText(0, "Sagittal");
   m_CornerAnnotation->SetMaximumFontSize(12);
-  m_CornerAnnotation->GetTextProperty()->SetColor(m_DecorationColor[0], m_DecorationColor[1], m_DecorationColor[2]);
   if (0 == vtkRenderer->HasViewProp(m_CornerAnnotation))
   {
     vtkRenderer->AddViewProp(m_CornerAnnotation);
   }
+
+  float white[3] = { 1.0f, 1.0f, 1.0f };
+  SetDecorationColor(mitk::Color(white));
 }
 
-void QmitkRenderWindowWidget::SetCrosshair(mitk::Point3D selectedPoint)
+void QmitkRenderWindowWidget::SetCrosshairPosition(const mitk::Point3D& newPosition)
 {
-  m_PointSet->SetPoint(1, selectedPoint, 0);
-  mitk::RenderingManager::GetInstance()->RequestUpdate(m_RenderWindow->renderWindow());
+  m_CrosshairManager->SetCrosshairPosition(newPosition);
+  this->RequestUpdate();
+}
+
+mitk::Point3D QmitkRenderWindowWidget::GetCrosshairPosition() const
+{
+  return m_CrosshairManager->GetCrosshairPosition();
+}
+
+void QmitkRenderWindowWidget::SetGeometry(const itk::EventObject& event)
+{
+  if (!mitk::SliceNavigationController::GeometrySendEvent(nullptr, 0).CheckEvent(&event))
+  {
+    return;
+  }
+
+  const auto* planeGeometry = this->GetSliceNavigationController()->GetCurrentPlaneGeometry();
+  if (nullptr == planeGeometry)
+  {
+    mitkThrow() << "No valid plane geometry set. Render window is in an invalid state.";
+  }
+
+  return SetCrosshairPosition(planeGeometry->GetCenter());
+}
+
+void QmitkRenderWindowWidget::SetGeometrySlice(const itk::EventObject& event)
+{
+  if (!mitk::SliceNavigationController::GeometrySliceEvent(nullptr, 0).CheckEvent(&event))
+  {
+    return;
+  }
+
+  const auto* sliceNavigationController = this->GetSliceNavigationController();
+  m_CrosshairManager->UpdateCrosshairPosition(sliceNavigationController);
+}
+
+void QmitkRenderWindowWidget::OnResetGeometry()
+{
+  const auto* baseRenderer = mitk::BaseRenderer::GetInstance(m_RenderWindow->GetRenderWindow());
+  const auto* interactionReferenceGeometry = baseRenderer->GetInteractionReferenceGeometry();
+  this->ResetGeometry(interactionReferenceGeometry);
+  m_RenderWindow->ShowOverlayMessage(false);
+}
+
+void QmitkRenderWindowWidget::ResetGeometry(const mitk::TimeGeometry* referenceGeometry)
+{
+  if (nullptr == referenceGeometry)
+  {
+    return;
+  }
+
+  mitk::TimeStepType imageTimeStep = 0;
+
+  // store the current position to set it again later, if the camera should not be reset
+  mitk::Point3D currentPosition = this->GetCrosshairPosition();
+
+  // store the current time step to set it again later, if the camera should not be reset
+  auto* renderingManager = mitk::RenderingManager::GetInstance();
+  const auto currentTimePoint = renderingManager->GetTimeNavigationController()->GetSelectedTimePoint();
+  if (referenceGeometry->IsValidTimePoint(currentTimePoint))
+  {
+    imageTimeStep = referenceGeometry->TimePointToTimeStep(currentTimePoint);
+  }
+
+  const auto* baseRenderer = mitk::BaseRenderer::GetInstance(m_RenderWindow->renderWindow());
+  renderingManager->InitializeView(baseRenderer->GetRenderWindow(), referenceGeometry, false);
+
+  // reset position and time step
+  this->GetSliceNavigationController()->SelectSliceByPoint(currentPosition);
+  renderingManager->GetTimeNavigationController()->GetTime()->SetPos(imageTimeStep);
 }

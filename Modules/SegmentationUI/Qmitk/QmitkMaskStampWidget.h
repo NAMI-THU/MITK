@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QmitkMaskStampWidget_h_Included
-#define QmitkMaskStampWidget_h_Included
+#ifndef QmitkMaskStampWidget_h
+#define QmitkMaskStampWidget_h
 
 #include "MitkSegmentationUIExports.h"
 #include "mitkDataNode.h"
@@ -27,8 +27,6 @@ namespace mitk
 
 /**
   \brief GUI for mask stamp functionality
-
-  This class uses the mitk::ToolManagerProvider::MULTILABEL_SEGMENTATION context.
 
   \ingroup ToolManagerEtAl
   \ingroup Widgets

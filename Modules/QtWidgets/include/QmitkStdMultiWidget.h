@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKSTDMULTIWIDGET_H
-#define QMITKSTDMULTIWIDGET_H
+#ifndef QmitkStdMultiWidget_h
+#define QmitkStdMultiWidget_h
 
 // qt widgets module
 #include "MitkQtWidgetsExports.h"
@@ -36,13 +36,39 @@ public:
   virtual void InitializeMultiWidget() override;
 
   virtual QmitkRenderWindow* GetRenderWindow(const QString& widgetName) const override;
-  virtual QmitkRenderWindow* GetRenderWindow(const mitk::BaseRenderer::ViewDirection& viewDirection) const override;
+  virtual QmitkRenderWindow* GetRenderWindow(const mitk::AnatomicalPlane& orientation) const override;
+
+  /**
+  * @brief Initialize all render windows of the StdMultiWidget to the given geometry.
+  *        Overridem from 'QmitkAbstractMultiWidget'.
+  *
+  * @param geometry       The geometry to be used to initialize / update all
+  *                       render window's time and slice navigation controller.
+  * @param resetCamera    If true, the camera and crosshair will be reset to the default view (centered, no zoom).
+  *                       If false, the current crosshair position and the camera zoom will be stored and reset
+  *                       after the reference geometry has been updated.
+  */
+  void InitializeViews(const mitk::TimeGeometry* geometry, bool resetCamera) override;
+
+  /**
+  * @brief Not implemented in this class.
+  *        Overridem from 'QmitkAbstractMultiWidget'.
+  */
+  void SetInteractionReferenceGeometry(const mitk::TimeGeometry* referenceGeometry) override;
+
+  /**
+  * @brief Returns true if the render windows are coupled; false if not.
+  *
+  * For the StdMultiWidget the render windows are typically coupled.
+  */
+  bool HasCoupledRenderWindows() const override;
 
   virtual void SetSelectedPosition(const mitk::Point3D& newPosition, const QString& widgetName) override;
   virtual const mitk::Point3D GetSelectedPosition(const QString& widgetName) const override;
 
   virtual void SetCrosshairVisibility(bool) override;
   virtual bool GetCrosshairVisibility() const override;
+  void SetCrosshairGap(unsigned int gapSize) override;
 
   virtual void ResetCrosshair() override;
 
@@ -52,12 +78,6 @@ public:
 
   void AddPlanesToDataStorage();
   void RemovePlanesFromDataStorage();
-
-  /** \brief Listener to the CrosshairPositionEvent
-
-    Ensures the CrosshairPositionEvent is handled only once and at the end of the Qt-Event loop
-  */
-  void HandleCrosshairPositionEvent();
 
   /**
    * @brief Convenience method to get a render window widget.
@@ -102,9 +122,6 @@ public Q_SLOTS:
   virtual void mousePressEvent(QMouseEvent*) override;
   virtual void moveEvent(QMoveEvent* e) override;
   virtual void wheelEvent(QWheelEvent* e) override;
-
-  /// Receives the signal from HandleCrosshairPositionEvent, executes the StatusBar update
-  void HandleCrosshairPositionEventDelayed();
 
   void Fit();
 
@@ -154,8 +171,6 @@ private:
    */
   mitk::Color m_DecorationColorWidget4;
 
-  bool m_PendingCrosshairPositionEvent;
-
 };
 
-#endif // QMITKSTDMULTIWIDGET_H
+#endif

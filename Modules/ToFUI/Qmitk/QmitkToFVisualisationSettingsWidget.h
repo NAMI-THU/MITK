@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef _QMITKTOFVISUALISATIONSETTINGSWIDGET_H_INCLUDED
-#define _QMITKTOFVISUALISATIONSETTINGSWIDGET_H_INCLUDED
+#ifndef QmitkToFVisualisationSettingsWidget_h
+#define QmitkToFVisualisationSettingsWidget_h
 
 #include <MitkToFUIExports.h>
 #include "ui_QmitkToFVisualisationSettingsWidgetControls.h"
@@ -21,8 +21,6 @@ found in the LICENSE file.
 #include <QWidget>
 // vtk includes
 #include <vtkColorTransferFunction.h>
-
-class QmitkStdMultiWidget;
 
 /** Documentation:
   * Widget controlling the visualization of Time-of-Flight image data. A color transfer function can be configured for
@@ -169,4 +167,4 @@ protected slots:
     void ReinitTransferFunction(int widget, int type);
 };
 
-#endif // _QMITKTOFVISUALISATIONSETTINGSWIDGET_H_INCLUDED
+#endif

@@ -10,14 +10,14 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKPROGRESSBARIMPLEMENTATION_H
-#define MITKPROGRESSBARIMPLEMENTATION_H
+#ifndef mitkProgressBarImplementation_h
+#define mitkProgressBarImplementation_h
 #include <MitkCoreExports.h>
 
 namespace mitk
 {
   //##Documentation
-  //## @brief GUI indepentent Interface for all Gui depentent implementations of a ProgressBar.
+  //## @brief GUI independent Interface for all Gui depentent implementations of a ProgressBar.
   class MITKCORE_EXPORT ProgressBarImplementation
   {
   public:
@@ -49,4 +49,4 @@ namespace mitk
 
 } // end namespace mitk
 
-#endif /* define MITKPROGRESSBARIMPLEMENTATION_H */
+#endif

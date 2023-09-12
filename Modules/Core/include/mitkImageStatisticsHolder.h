@@ -9,8 +9,8 @@ Use of this source code is governed by a 3-clause BSD license that can be
 found in the LICENSE file.
 
 ============================================================================*/
-#ifndef MITKIMAGESTATISTICSHOLDER_H
-#define MITKIMAGESTATISTICSHOLDER_H
+#ifndef mitkImageStatisticsHolder_h
+#define mitkImageStatisticsHolder_h
 
 #include "mitkImage.h"
 #include "mitkImageTimeSelector.h"
@@ -23,7 +23,7 @@ found in the LICENSE file.
 namespace mitk
 {
   /**
-    @brief Class holding the statistics informations about a single mitk::Image
+    @brief Class holding the statistics information about a single mitk::Image
 
     This computation was previously directly included in the definition and implementation of the mitk::Image class
     but for having a clear interface, all statistics computation is moved to the ImageStatisticsHolder class.
@@ -39,7 +39,7 @@ namespace mitk
     /** Constructor */
     ImageStatisticsHolder(mitk::Image *image);
 
-    /** Desctructor */
+    /** Destructor */
     virtual ~ImageStatisticsHolder();
 
     typedef itk::Statistics::Histogram<double> HistogramType;
@@ -173,4 +173,4 @@ namespace mitk
   };
 
 } // end namespace
-#endif // MITKIMAGESTATISTICSHOLDER_H
+#endif

@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef mitkExtractDirectedPlaneImageFilterNew_h_Included
-#define mitkExtractDirectedPlaneImageFilterNew_h_Included
+#ifndef mitkExtractDirectedPlaneImageFilterNew_h
+#define mitkExtractDirectedPlaneImageFilterNew_h
 
 #include "itkImage.h"
 #include "mitkITKImageImport.h"
@@ -29,7 +29,6 @@ namespace mitk
     \sa ContourTool
     \sa SegTool2D
     \sa ExtractImageFilter
-    \sa OverwriteSliceImageFilter
     \sa OverwriteDirectedPlaneImageFilter
 
     \ingroup Process

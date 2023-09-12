@@ -11,8 +11,8 @@ found in the LICENSE file.
 ============================================================================*/
 
 
-#ifndef __Q_MITK_MATCHPOINT_MAPPER_H
-#define __Q_MITK_MATCHPOINT_MAPPER_H
+#ifndef QmitkMatchPointMapper_h
+#define QmitkMatchPointMapper_h
 
 #include <berryISelectionListener.h>
 
@@ -29,7 +29,6 @@ found in the LICENSE file.
 
   View class that implements the logic/functionality to map point sets or images based on MatchPoint registration objects.
 
-  \sa QmitkFunctionality
   \ingroup ${plugin_target}_internal
   */
 class QmitkMatchPointMapper : public QmitkAbstractView
@@ -155,5 +154,4 @@ private:
     bool m_preparedForBinaryInput;
 };
 
-#endif // MatchPoint_h
-
+#endif

@@ -10,16 +10,10 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-/*
- * mitkEqual.h
- *
- *  Created on: Apr 14, 2014
- *      Author: wirkert
- */
+#ifndef mitkEqual_h
+#define mitkEqual_h
 
-#ifndef MITKEQUAL_H_
-#define MITKEQUAL_H_
-
+#include <cmath>
 #include <iomanip>
 
 #include "mitkLogMacros.h"
@@ -37,7 +31,7 @@ namespace mitk
   template <typename DifferenceType>
   inline bool DifferenceBiggerOrEqualEps(DifferenceType diff, mitk::ScalarType epsilon = mitk::eps)
   {
-    return fabs(diff) >= epsilon;
+    return std::fabs(diff) >= epsilon;
   }
 
   /**
@@ -81,4 +75,4 @@ namespace mitk
   }
 }
 
-#endif /* MITKEQUAL_H_ */
+#endif

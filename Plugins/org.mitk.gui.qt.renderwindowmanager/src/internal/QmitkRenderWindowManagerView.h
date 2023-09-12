@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKRENDERWINDOWMANAGERVIEW_H
-#define QMITKRENDERWINDOWMANAGERVIEW_H
+#ifndef QmitkRenderWindowManagerView_h
+#define QmitkRenderWindowManagerView_h
 
 // render window manager plugin
 #include "ui_QmitkRenderWindowManagerControls.h"
@@ -45,7 +45,7 @@ public:
 
 protected:
 
-  void SetFocus() override;
+  void SetFocus() override {}
 
   void CreateQtPartControl(QWidget* parent) override;
 
@@ -67,7 +67,7 @@ private:
   QWidget* m_Parent;
   Ui::QmitkRenderWindowManagerControls m_Controls;
 
-  mitk::IRenderWindowPart* m_RenderWindowPart;
+  mitk::IRenderWindowPart* m_RenderWindowPart = nullptr;
 
   QmitkRenderWindowDataStorageInspector* m_RenderWindowInspector;
   QAbstractItemView* m_InspectorView;
@@ -76,4 +76,4 @@ private:
   QItemSelectionModel* GetDataNodeSelectionModel() const override;
 };
 
-#endif // QMITKRENDERWINDOWMANAGERVIEW_H
+#endif

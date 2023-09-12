@@ -41,7 +41,7 @@ private:
 
 public:
   /**
-* @brief Setup Always call this method before each Test-case to ensure correct and new intialization of the used members
+* @brief Setup Always call this method before each Test-case to ensure correct and new initialization of the used members
 * for a new test case. (If the members are not used in a test, the method does not need to be called).
 */
   void setUp() override
@@ -138,7 +138,7 @@ public:
     mitk::Vector3D differentSpacing;
     differentSpacing[0] = 1.0;
     differentSpacing[1] = 2.0;
-    differentSpacing[2] = 3.0+3* mitk::NODE_PREDICATE_GEOMETRY_DEFAULT_CHECK_PRECISION;
+    differentSpacing[2] = 3.0+3* mitk::NODE_PREDICATE_GEOMETRY_DEFAULT_CHECK_COORDINATE_PRECISION;
 
     m_AnotherGeometry3D->SetSpacing(differentSpacing);
     m_Data->SetClonedGeometry(m_AnotherGeometry3D);
@@ -150,10 +150,10 @@ public:
     mitk::NodePredicateGeometry::Pointer predicate2 = mitk::NodePredicateGeometry::New(m_AnotherGeometry3D);
     CPPUNIT_ASSERT(predicate2->CheckNode(m_Node));
 
-    //check less strict precission checkings
+    //check less strict precision checkings
     differentSpacing[0] = 1.0;
     differentSpacing[1] = 1.0;
-    differentSpacing[2] = 1.0 + 3 * mitk::NODE_PREDICATE_GEOMETRY_DEFAULT_CHECK_PRECISION;
+    differentSpacing[2] = 1.0 + 3 * mitk::NODE_PREDICATE_GEOMETRY_DEFAULT_CHECK_COORDINATE_PRECISION;
 
     m_AnotherGeometry3D->SetSpacing(differentSpacing);
     m_Data->SetClonedGeometry(m_AnotherGeometry3D);

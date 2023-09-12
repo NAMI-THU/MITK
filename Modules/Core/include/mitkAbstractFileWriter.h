@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef AbstractFileWriter_H_HEADER_INCLUDED_C1E7E521
-#define AbstractFileWriter_H_HEADER_INCLUDED_C1E7E521
+#ifndef mitkAbstractFileWriter_h
+#define mitkAbstractFileWriter_h
 
 // Macro
 #include <MitkCoreExports.h>
@@ -40,8 +40,8 @@ namespace mitk
    * @brief Base class for writing mitk::BaseData objects to files or streams.
    *
    * In general, all file writers should derive from this class, this way it is
-   * made sure that the new implementation is
-   * exposed to the Microservice-Framework and that is automatically available troughout MITK.
+   * made sure that the new implementation is exposed to the
+   * Microservice-Framework and that is automatically available throughout MITK.
    * The default implementation only requires one Write()
    * method and the Clone() method to be implemented.
    *
@@ -223,4 +223,4 @@ namespace mitk
 
 } // namespace mitk
 
-#endif /* AbstractFileWriter_H_HEADER_INCLUDED_C1E7E521 */
+#endif

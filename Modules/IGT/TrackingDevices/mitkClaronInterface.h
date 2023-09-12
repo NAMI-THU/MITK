@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKCLARONINTERFACE_H_HEADER_INCLUDED_
-#define MITKCLARONINTERFACE_H_HEADER_INCLUDED_
+#ifndef mitkClaronInterface_h
+#define mitkClaronInterface_h
 #define MTC(func) {int r = func; if (r!=mtOK) printf("MTC error: %s\n",MTLastErrorString()); };
 
 #include <vector>
@@ -24,7 +24,7 @@ found in the LICENSE file.
 #include <itkObjectFactory.h>
 
 #ifdef _WIN64  //Defined for applications for Win64.
-typedef long mtHandle;
+typedef long long mtHandle;
 #else
 typedef int mtHandle;
 #endif

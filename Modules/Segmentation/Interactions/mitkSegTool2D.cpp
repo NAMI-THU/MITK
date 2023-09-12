@@ -15,7 +15,6 @@ found in the LICENSE file.
 
 #include "mitkBaseRenderer.h"
 #include "mitkDataStorage.h"
-
 #include "mitkPlaneGeometry.h"
 
 // Include of the new ImageExtractor
@@ -44,7 +43,10 @@ found in the LICENSE file.
 
 #include "mitkContourModelUtils.h"
 
-#include "itkImageRegionIterator.h"
+// #include <itkImageRegionIterator.h>
+
+#include <vtkAbstractArray.h>
+#include <vtkFieldData.h>
 
 #define ROUND(a) ((a) > 0 ? (int)((a) + 0.5) : -(int)(0.5 - (a)))
 
@@ -58,7 +60,7 @@ mitk::SegTool2D::SliceInformation::SliceInformation(const mitk::Image* aSlice, c
 mitk::SegTool2D::SegTool2D(const char *type, const us::Module *interactorModule)
   : Tool(type, interactorModule), m_Contourmarkername("Position")
 {
-  Tool::m_EventConfig = "DisplayConfigMITKNoCrosshair.xml";
+  Tool::m_EventConfig = "DisplayConfigBlockLMB.xml";
 }
 
 mitk::SegTool2D::~SegTool2D()
@@ -110,7 +112,7 @@ bool mitk::SegTool2D::DetermineAffectedImageSlice(const Image *image,
   {
     affectedDimension = 1;
   }
-  // frontal
+  // coronal
   else if (imageNormal0.GetNorm() <= eps)
   {
     affectedDimension = 0;
@@ -147,20 +149,22 @@ void mitk::SegTool2D::UpdateSurfaceInterpolation(const Image *slice,
                                                  bool detectIntersection)
 {
   std::vector<SliceInformation> slices = { SliceInformation(slice, plane, 0)};
-  Self::UpdateSurfaceInterpolation(slices, workingImage, detectIntersection);
+  Self::UpdateSurfaceInterpolation(slices, workingImage, detectIntersection, 0, 0);
 }
 
 void  mitk::SegTool2D::RemoveContourFromInterpolator(const SliceInformation& sliceInfo)
 {
   mitk::SurfaceInterpolationController::ContourPositionInformation contourInfo;
-  contourInfo.contourNormal = sliceInfo.plane->GetNormal();
-  contourInfo.contourPoint = sliceInfo.plane->GetOrigin();
+  contourInfo.ContourNormal = sliceInfo.plane->GetNormal();
+  contourInfo.ContourPoint = sliceInfo.plane->GetOrigin();
   mitk::SurfaceInterpolationController::GetInstance()->RemoveContour(contourInfo);
 }
 
 void mitk::SegTool2D::UpdateSurfaceInterpolation(const std::vector<SliceInformation>& sliceInfos,
   const Image* workingImage,
-  bool detectIntersection)
+  bool detectIntersection,
+  unsigned int activeLayerID,
+  mitk::Label::PixelType activeLabelValue)
 {
   if (!m_SurfaceInterpolationEnabled)
     return;
@@ -213,10 +217,11 @@ void mitk::SegTool2D::UpdateSurfaceInterpolation(const std::vector<SliceInformat
   if (relevantSlices.empty())
     return;
 
+  std::vector<const mitk::PlaneGeometry*> contourPlanes;
   for (const auto& sliceInfo : relevantSlices)
   {
-
     contourExtractor->SetInput(sliceInfo.slice);
+    contourExtractor->SetContourValue(activeLabelValue);
     contourExtractor->Update();
     mitk::Surface::Pointer contour = contourExtractor->GetOutput();
 
@@ -226,11 +231,17 @@ void mitk::SegTool2D::UpdateSurfaceInterpolation(const std::vector<SliceInformat
     }
     else
     {
+      vtkSmartPointer<vtkIntArray> intArray = vtkSmartPointer<vtkIntArray>::New();
+      intArray->InsertNextValue(activeLabelValue);
+      intArray->InsertNextValue(activeLayerID);
+      contour->GetVtkPolyData()->GetFieldData()->AddArray(intArray);
       contour->DisconnectPipeline();
       contourList.push_back(contour);
+      contourPlanes.push_back(sliceInfo.plane);
     }
   }
-  mitk::SurfaceInterpolationController::GetInstance()->AddNewContours(contourList);
+
+  mitk::SurfaceInterpolationController::GetInstance()->AddNewContours(contourList, contourPlanes);
 }
 
 
@@ -367,7 +378,7 @@ void mitk::SegTool2D::Activated()
 {
   Superclass::Activated();
 
-  m_ToolManager->SelectedTimePointChanged +=
+  this->GetToolManager()->SelectedTimePointChanged +=
     mitk::MessageDelegate<mitk::SegTool2D>(this, &mitk::SegTool2D::OnTimePointChangedInternal);
 
   m_LastTimePointTriggered = mitk::RenderingManager::GetInstance()->GetTimeNavigationController()->GetSelectedTimePoint();
@@ -375,7 +386,7 @@ void mitk::SegTool2D::Activated()
 
 void mitk::SegTool2D::Deactivated()
 {
-  m_ToolManager->SelectedTimePointChanged -=
+  this->GetToolManager()->SelectedTimePointChanged -=
     mitk::MessageDelegate<mitk::SegTool2D>(this, &mitk::SegTool2D::OnTimePointChangedInternal);
   Superclass::Deactivated();
 }
@@ -401,9 +412,9 @@ void mitk::SegTool2D::OnTimePointChanged()
 
 mitk::DataNode* mitk::SegTool2D::GetWorkingDataNode() const
 {
-  if (nullptr != m_ToolManager)
+  if (nullptr != this->GetToolManager())
   {
-    return m_ToolManager->GetWorkingData(0);
+    return this->GetToolManager()->GetWorkingData(0);
   }
   return nullptr;
 }
@@ -420,9 +431,9 @@ mitk::Image* mitk::SegTool2D::GetWorkingData() const
 
 mitk::DataNode* mitk::SegTool2D::GetReferenceDataNode() const
 {
-  if (nullptr != m_ToolManager)
+  if (nullptr != this->GetToolManager())
   {
-    return m_ToolManager->GetReferenceData(0);
+    return this->GetToolManager()->GetReferenceData(0);
   }
   return nullptr;
 }
@@ -472,7 +483,13 @@ void mitk::SegTool2D::WriteBackSegmentationResult(const PlaneGeometry *planeGeom
   if (!planeGeometry || !segmentationResult)
     return;
 
+  if(m_LastEventSender == nullptr)
+  {
+    return;
+  }
+  unsigned int currentSlicePosition = m_LastEventSender->GetSliceNavigationController()->GetSlice()->GetPos();
   SliceInformation sliceInfo(segmentationResult, const_cast<mitk::PlaneGeometry *>(planeGeometry), timeStep);
+  sliceInfo.slicePosition = currentSlicePosition;
   WriteBackSegmentationResults({ sliceInfo }, true);
 }
 
@@ -492,14 +509,15 @@ void mitk::SegTool2D::WriteBackSegmentationResults(const std::vector<SegTool2D::
 
   const auto workingNode = this->GetWorkingDataNode();
 
-  mitk::SegTool2D::WriteBackSegmentationResults(workingNode, sliceList, writeSliceToVolume);
-
   // the first geometry is needed otherwise restoring the position is not working
   const auto* plane3 =
     dynamic_cast<const PlaneGeometry*>(dynamic_cast<const mitk::SlicedGeometry3D*>(
       m_LastEventSender->GetSliceNavigationController()->GetCurrentGeometry3D())
       ->GetPlaneGeometry(0));
   unsigned int slicePosition = m_LastEventSender->GetSliceNavigationController()->GetSlice()->GetPos();
+
+  mitk::SegTool2D::WriteBackSegmentationResults(workingNode, sliceList, writeSliceToVolume);
+
 
   /* A cleaner solution would be to add a contour marker for each slice info. It currently
    does not work as the contour markers expect that the plane is always the plane of slice 0.
@@ -519,7 +537,21 @@ void mitk::SegTool2D::WriteBackSegmentationResults(const DataNode* workingNode, 
     mitkThrow() << "Cannot write slice to working node. Working node is invalid.";
   }
 
-  auto* image = dynamic_cast<Image*>(workingNode->GetData());
+  auto image = dynamic_cast<Image*>(workingNode->GetData());
+
+  mitk::Label::PixelType activeLabelValue = 0;
+  unsigned int activeLayerID = 0;
+
+  try{
+    auto labelSetImage = dynamic_cast<mitk::LabelSetImage*>(workingNode->GetData());
+    activeLayerID = labelSetImage->GetActiveLayer();
+    activeLabelValue = labelSetImage->GetActiveLabelSet()->GetActiveLabel()->GetValue();
+  }
+  catch(...)
+  {
+    mitkThrow() << "Working node does not contain  labelSetImage.";
+  }
+
 
   if (nullptr == image)
   {
@@ -530,11 +562,11 @@ void mitk::SegTool2D::WriteBackSegmentationResults(const DataNode* workingNode, 
   {
     if (writeSliceToVolume && nullptr != sliceInfo.plane && sliceInfo.slice.IsNotNull())
     {
-      mitk::SegTool2D::WriteSliceToVolume(image, sliceInfo, true);
+      SegTool2D::WriteSliceToVolume(image, sliceInfo, true);
     }
   }
 
-  mitk::SegTool2D::UpdateSurfaceInterpolation(sliceList, image, false);
+  SegTool2D::UpdateSurfaceInterpolation(sliceList, image, false, activeLayerID, activeLabelValue);
 
   // also mark its node as modified (T27308). Can be removed if T27307
   // is properly solved
@@ -546,7 +578,8 @@ void mitk::SegTool2D::WriteBackSegmentationResults(const DataNode* workingNode, 
 void mitk::SegTool2D::WriteSliceToVolume(Image* workingImage, const PlaneGeometry* planeGeometry, const Image* slice, TimeStepType timeStep, bool allowUndo)
 {
   SliceInformation sliceInfo(slice, planeGeometry, timeStep);
-  WriteSliceToVolume(workingImage, sliceInfo , allowUndo);
+
+  WriteSliceToVolume(workingImage, sliceInfo, allowUndo);
 }
 
 void mitk::SegTool2D::WriteSliceToVolume(Image* workingImage, const SliceInformation &sliceInfo, bool allowUndo)
@@ -623,7 +656,6 @@ void mitk::SegTool2D::WriteSliceToVolume(Image* workingImage, const SliceInforma
     UndoController::GetCurrentUndoModel()->SetOperationEvent(undoStackItem);
     /*============= END undo/redo feature block ========================*/
   }
-
 }
 
 
@@ -636,7 +668,6 @@ void mitk::SegTool2D::SetEnable3DInterpolation(bool enabled)
 {
   m_SurfaceInterpolationEnabled = enabled;
 }
-
 
 int mitk::SegTool2D::AddContourmarker(const PlaneGeometry* planeGeometry, unsigned int sliceIndex)
 {
@@ -653,12 +684,10 @@ int mitk::SegTool2D::AddContourmarker(const PlaneGeometry* planeGeometry, unsign
   mitk::PlanarCircle::Pointer contourMarker = mitk::PlanarCircle::New();
   mitk::Point2D p1;
   planeGeometry->Map(planeGeometry->GetCenter(), p1);
-  mitk::Point2D p2 = p1;
-  p2[0] -= planeGeometry->GetSpacing()[0];
-  p2[1] -= planeGeometry->GetSpacing()[1];
+  contourMarker->SetPlaneGeometry(planeGeometry->Clone());
   contourMarker->PlaceFigure(p1);
   contourMarker->SetCurrentControlPoint(p1);
-  contourMarker->SetPlaneGeometry(planeGeometry->Clone());
+  contourMarker->SetProperty("initiallyplaced", mitk::BoolProperty::New(true));
 
   std::stringstream markerStream;
   auto workingNode = this->GetWorkingDataNode();
@@ -684,7 +713,7 @@ int mitk::SegTool2D::AddContourmarker(const PlaneGeometry* planeGeometry, unsign
   {
     if (id == size)
     {
-      m_ToolManager->GetDataStorage()->Add(rotatedContourNode, workingNode);
+      this->GetToolManager()->GetDataStorage()->Add(rotatedContourNode, workingNode);
     }
     else
     {
@@ -692,7 +721,7 @@ int mitk::SegTool2D::AddContourmarker(const PlaneGeometry* planeGeometry, unsign
         mitk::NodePredicateProperty::New("isContourMarker", mitk::BoolProperty::New(true));
 
       mitk::DataStorage::SetOfObjects::ConstPointer markers =
-        m_ToolManager->GetDataStorage()->GetDerivations(workingNode, isMarker);
+        this->GetToolManager()->GetDataStorage()->GetDerivations(workingNode, isMarker);
 
       for (auto iter = markers->begin(); iter != markers->end(); ++iter)
       {
@@ -704,7 +733,7 @@ int mitk::SegTool2D::AddContourmarker(const PlaneGeometry* planeGeometry, unsign
           return id;
         }
       }
-      m_ToolManager->GetDataStorage()->Add(rotatedContourNode, workingNode);
+      this->GetToolManager()->GetDataStorage()->Add(rotatedContourNode, workingNode);
     }
   }
   return id;
@@ -730,83 +759,6 @@ void mitk::SegTool2D::InteractiveSegmentationBugMessage(const std::string &messa
              << "  - What happened (not)? What did you expect?" << std::endl;
 }
 
-template <typename TPixel, unsigned int VImageDimension>
-void InternalWritePreviewOnWorkingImage(itk::Image<TPixel, VImageDimension> *targetSlice,
-                                        const mitk::Image *sourceSlice,
-                                        mitk::Image *originalImage,
-                                        int overwritevalue)
-{
-  typedef itk::Image<TPixel, VImageDimension> SliceType;
-
-  typename SliceType::Pointer sourceSliceITK;
-  CastToItkImage(sourceSlice, sourceSliceITK);
-
-  // now the original slice and the ipSegmentation-painted slice are in the same format, and we can just copy all pixels
-  // that are non-zero
-  typedef itk::ImageRegionIterator<SliceType> OutputIteratorType;
-  typedef itk::ImageRegionConstIterator<SliceType> InputIteratorType;
-
-  InputIteratorType inputIterator(sourceSliceITK, sourceSliceITK->GetLargestPossibleRegion());
-  OutputIteratorType outputIterator(targetSlice, targetSlice->GetLargestPossibleRegion());
-
-  outputIterator.GoToBegin();
-  inputIterator.GoToBegin();
-
-  auto *workingImage = dynamic_cast<mitk::LabelSetImage *>(originalImage);
-  assert(workingImage);
-
-  int activePixelValue = workingImage->GetActiveLabel()->GetValue();
-
-  if (activePixelValue == 0) // if exterior is the active label
-  {
-    while (!outputIterator.IsAtEnd())
-    {
-      if (inputIterator.Get() != 0)
-      {
-        outputIterator.Set(overwritevalue);
-      }
-      ++outputIterator;
-      ++inputIterator;
-    }
-  }
-  else if (overwritevalue != 0) // if we are not erasing
-  {
-    while (!outputIterator.IsAtEnd())
-    {
-      auto targetValue = static_cast<int>(outputIterator.Get());
-      if (inputIterator.Get() != 0)
-      {
-        if (!workingImage->GetLabel(targetValue)->GetLocked())
-        {
-          outputIterator.Set(overwritevalue);
-        }
-      }
-      if (targetValue == overwritevalue)
-      {
-        outputIterator.Set(inputIterator.Get());
-      }
-
-      ++outputIterator;
-      ++inputIterator;
-    }
-  }
-  else // if we are erasing
-  {
-    while (!outputIterator.IsAtEnd())
-    {
-      const int targetValue = outputIterator.Get();
-      if (inputIterator.Get() != 0)
-      {
-        if (targetValue == activePixelValue)
-          outputIterator.Set(overwritevalue);
-      }
-
-      ++outputIterator;
-      ++inputIterator;
-    }
-  }
-}
-
 void mitk::SegTool2D::WritePreviewOnWorkingImage(
   Image *targetSlice, const Image *sourceSlice, const Image *workingImage, int paintingPixelValue)
 {
@@ -830,5 +782,17 @@ void mitk::SegTool2D::WritePreviewOnWorkingImage(
    (or I am not experienced enough to use it correctly)*/
   auto nonConstVtkSource = const_cast<vtkImageData*>(constVtkSource);
 
-  ContourModelUtils::FillSliceInSlice(nonConstVtkSource, targetSlice->GetVtkImageData(), workingImage, paintingPixelValue);
+  ContourModelUtils::FillSliceInSlice(nonConstVtkSource, targetSlice->GetVtkImageData(), workingImage, paintingPixelValue, 1.0);
+}
+
+bool mitk::SegTool2D::IsPositionEventInsideImageRegion(mitk::InteractionPositionEvent* positionEvent,
+  const mitk::BaseData* data)
+{
+  bool isPositionEventInsideImageRegion =
+    nullptr != data && data->GetGeometry()->IsInside(positionEvent->GetPositionInWorld());
+
+  if (!isPositionEventInsideImageRegion)
+    MITK_WARN("EditableContourTool") << "PositionEvent is outside ImageRegion!";
+
+  return isPositionEventInsideImageRegion;
 }

@@ -10,12 +10,11 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKPolhemusTOOL_H_HEADER_INCLUDED_
-#define MITKPolhemusTOOL_H_HEADER_INCLUDED_
+#ifndef mitkPolhemusTool_h
+#define mitkPolhemusTool_h
 
 #include <mitkPolhemusInterface.h>
 #include <mitkTrackingTool.h>
-#include <itkFastMutexLock.h>
 
 namespace mitk
 {
@@ -81,4 +80,4 @@ namespace mitk
     DistortionLevel m_DistortionLevel;
   };
 }//mitk
-#endif // MITKPolhemusTOOL_H_HEADER_INCLUDED_
+#endif

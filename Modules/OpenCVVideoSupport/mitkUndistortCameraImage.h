@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef __mitkUndistortCameraImage_h
-#define __mitkUndistortCameraImage_h
+#ifndef mitkUndistortCameraImage_h
+#define mitkUndistortCameraImage_h
 
 #include "mitkCommon.h"
 #include <MitkOpenCVVideoSupportExports.h>
@@ -19,8 +19,8 @@ found in the LICENSE file.
 
 #include "mitkPoint.h"
 
-#include "opencv2/core.hpp"
-#include "opencv2/imgproc.hpp"
+#include <opencv2/core.hpp>
+#include <opencv2/core/types_c.h>
 
 /*!
 \brief UndistortCameraImage
@@ -33,7 +33,6 @@ OpenCV image.
 A faster version of UndistortImage() is UndistortImageFast(), however, it has to be initialized once with SetUndistortImageFastInfo()
 instead of the Set... methods before use.
 
-\sa QmitkFunctionality
 \ingroup Functionalities
 */
 

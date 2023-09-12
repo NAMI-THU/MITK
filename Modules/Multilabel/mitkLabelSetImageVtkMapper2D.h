@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef __mitkLabelSetImageVtkMapper2D_H_
-#define __mitkLabelSetImageVtkMapper2D_H_
+#ifndef mitkLabelSetImageVtkMapper2D_h
+#define mitkLabelSetImageVtkMapper2D_h
 
 // MITK
 #include "MitkMultilabelExports.h"
@@ -77,7 +77,7 @@ namespace mitk
 
     /** \brief Internal class holding the mapper, actor, etc. for each of the 3 2D render windows */
     /**
-       * To render transversal, coronal, and sagittal, the mapper is called three times.
+       * To render axial, coronal, and sagittal, the mapper is called three times.
        * For performance reasons, the corresponding data for each view is saved in the
        * internal helper class LocalStorage. This allows rendering n views with just
        * 1 mitkMapper using n vtkMapper.
@@ -238,4 +238,4 @@ namespace mitk
 
 } // namespace mitk
 
-#endif // __mitkLabelSetImageVtkMapper2D_H_
+#endif

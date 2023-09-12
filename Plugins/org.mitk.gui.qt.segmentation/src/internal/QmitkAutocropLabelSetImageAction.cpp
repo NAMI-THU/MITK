@@ -33,7 +33,7 @@ namespace
     auto timeSelector = mitk::ImageTimeSelector::New();
     timeSelector->SetInput(labelSetImage);
 
-    const auto background = labelSetImage->GetExteriorLabel()->GetValue();
+    const auto background = mitk::LabelSetImage::UnlabeledValue;
     const auto numLayers = labelSetImage->GetNumberOfLayers();
     const auto numTimeSteps = labelSetImage->GetTimeSteps();
 
@@ -279,7 +279,7 @@ void QmitkAutocropLabelSetImageAction::Run(const QList<mitk::DataNode::Pointer>&
 
     // If we cropped a single LabelSetImage, reinit the views to give a visible feedback to the user
     if (1 == selectedNodes.size())
-      mitk::RenderingManager::GetInstance()->InitializeViews(croppedLabelSetImage->GetTimeGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true);
+      mitk::RenderingManager::GetInstance()->InitializeViews(croppedLabelSetImage->GetTimeGeometry());
   }
 }
 

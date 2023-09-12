@@ -11,14 +11,14 @@ found in the LICENSE file.
 ============================================================================*/
 
 
-#ifndef MITKTRACKINGTOOL_H_HEADER_INCLUDED_
-#define MITKTRACKINGTOOL_H_HEADER_INCLUDED_
+#ifndef mitkTrackingTool_h
+#define mitkTrackingTool_h
 
 #include <itkObject.h>
 #include <MitkIGTExports.h>
 #include <mitkCommon.h>
 #include <mitkNumericTypes.h>
-#include <itkFastMutexLock.h>
+#include <mutex>
 
 namespace mitk
 {
@@ -86,7 +86,7 @@ namespace mitk
     std::string m_ToolName;                          ///< every tool has a name that can be used to identify it.
     std::string m_ErrorMessage;                      ///< if a tool is invalid, this member should contain a human readable explanation of why it is invalid
     double m_IGTTimeStamp;                           ///< contains the time at which the tracking data was recorded
-    itk::FastMutexLock::Pointer m_MyMutex;           ///< mutex to control concurrent access to the tool
+    mutable std::mutex m_MyMutex;           ///< mutex to control concurrent access to the tool
 
     Point3D m_Position;         ///< holds the position of the tool in global tracking coordinates
     Quaternion m_Orientation;   ///< holds the orientation of the tool´in global tracking coordinates
@@ -98,4 +98,4 @@ namespace mitk
     bool m_ToolTipSet;
   };
 } // namespace mitk
-#endif /* MITKTRACKINGTOOL_H_HEADER_INCLUDED_ */
+#endif

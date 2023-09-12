@@ -10,9 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-// change number
-#ifndef VTKMAPPER_H_HEADER_INCLUDED_C1C5453B
-#define VTKMAPPER_H_HEADER_INCLUDED_C1C5453B
+#ifndef mitkVtkMapper_h
+#define mitkVtkMapper_h
 
 #include "mitkBaseRenderer.h"
 #include "mitkDataNode.h"
@@ -72,7 +71,7 @@ namespace mitk
     /** \brief Checks visibility and renders untransparent geometry */
     virtual void MitkRenderOpaqueGeometry(BaseRenderer *renderer);
 
-    /** \brief Checks visiblity and renders transparent geometry */
+    /** \brief Checks visibility and renders transparent geometry */
     virtual void MitkRenderTranslucentGeometry(BaseRenderer *renderer);
 
     /** \brief Checks visibility and renders volumes */
@@ -148,4 +147,4 @@ namespace mitk
     VtkMapper &operator=(const VtkMapper &);
   };
 } // namespace mitk
-#endif /* VTKMAPPER_H_HEADER_INCLUDED_C1C5453B */
+#endif

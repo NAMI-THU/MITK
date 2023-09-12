@@ -11,8 +11,8 @@ found in the LICENSE file.
 ============================================================================*/
 
 
-#ifndef __Q_MITK_MATCHPOINT_REGISTRATION_VISUALIZER_H
-#define __Q_MITK_MATCHPOINT_REGISTRATION_VISUALIZER_H
+#ifndef QmitkMatchPointRegistrationVisualizer_h
+#define QmitkMatchPointRegistrationVisualizer_h
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
@@ -33,7 +33,6 @@ found in the LICENSE file.
 
   \warning  This class is not yet documented. Use "git blame" and ask the author to provide basic documentation.
 
-  \sa QmitkFunctionality
   \ingroup ${plugin_target}_internal
   */
 class QmitkMatchPointRegistrationVisualizer : public QmitkAbstractView
@@ -156,4 +155,4 @@ private:
     mitk::AffineTransform3D::MatrixType m_FOVRefOrientation;
 };
 
-#endif // MatchPoint_h
+#endif

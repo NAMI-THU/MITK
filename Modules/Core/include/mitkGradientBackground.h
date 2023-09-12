@@ -27,7 +27,7 @@ namespace mitk
   /**
    * Displays a color gradient in the background
    * of a vtkRenderWindow.
-   * The gradient ist faked by displaying a non-interactable
+   * The gradient is faked by displaying a non-interactable
    * smoothly shaded plane in a separate layer behind the
    * scene. After setting the renderwindow, the gradient may be
    * activated by calling Enable()
@@ -100,4 +100,4 @@ namespace mitk
     vtkSmartPointer<vtkRenderer> m_Renderer;
   };
 } // end of namespace mitk
-#endif // mitkGradientBackground_h
+#endif

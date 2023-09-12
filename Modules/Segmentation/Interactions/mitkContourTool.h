@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef mitkContourTool_h_Included
-#define mitkContourTool_h_Included
+#ifndef mitkContourTool_h
+#define mitkContourTool_h
 
 #include "mitkCommon.h"
 #include "mitkFeedbackContourTool.h"
@@ -28,7 +28,6 @@ namespace mitk
 
     \sa FeedbackContourTool
     \sa ExtractImageFilter
-    \sa OverwriteSliceImageFilter
 
     \ingroup Interaction
     \ingroup ToolManagerEtAl

@@ -179,8 +179,8 @@ namespace mitk
 
     /**
        * @brief ResetMapper Called in mitk::Mapper::Update to hide objects.
-       * If TimeSlicedGeometry or time step is not valid, reset the mapper.
-       * so that nothing is displayed e.g. toggle visiblity of the propassembly.
+       * If TimeGeometry or time step is not valid, reset the mapper.
+       * so that nothing is displayed e.g. toggle visibility of the propassembly.
        *
        * @param renderer The respective renderer of the mitkRenderWindow.
        */
@@ -212,4 +212,4 @@ namespace mitk
     void Update(BaseRenderer *renderer) override;
   };
 } // namespace mitk
-#endif /* mitkSurfaceVtkMapper2D_h */
+#endif

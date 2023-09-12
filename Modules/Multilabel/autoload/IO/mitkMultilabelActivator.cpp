@@ -15,7 +15,10 @@ found in the LICENSE file.
 #include <usModuleActivator.h>
 #include <usModuleContext.h>
 
-#include "mitkLabelSetImageIO.h"
+#include "mitkLegacyLabelSetImageIO.h"
+#include "mitkMultiLabelSegmentationIO.h"
+#include "mitkMultilabelIOMimeTypes.h"
+#include "mitkSegmentationTaskListIO.h"
 
 namespace mitk
 {
@@ -25,11 +28,23 @@ namespace mitk
   class MultilabelIOModuleActivator : public us::ModuleActivator
   {
     std::vector<AbstractFileIO *> m_FileIOs;
+    std::unique_ptr<IFileReader> m_LegacyLabelSetImageIOReader;
 
   public:
-    void Load(us::ModuleContext * /*context*/) override
+    void Load(us::ModuleContext *context) override
     {
-      m_FileIOs.push_back(new LabelSetImageIO());
+      auto mimeTypes = MitkMultilabelIOMimeTypes::Get();
+
+      us::ServiceProperties props;
+      props[us::ServiceConstants::SERVICE_RANKING()] = 10;
+
+      for (const auto &mimeType : mimeTypes)
+        context->RegisterService(mimeType, props);
+
+      m_LegacyLabelSetImageIOReader = std::make_unique<LegacyLabelSetImageIO>();
+
+      m_FileIOs.push_back(new MultiLabelSegmentationIO());
+      m_FileIOs.push_back(new SegmentationTaskListIO);
     }
     void Unload(us::ModuleContext *) override
     {

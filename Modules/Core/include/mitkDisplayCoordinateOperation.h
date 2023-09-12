@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKDISPLAYCOORDINATEOPERATION_H_HEADER_INCLUDED_C10E33D0
-#define MITKDISPLAYCOORDINATEOPERATION_H_HEADER_INCLUDED_C10E33D0
+#ifndef mitkDisplayCoordinateOperation_h
+#define mitkDisplayCoordinateOperation_h
 
 #include "mitkBaseRenderer.h"
 #include "mitkNumericTypes.h"
@@ -27,7 +27,7 @@ namespace mitk
   // Coordinate supplier can probably also be removed then.
 
   //##Documentation
-  //## @brief Operation with informations necessary for operations of DisplayVectorInteractor
+  //## @brief Operation with information necessary for operations of DisplayVectorInteractor
   //## @ingroup Undo
   class MITKCORE_EXPORT DisplayCoordinateOperation : public Operation
   {
@@ -68,4 +68,4 @@ namespace mitk
   };
 }
 
-#endif /* MITKDISPLAYCOORDINATEOPERATION_H_HEADER_INCLUDED_C10E33D0 */
+#endif

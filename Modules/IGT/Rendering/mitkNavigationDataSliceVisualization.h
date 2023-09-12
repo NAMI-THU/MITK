@@ -9,8 +9,8 @@ Use of this source code is governed by a 3-clause BSD license that can be
 found in the LICENSE file.
 
 ============================================================================*/
-#ifndef MITKNAVIGATIONDATASLICEVISUALIZATION_H_HEADER_INCLUDED_
-#define MITKNAVIGATIONDATASLICEVISUALIZATION_H_HEADER_INCLUDED_
+#ifndef mitkNavigationDataSliceVisualization_h
+#define mitkNavigationDataSliceVisualization_h
 
 #include "mitkNavigationDataToNavigationDataFilter.h"
 #include "mitkBaseRenderer.h"
@@ -41,7 +41,7 @@ class MITKIGT_EXPORT NavigationDataSliceVisualization : public NavigationDataToN
        */
       Axial = 0,
       Sagittal,
-      Frontal,
+      Coronal,
       /**
        * Axial plane "tilted" about the lateral vector so that it is coplanar
        * with the tool trajectory
@@ -132,4 +132,4 @@ class MITKIGT_EXPORT NavigationDataSliceVisualization : public NavigationDataToN
 
 } // end namespace mitk
 
-#endif // NEMOSLICEVISUALIZATIONFILTER_H
+#endif

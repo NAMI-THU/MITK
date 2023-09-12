@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef _mitkImageLiveWireContourModelFilter_h__
-#define _mitkImageLiveWireContourModelFilter_h__
+#ifndef mitkImageLiveWireContourModelFilter_h
+#define mitkImageLiveWireContourModelFilter_h
 
 #include "mitkCommon.h"
 #include "mitkContourModel.h"
@@ -107,6 +107,8 @@ namespace mitk
 
     /** \brief Create dynamic cost tranfer map - on the fly training*/
     bool CreateDynamicCostMap(mitk::ContourModel *path = nullptr);
+
+    void SetUseCostFunction(bool doUseCostFunction) { m_ShortestPathFilter->SetUseCostFunction(doUseCostFunction); };
 
   protected:
     ImageLiveWireContourModelFilter();

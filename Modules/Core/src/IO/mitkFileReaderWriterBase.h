@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKFILEREADERWRITERBASE_H
-#define MITKFILEREADERWRITERBASE_H
+#ifndef mitkFileReaderWriterBase_h
+#define mitkFileReaderWriterBase_h
 
 #include <mitkCustomMimeType.h>
 #include <mitkMessage.h>
@@ -84,7 +84,7 @@ namespace mitk
     /**
      * \brief Options supported by this reader. Set sensible default values!
      *
-     * Can be left emtpy if no special options are required.
+     * Can be left empty if no special options are required.
      */
     Options m_Options;
 
@@ -103,4 +103,4 @@ namespace mitk
   };
 }
 
-#endif // MITKFILEREADERWRITERBASE_H
+#endif

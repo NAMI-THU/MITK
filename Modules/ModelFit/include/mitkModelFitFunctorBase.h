@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MODEL_FIT_FUNCTOR_BASE_H
-#define MODEL_FIT_FUNCTOR_BASE_H
+#ifndef mitkModelFitFunctorBase_h
+#define mitkModelFitFunctorBase_h
 
 #include <itkObject.h>
 
@@ -21,6 +21,8 @@ found in the LICENSE file.
 #include "mitkSVModelFitCostFunction.h"
 
 #include "MitkModelFitExports.h"
+
+#include <mutex>
 
 namespace mitk
 {
@@ -128,10 +130,10 @@ namespace mitk
     typedef std::map<std::string, SVModelFitCostFunction::Pointer> CostFunctionMapType;
     CostFunctionMapType m_CostFunctionMap;
     bool m_DebugParameterMaps;
-    ::itk::SimpleFastMutexLock m_Mutex;
+    mutable std::mutex m_Mutex;
   };
 
 }
 
 
-#endif // MODEL_FIT_FUNCTOR_BASE_H
+#endif

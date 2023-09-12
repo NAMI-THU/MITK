@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef _MITK_MATERIAL_H_
-#define _MITK_MATERIAL_H_
+#ifndef mitkMaterial_h
+#define mitkMaterial_h
 
 #include <MitkCoreExports.h>
 #include <itkObject.h>
@@ -153,7 +153,7 @@ namespace mitk
     mitkNewMacro1Param(Material, const Material &);
 
     /**
-     * Copy constructor, provided for convinience. The values are copied from property
+     * Copy constructor, provided for convenience. The values are copied from property
      * and afterwards the values provided for red green blue and opacity are written into the object.
      */
     static Pointer New(
@@ -416,7 +416,7 @@ namespace mitk
     Material(const Material &property);
 
     /**
-     * Copy constructor, provided for convinience. The values are copied from property
+     * Copy constructor, provided for convenience. The values are copied from property
      * and afterwards the values provided for red green blue and opacity are written into the object.
      */
     Material(

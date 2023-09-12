@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef mitkDiffSliceOperation_h_Included
-#define mitkDiffSliceOperation_h_Included
+#ifndef mitkDiffSliceOperation_h
+#define mitkDiffSliceOperation_h
 
 #include "mitkCompressedImageContainer.h"
 #include <MitkSegmentationExports.h>
@@ -79,7 +79,7 @@ namespace mitk
     /** \brief Callback for image observer.*/
     void OnImageDeleted();
 
-    CompressedImageContainer::Pointer m_zlibSliceContainer;
+    CompressedImageContainer m_CompressedImageContainer;
 
     mitk::Image *m_Image;
 

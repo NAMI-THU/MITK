@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef __Q_MITK_MATCHPOINT_H
-#define __Q_MITK_MATCHPOINT_H
+#ifndef QmitkMatchPoint_h
+#define QmitkMatchPoint_h
 
 #include <berryISelectionListener.h>
 
@@ -39,7 +39,6 @@ class QmitkMappingJob;
 
 \warning  This class is not yet documented. Use "git blame" and ask the author to provide basic documentation.
 
-\sa QmitkFunctionality
 \ingroup ${plugin_target}_internal
 */
 class QmitkMatchPoint : public QmitkAbstractView
@@ -202,5 +201,4 @@ private:
   Ui::MatchPointAdvancedControls m_Controls;
 };
 
-#endif // MatchPoint_h
-
+#endif

@@ -10,15 +10,15 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKSTATUSBARIMPLEMENTATION_H
-#define MITKSTATUSBARIMPLEMENTATION_H
+#ifndef mitkStatusBarImplementation_h
+#define mitkStatusBarImplementation_h
 #include <MitkCoreExports.h>
 #include <mitkCommon.h>
 
 namespace mitk
 {
   //##Documentation
-  //## @brief GUI indepentent Interface for all Gui depentent implementations of a StatusBar.
+  //## @brief GUI independent Interface for all Gui depentent implementations of a StatusBar.
   class MITKCORE_EXPORT StatusBarImplementation
   {
   public:
@@ -57,4 +57,4 @@ namespace mitk
   };
 
 } // end namespace mitk
-#endif /* define MITKSTATUSBARIMPLEMENTATION_H */
+#endif

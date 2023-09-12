@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKRENDERWINDOW_H
-#define QMITKRENDERWINDOW_H
+#ifndef QmitkRenderWindow_h
+#define QmitkRenderWindow_h
 
 #include "mitkRenderWindowBase.h"
 
@@ -23,6 +23,8 @@ found in the LICENSE file.
 
 #include "mitkBaseRenderer.h"
 #include "mitkInteractionEventConst.h"
+
+#include <QmitkButtonOverlayWidget.h>
 
 class QDragEnterEvent;
 class QDropEvent;
@@ -79,6 +81,9 @@ public:
   void ActivateMenuWidget(bool state);
 
   bool GetActivateMenuWidgetFlag() { return m_MenuWidgetActivated; }
+
+  void ShowOverlayMessage(bool show);
+
   // Get it from the QVTKWidget parent
   vtkRenderWindow *GetVtkRenderWindow() override { return this->renderWindow(); }
 
@@ -114,6 +119,8 @@ Q_SIGNALS:
 
   void ResetView();
 
+  void ResetGeometry();
+
   void CrosshairRotationModeChanged(int);
 
   void CrosshairVisibilityChanged(bool);
@@ -122,8 +129,6 @@ Q_SIGNALS:
 
   /// \brief Emits a signal to say that this window has had the following nodes dropped on it.
   void NodesDropped(QmitkRenderWindow *thisWindow, std::vector<mitk::DataNode *> nodes);
-
-  void mouseEvent(QMouseEvent *);
 
 private Q_SLOTS:
 
@@ -141,6 +146,8 @@ private:
   std::string GetKeyLetter(QKeyEvent *ke) const;
   int GetDelta(QWheelEvent *we) const;
 
+  void UpdateStatusBar(mitk::Point2D pointerPositionOnScreen);
+
   bool m_ResendQtEvents;
 
   QmitkRenderWindowMenu *m_MenuWidget;
@@ -151,6 +158,8 @@ private:
 
   vtkSmartPointer<vtkGenericOpenGLRenderWindow> m_InternalRenderWindow;
 
+  QmitkButtonOverlayWidget* m_GeometryViolationWarningOverlay;
+
 };
 
-#endif // QMITKRENDERWINDOW_H
+#endif

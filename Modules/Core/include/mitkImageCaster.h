@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKIMAGECASTER_H
-#define MITKIMAGECASTER_H
+#ifndef mitkImageCaster_h
+#define mitkImageCaster_h
 
 #include <itkCastImageFilter.h>
 #include <itkImage.h>
@@ -30,7 +30,7 @@ namespace mitk
 {
   ///
   /// \brief This class is just a proxy for global functions which are needed by the
-  /// python wrapping process since global functions cannnot be wrapped. Static method
+  /// python wrapping process since global functions cannot be wrapped. Static method
   /// can be wrapped though.
   ///
   class MITKCORE_EXPORT ImageCaster
@@ -59,4 +59,4 @@ namespace mitk
   };
 } // namespace mitk
 
-#endif // MITKIMAGECASTER_H
+#endif

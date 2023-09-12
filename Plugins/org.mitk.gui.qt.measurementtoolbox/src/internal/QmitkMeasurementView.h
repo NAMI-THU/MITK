@@ -10,11 +10,11 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITK_MEASUREMENT_H__INCLUDED
-#define QMITK_MEASUREMENT_H__INCLUDED
+#ifndef QmitkMeasurementView_h
+#define QmitkMeasurementView_h
 
 #include <QmitkAbstractView.h>
-#include <mitkEventConfig.h>
+
 #include "usServiceRegistration.h"
 
 /// forward declarations
@@ -77,20 +77,14 @@ private:
     void CreateConnections();
     mitk::DataNode::Pointer AddFigureToDataStorage(mitk::PlanarFigure* figure, const QString& name);
 
-    void SetAsSelectionListener(bool checked);
     void OnCurrentSelectionChanged(QList<mitk::DataNode::Pointer> nodes);
 
     void UpdateMeasurementText();
     void AddAllInteractors();
-    void EnableCrosshairNavigation();
-    void DisableCrosshairNavigation();
     void PlanarFigureInitialized();
     mitk::DataStorage::SetOfObjects::ConstPointer GetAllPlanarFigures() const;
 
     QmitkMeasurementViewData* d;
-
-    // holds configuration objects that have been deactivated
-    std::map<us::ServiceReferenceU, mitk::EventConfig> m_DisplayInteractorConfigs;
 };
 
-#endif // QMITK_MEASUREMENT_H__INCLUDED
+#endif

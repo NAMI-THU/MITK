@@ -13,6 +13,8 @@ found in the LICENSE file.
 // MITK
 #include "mitkOtsuTool3D.h"
 #include "mitkOtsuSegmentationFilter.h"
+#include <mitkLabelSetImageHelper.h>
+#include <mitkImageStatisticsHolder.h>
 
 // us
 #include <usGetModuleContext.h>
@@ -20,11 +22,16 @@ found in the LICENSE file.
 #include <usModuleContext.h>
 #include <usModuleResource.h>
 
-#include <mitkImageStatisticsHolder.h>
-
 namespace mitk
 {
   MITK_TOOL_MACRO(MITKSEGMENTATION_EXPORT, OtsuTool3D, "Otsu Segmentation");
+}
+
+mitk::OtsuTool3D::OtsuTool3D()
+  : SegWithPreviewTool()
+{
+  this->ResetsToEmptyPreviewOn();
+  this->UseSpecialPreviewColorOff();
 }
 
 void mitk::OtsuTool3D::Activated()
@@ -34,6 +41,8 @@ void mitk::OtsuTool3D::Activated()
   m_NumberOfBins = 128;
   m_NumberOfRegions = 2;
   m_UseValley = false;
+  this->SetLabelTransferScope(LabelTransferScope::AllLabels);
+  this->SetLabelTransferMode(LabelTransferMode::AddLabel);
 }
 
 const char **mitk::OtsuTool3D::GetXPM() const
@@ -44,7 +53,7 @@ const char **mitk::OtsuTool3D::GetXPM() const
 us::ModuleResource mitk::OtsuTool3D::GetIconResource() const
 {
   us::Module *module = us::GetModuleContext()->GetModule();
-  us::ModuleResource resource = module->GetResource("Otsu_48x48.png");
+  us::ModuleResource resource = module->GetResource("Otsu.svg");
   return resource;
 }
 
@@ -53,7 +62,7 @@ const char* mitk::OtsuTool3D::GetName() const
   return "Otsu";
 }
 
-mitk::LabelSetImage::Pointer mitk::OtsuTool3D::ComputeMLPreview(const Image* inputAtTimeStep, TimeStepType /*timeStep*/)
+void mitk::OtsuTool3D::DoUpdatePreview(const Image* inputAtTimeStep, const Image* /*oldSegAtTimeStep*/, LabelSetImage* previewImage, TimeStepType timeStep)
 {
   int numberOfThresholds = m_NumberOfRegions - 1;
 
@@ -73,9 +82,28 @@ mitk::LabelSetImage::Pointer mitk::OtsuTool3D::ComputeMLPreview(const Image* inp
     mitkThrow() << "itkOtsuFilter error (image dimension must be in {2, 3} and image must not be RGB)";
   }
 
-  auto otsuResultImage = mitk::LabelSetImage::New();
-  otsuResultImage->InitializeByLabeledImage(otsuFilter->GetOutput());
-  return otsuResultImage;
+  auto otsuResultImage = otsuFilter->GetOutput();
+
+  mitk::ImageReadAccessor newMitkImgAcc(otsuResultImage);
+  previewImage->SetVolume(newMitkImgAcc.GetData(), timeStep);
+}
+
+void mitk::OtsuTool3D::UpdatePrepare()
+{
+  Superclass::UpdatePrepare();
+  auto preview = this->GetPreviewSegmentation();
+  auto labelset = preview->GetLabelSet(preview->GetActiveLayer());
+  for (LabelSetImage::GroupIndexType i = 0; i<preview->GetNumberOfLayers(); ++i)
+  {
+    preview->GetLabelSet(i)->RemoveAllLabels();
+  }
+
+  for (unsigned int i = 0; i < m_NumberOfRegions; ++i)
+  {
+    auto label = LabelSetImageHelper::CreateNewLabel(preview, "Otsu");
+    label->SetValue(i + 1);
+    labelset->AddLabel(label, false);
+  }
 }
 
 unsigned int mitk::OtsuTool3D::GetMaxNumberOfBins() const

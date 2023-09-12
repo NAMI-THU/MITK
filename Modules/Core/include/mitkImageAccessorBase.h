@@ -10,16 +10,16 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKIMAGEACCESSORBASE_H
-#define MITKIMAGEACCESSORBASE_H
+#ifndef mitkImageAccessorBase_h
+#define mitkImageAccessorBase_h
 
 #include <itkImageRegion.h>
 #include <itkIndex.h>
-#include <itkMultiThreader.h>
-#include <itkSimpleFastMutexLock.h>
 #include <itkSmartPointer.h>
 
 #include "mitkImageDataItem.h"
+
+#include <mutex>
 
 namespace mitk
 {
@@ -37,7 +37,7 @@ namespace mitk
     unsigned int m_WaiterCount;
 
     /** \brief A mutex that allows other ImageAccessors to wait for the represented ImageAccessor. */
-    itk::SimpleFastMutexLock m_Mutex;
+    std::mutex m_Mutex;
   };
 
 // Defs to assure dead lock prevention only in case of possible thread handling.

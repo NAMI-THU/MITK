@@ -9,8 +9,8 @@ Use of this source code is governed by a 3-clause BSD license that can be
 found in the LICENSE file.
 
 ============================================================================*/
-#ifndef __mitkToFCameraDevice_h
-#define __mitkToFCameraDevice_h
+#ifndef mitkToFCameraDevice_h
+#define mitkToFCameraDevice_h
 
 #include <MitkToFHardwareExports.h>
 #include "mitkCommon.h"
@@ -20,8 +20,9 @@ found in the LICENSE file.
 
 #include "itkObject.h"
 #include "itkObjectFactory.h"
-#include "itkMultiThreader.h"
-#include "itkFastMutexLock.h"
+
+#include <mutex>
+#include <thread>
 
 // Microservices
 #include <mitkServiceInterface.h>
@@ -211,10 +212,9 @@ namespace mitk
     int m_RGBImageHeight; ///< height of the RGB image (y dimension)
     int m_RGBPixelNumber; ///< number of pixels in the range image (m_RGBImageWidth*m_RGBImageHeight)
     int m_SourceDataSize; ///< size of the PMD source data
-    itk::MultiThreader::Pointer m_MultiThreader; ///< itk::MultiThreader used for thread handling
-    itk::FastMutexLock::Pointer m_ImageMutex; ///< mutex for images provided by the range camera
-    itk::FastMutexLock::Pointer m_CameraActiveMutex; ///< mutex for the cameraActive flag
-    int m_ThreadID; ///< ID of the started thread
+    std::mutex m_ImageMutex; ///< mutex for images provided by the range camera
+    std::mutex m_CameraActiveMutex; ///< mutex for the cameraActive flag
+    std::thread m_Thread;
     bool m_CameraActive; ///< flag indicating if the camera is currently active or not. Caution: thread safe access only!
     bool m_CameraConnected; ///< flag indicating if the camera is successfully connected or not. Caution: thread safe access only!
     int m_ImageSequence; ///<  counter for acquired images

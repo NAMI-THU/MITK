@@ -9,8 +9,8 @@ Use of this source code is governed by a 3-clause BSD license that can be
 found in the LICENSE file.
 
 ============================================================================*/
-#ifndef QmitkImageStatisticsWidget_H__INCLUDED
-#define QmitkImageStatisticsWidget_H__INCLUDED
+#ifndef QmitkImageStatisticsWidget_h
+#define QmitkImageStatisticsWidget_h
 
 #include <MitkImageStatisticsUIExports.h>
 #include <ui_QmitkImageStatisticsWidget.h>
@@ -48,6 +48,9 @@ public:
   /*! /brief Get bin size for histogram resolution.*/
   unsigned int GetHistogramNBins() const;
 
+signals:
+  void IgnoreZeroValuedVoxelStateChanged(int status);
+
 private:
   void CreateConnections();
   void OnDataAvailable();
@@ -55,9 +58,8 @@ private:
   /** \brief  Saves the image statistics to the clipboard */
   void OnClipboardButtonClicked();
 
-private:
   Ui::QmitkImageStatisticsControls m_Controls;
   QmitkImageStatisticsTreeModel *m_imageStatisticsModel;
   QSortFilterProxyModel *m_ProxyModel;
 };
-#endif // QmitkImageStatisticsWidget_H__INCLUDED
+#endif

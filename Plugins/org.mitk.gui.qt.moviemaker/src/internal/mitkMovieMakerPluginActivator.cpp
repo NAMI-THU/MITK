@@ -11,13 +11,18 @@ found in the LICENSE file.
 ============================================================================*/
 
 #include "mitkMovieMakerPluginActivator.h"
+#include "QmitkMovieMakerPreferencePage.h"
 #include "QmitkMovieMakerView.h"
 #include "QmitkScreenshotMaker.h"
+#include <usModuleInitialization.h>
+
+US_INITIALIZE_MODULE
 
 namespace mitk {
 
   void MovieMakerPluginActivator::start(ctkPluginContext* context)
   {
+    BERRY_REGISTER_EXTENSION_CLASS(QmitkMovieMakerPreferencePage, context)
     BERRY_REGISTER_EXTENSION_CLASS(QmitkMovieMakerView, context)
     BERRY_REGISTER_EXTENSION_CLASS(QmitkScreenshotMaker, context)
   }

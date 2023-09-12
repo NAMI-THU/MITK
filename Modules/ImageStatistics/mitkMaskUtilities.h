@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKMASKUTIL
-#define MITKMASKUTIL
+#ifndef mitkMaskUtilities_h
+#define mitkMaskUtilities_h
 
 #include <MitkImageStatisticsExports.h>
 #include <mitkImage.h>
@@ -44,12 +44,12 @@ class MaskUtilities: public itk::Object
         /**
          * @brief Set image
          */
-        void SetImage(ImageType* image);
+        void SetImage(const ImageType* image);
 
         /**
          * @brief Set mask
          */
-        void SetMask(MaskType* mask);
+        void SetMask(const MaskType* mask);
 
         /**
          * @brief Checks whether mask and image are compatible for joint access (as via iterators).
@@ -60,7 +60,7 @@ class MaskUtilities: public itk::Object
         /**
          * @brief Crops the image to the LargestPossibleRegion of the mask
          */
-        typename itk::Image<TPixel, VImageDimension>::Pointer ExtractMaskImageRegion();
+        typename ImageType::ConstPointer ExtractMaskImageRegion();
 
     protected:
         MaskUtilities(): m_Image(nullptr), m_Mask(nullptr){}
@@ -68,16 +68,16 @@ class MaskUtilities: public itk::Object
         ~MaskUtilities() override{}
 
     private:
-        itk::Image<TPixel, VImageDimension>* m_Image;
-        itk::Image<unsigned short, VImageDimension>* m_Mask;
+        const ImageType* m_Image;
+        const MaskType* m_Mask;
     };
 
 /** Tolerance used to check if the mask and input image are compatible for
  * coordinate aspects (orgin, size, grid alignment).*/
-constexpr double MASK_SUITABILITY_TOLERANCE_COORDINATE = NODE_PREDICATE_GEOMETRY_DEFAULT_CHECK_PRECISION;
+constexpr double MASK_SUITABILITY_TOLERANCE_COORDINATE = NODE_PREDICATE_GEOMETRY_DEFAULT_CHECK_COORDINATE_PRECISION;
 /** Tolerance used to check if the mask and input image are compatible for
  * direction aspects (orientation of mask and image).*/
-constexpr double MASK_SUITABILITY_TOLERANCE_DIRECTION = NODE_PREDICATE_GEOMETRY_DEFAULT_CHECK_PRECISION;
+constexpr double MASK_SUITABILITY_TOLERANCE_DIRECTION = NODE_PREDICATE_GEOMETRY_DEFAULT_CHECK_DIRECTION_PRECISION;
 
 }
 

@@ -19,6 +19,8 @@ found in the LICENSE file.
 #include "mitkMousePressEvent.h"
 #include "mitkMouseReleaseEvent.h"
 #include "mitkMouseWheelEvent.h"
+#include <mitkStatusBar.h>
+
 #include <QCursor>
 #include <QDragEnterEvent>
 #include <QDropEvent>
@@ -30,15 +32,17 @@ found in the LICENSE file.
 #include <QWheelEvent>
 #include <QWindow>
 
-#include "QmitkMimeTypes.h"
-#include "QmitkRenderWindowMenu.h"
+#include <QmitkMimeTypes.h>
+#include <QmitkRenderWindowMenu.h>
+#include <QmitkStyleManager.h>
 
 QmitkRenderWindow::QmitkRenderWindow(QWidget *parent, const QString &name, mitk::VtkPropRenderer *)
   : QVTKOpenGLNativeWidget(parent)
   , m_ResendQtEvents(true)
   , m_MenuWidget(nullptr)
   , m_MenuWidgetActivated(false)
-  , m_LayoutIndex(QmitkRenderWindowMenu::LayoutIndex::AXIAL)
+  , m_LayoutIndex(QmitkRenderWindowMenu::LayoutIndex::Axial)
+  , m_GeometryViolationWarningOverlay(nullptr)
 {
   m_InternalRenderWindow = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
   m_InternalRenderWindow->SetMultiSamples(0);
@@ -52,6 +56,18 @@ QmitkRenderWindow::QmitkRenderWindow(QWidget *parent, const QString &name, mitk:
   setMouseTracking(true);
   QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   setSizePolicy(sizePolicy);
+
+  // setup overlay widget to show a warning message with a button
+  m_GeometryViolationWarningOverlay = new QmitkButtonOverlayWidget(this);
+  m_GeometryViolationWarningOverlay->setVisible(false);
+  m_GeometryViolationWarningOverlay->SetOverlayText(
+    QStringLiteral("<font color=\"red\"><p style=\"text-align:center\">Interaction is not possible because the "
+                   "render window geometry<br>does not match the interaction reference geometry.</p></center></font>"));
+  m_GeometryViolationWarningOverlay->SetButtonText("Reset geometry");
+  m_GeometryViolationWarningOverlay->SetButtonIcon(QmitkStyleManager::ThemeIcon(QLatin1String(":/Qmitk/reset.svg")));
+
+  connect(m_GeometryViolationWarningOverlay, &QmitkButtonOverlayWidget::Clicked,
+          this, &QmitkRenderWindow::ResetGeometry);
 }
 
 QmitkRenderWindow::~QmitkRenderWindow()
@@ -81,7 +97,7 @@ QmitkRenderWindowMenu::LayoutIndex QmitkRenderWindow::GetLayoutIndex()
   }
   else
   {
-    return QmitkRenderWindowMenu::LayoutIndex::AXIAL;
+    return QmitkRenderWindowMenu::LayoutIndex::Axial;
   }
 }
 
@@ -111,6 +127,12 @@ void QmitkRenderWindow::ActivateMenuWidget(bool state)
     m_MenuWidget->SetLayoutIndex(m_LayoutIndex);
   }
 
+  if (m_MenuWidgetActivated == state)
+  {
+    // no new state; nothing to do
+    return;
+  }
+
   m_MenuWidgetActivated = state;
 
   if (m_MenuWidgetActivated)
@@ -129,6 +151,11 @@ void QmitkRenderWindow::ActivateMenuWidget(bool state)
 
     m_MenuWidget->hide();
   }
+}
+
+void QmitkRenderWindow::ShowOverlayMessage(bool show)
+{
+  m_GeometryViolationWarningOverlay->setVisible(show);
 }
 
 void QmitkRenderWindow::moveEvent(QMoveEvent *event)
@@ -151,12 +178,16 @@ void QmitkRenderWindow::showEvent(QShowEvent *event)
 bool QmitkRenderWindow::event(QEvent* e)
 {
   mitk::InteractionEvent::Pointer mitkEvent = nullptr;
+  mitk::Point2D mousePosition;
+  bool updateStatusBar = false;
   switch (e->type())
   {
     case QEvent::MouseMove:
     {
       auto me = static_cast<QMouseEvent *>(e);
-      mitkEvent = mitk::MouseMoveEvent::New(m_Renderer, GetMousePosition(me), GetButtonState(me), GetModifiers(me));
+      mousePosition = this->GetMousePosition(me);
+      mitkEvent = mitk::MouseMoveEvent::New(m_Renderer, mousePosition, GetButtonState(me), GetModifiers(me));
+      updateStatusBar = true;
       break;
     }
     case QEvent::MouseButtonPress:
@@ -180,7 +211,9 @@ bool QmitkRenderWindow::event(QEvent* e)
     case QEvent::Wheel:
     {
       auto we = static_cast<QWheelEvent *>(e);
-      mitkEvent = mitk::MouseWheelEvent::New( m_Renderer, GetMousePosition(we), GetButtonState(we), GetModifiers(we), GetDelta(we));
+      mousePosition = this->GetMousePosition(we);
+      mitkEvent = mitk::MouseWheelEvent::New(m_Renderer, mousePosition, GetButtonState(we), GetModifiers(we), GetDelta(we));
+      updateStatusBar = true;
       break;
     }
     case QEvent::KeyPress:
@@ -207,23 +240,30 @@ bool QmitkRenderWindow::event(QEvent* e)
     }
   }
 
+  if (updateStatusBar)
+  {
+    this->UpdateStatusBar(mousePosition);
+  }
+
   return QVTKOpenGLNativeWidget::event(e);
 }
 
 void QmitkRenderWindow::enterEvent(QEvent *e)
 {
-  // TODO implement new event
-  QVTKOpenGLNativeWidget::enterEvent(e);
+  auto* baseRenderer = mitk::BaseRenderer::GetInstance(this->GetRenderWindow());
+  this->ShowOverlayMessage(!baseRenderer->GetReferenceGeometryAligned());
 
   if (nullptr != m_MenuWidget)
     m_MenuWidget->ShowMenu();
+
+  QVTKOpenGLNativeWidget::enterEvent(e);
 }
 
 void QmitkRenderWindow::leaveEvent(QEvent *e)
 {
-  mitk::InternalEvent::Pointer internalEvent = mitk::InternalEvent::New(this->m_Renderer, nullptr, "LeaveRenderWindow");
-
-  this->HandleEvent(internalEvent.GetPointer());
+  auto statusBar = mitk::StatusBar::GetInstance();
+  statusBar->DisplayGreyValueText("");
+  this->ShowOverlayMessage(false);
 
   if (nullptr != m_MenuWidget)
     m_MenuWidget->HideMenu();
@@ -267,18 +307,20 @@ void QmitkRenderWindow::DeferredHideMenu()
 mitk::Point2D QmitkRenderWindow::GetMousePosition(QMouseEvent *me) const
 {
   mitk::Point2D point;
-  point[0] = me->x();
+  const auto scale = this->devicePixelRatioF();
+  point[0] = me->x()*scale;
   // We need to convert the y component, as the display and vtk have other definitions for the y direction
-  point[1] = m_Renderer->GetSizeY() - me->y();
+  point[1] = m_Renderer->GetSizeY() - me->y()*scale;
   return point;
 }
 
 mitk::Point2D QmitkRenderWindow::GetMousePosition(QWheelEvent *we) const
 {
   mitk::Point2D point;
-  point[0] = we->x();
+  const auto scale = this->devicePixelRatioF();
+  point[0] = we->x()*scale;
   // We need to convert the y component, as the display and vtk have other definitions for the y direction
-  point[1] = m_Renderer->GetSizeY() - we->y();
+  point[1] = m_Renderer->GetSizeY() - we->y()*scale;
   return point;
 }
 
@@ -461,4 +503,13 @@ std::string QmitkRenderWindow::GetKeyLetter(QKeyEvent *ke) const
 int QmitkRenderWindow::GetDelta(QWheelEvent *we) const
 {
   return we->delta();
+}
+
+void QmitkRenderWindow::UpdateStatusBar(mitk::Point2D pointerPositionOnScreen)
+{
+  mitk::Point3D worldPosition;
+  m_Renderer->ForceImmediateUpdate();
+  m_Renderer->DisplayToWorld(pointerPositionOnScreen, worldPosition);
+  auto statusBar = mitk::StatusBar::GetInstance();
+  statusBar->DisplayRendererInfo(worldPosition, m_Renderer->GetTime());
 }

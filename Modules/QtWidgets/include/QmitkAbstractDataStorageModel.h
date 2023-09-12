@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKABSTRACTDATASTORAGEMODEL_H
-#define QMITKABSTRACTDATASTORAGEMODEL_H
+#ifndef QmitkAbstractDataStorageModel_h
+#define QmitkAbstractDataStorageModel_h
 
 #include <MitkQtWidgetsExports.h>
 
@@ -51,7 +51,7 @@ public:
   */
   void SetDataStorage(mitk::DataStorage* dataStorage);
 
-  mitk::DataStorage* GetDataStorage() const;
+  mitk::DataStorage::Pointer GetDataStorage() const;
   /*
   * @brief Sets the node predicate and updates the model data, according to the node predicate.
   *
@@ -85,4 +85,4 @@ private:
 
 };
 
-#endif // QMITKABSTRACTDATASTORAGEMODEL_H
+#endif

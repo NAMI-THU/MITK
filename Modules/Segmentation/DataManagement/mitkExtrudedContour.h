@@ -10,14 +10,13 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKEXTRUDEDCONTOUR_H_HEADER_INCLUDED
-#define MITKEXTRUDEDCONTOUR_H_HEADER_INCLUDED
+#ifndef mitkExtrudedContour_h
+#define mitkExtrudedContour_h
 
 #include "mitkBoundingObject.h"
 #include <MitkSegmentationExports.h>
 #include <mitkContour.h>
 #include <mitkPlaneGeometry.h>
-#include <vtkConfigure.h>
 #include <vtkVersionMacros.h>
 
 class vtkLinearExtrusionFilter;
@@ -40,7 +39,7 @@ namespace mitk
 
   /**
   * \deprecatedSince{2015_05} ExtrudedContour is deprecated. It will be removed in the next release.
-  *  Becomes obsolete. Refer to http://docs.mitk.org/nightly/InteractionMigration.html .
+  *  Becomes obsolete. Refer to https://docs.mitk.org/nightly/InteractionMigration.html .
   */
 
   class MITKSEGMENTATION_EXPORT ExtrudedContour : public BoundingObject
@@ -77,7 +76,7 @@ namespace mitk
     itkGetConstObjectMacro(ClippingGeometry, mitk::BaseGeometry);
     itkSetObjectMacro(ClippingGeometry, mitk::BaseGeometry);
 
-    unsigned long GetMTime() const override;
+    itk::ModifiedTimeType GetMTime() const override;
 
   protected:
     ExtrudedContour();
@@ -124,4 +123,4 @@ namespace mitk
     itk::TimeStamp m_LastCalculateExtrusionTime;
   };
 }
-#endif /* MITKEXTRUDEDCONTOUR_H_HEADER_INCLUDED */
+#endif

@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef TimeGeometry_h
-#define TimeGeometry_h
+#ifndef mitkTimeGeometry_h
+#define mitkTimeGeometry_h
 
 // ITK
 #include <itkObject.h>
@@ -33,7 +33,7 @@ namespace mitk
   * depends on the way the different time steps are managed.
   *
   * The time is defined either by a time step or a time point. Time steps
-  * are non-negativ integers starting from 0. A time point is is a ScalarType value
+  * are non-negative integers starting from 0. A time point is a ScalarType value
   * which gives the passed time since start in ms. Be aware that the starting
   * point is not fixed so it is possible that the same time point  defines two
   * different time depending on the start time of the used time geometry.
@@ -81,7 +81,7 @@ namespace mitk
     /**
     * \brief Returns the last time point for which the object is valid
     *
-    * Gives the last time point for which a valid geometrie is saved in
+    * Gives the last time point for which a valid geometry is saved in
     * this time geometry. The time point is given in ms.
     */
     virtual TimePointType GetMaximumTimePoint() const = 0;
@@ -117,11 +117,11 @@ namespace mitk
     */
     virtual bool IsValidTimePoint(TimePointType timePoint) const = 0;
     /**
-    * \brief Test for the given time step if a geometry is availible
+    * \brief Test for the given time step if a geometry is available
     *
     * Returns true if a geometry is defined for the given time step.
     * Otherwise false is returned.
-    * The time step is defined as positiv number.
+    * The time step is defined as positive number.
     */
     virtual bool IsValidTimeStep(TimeStepType timeStep) const = 0;
 
@@ -140,8 +140,8 @@ namespace mitk
     *
     * Converts a time point to a time step in a way that
     * the new time step indicates the same geometry as the time point.
-    * If a negativ invalid time point is given always time step 0 is
-    * returned. If an positiv invalid time step is given an invalid
+    * If a negative invalid time point is given always time step 0 is
+    * returned. If an positive invalid time step is given an invalid
     * time step will be returned.
     */
     virtual TimeStepType TimePointToTimeStep(TimePointType timePoint) const = 0;
@@ -202,7 +202,7 @@ namespace mitk
     * \brief Replaces the geometry instances with clones ot the passed geometry.
     *
     * Replaces the geometries of all time steps with clones of the passed
-    * geometry. Replacment strategy depends on the implementation of TimeGeometry
+    * geometry. Replacement strategy depends on the implementation of TimeGeometry
     * sub class.
     * @remark The time points itself stays untouched. Use this method if you want
     * to change the spatial properties of a TimeGeometry and preserve the time
@@ -211,7 +211,7 @@ namespace mitk
     virtual void ReplaceTimeStepGeometries(const BaseGeometry *geometry) = 0;
 
     /**
-    * \brief Tests if all necessary informations are set and the object is valid
+    * \brief Tests if all necessary information are set and the object is valid
     */
     virtual bool IsValid() const = 0;
     /**
@@ -319,5 +319,31 @@ namespace mitk
                              ScalarType eps,
                              bool verbose);
 
+  /**
+  * @brief Compare two instances of TimeGeometry
+  *
+  * @ingroup MITKTestingAPI
+  *
+  * The function compares two instances of TimeGeometries in all their aspects.
+  *
+  * The parameter eps is a tolerance value for all methods which are internally used for comparison.
+  * If you want to use different tolerance values for different parts of the geometry, feel free to use
+  * the other comparison methods and write your own implementation of Equal.
+  *
+  * @param leftHandSide Compare this against rightHandSide.
+  * @param rightHandSide Compare this against leftHandSide.
+  * @param coordinateEps Tolerance for comparison of all spatial and temporal aspects (spacing, origin and grid alignment, time points).
+  * You can use mitk::eps in most cases.
+  * @param directionEps Tolerance for comparison of all directional aspects (axis). You can use mitk::eps in most cases.
+  * @param verbose Flag indicating if the user wants detailed console output or not.
+  *
+  * @return True, if all comparisons are true. False in any other case.
+  */
+  MITKCORE_EXPORT bool Equal(const mitk::TimeGeometry& leftHandSide,
+    const mitk::TimeGeometry& rightHandSide,
+    ScalarType coordinateEps,
+    ScalarType directionEps,
+    bool verbose);
+
 } // end namespace MITK
-#endif // TimeGeometry_h
+#endif

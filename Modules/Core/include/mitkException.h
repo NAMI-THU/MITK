@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKEXCEPTION_H_INCLUDED
-#define MITKEXCEPTION_H_INCLUDED
+#ifndef mitkException_h
+#define mitkException_h
 
 #include <MitkCoreExports.h>
 #include <itkMacro.h>
@@ -63,9 +63,9 @@ namespace mitk
      * doesn't
      * exist.
       * @param rethrowNumber The internal number of the rethrow.
-      * @param file (returnvalue) This varaiable will be filled with the file of the specified rethrow.
-      * @param line (returnvalue) This varaiable will be filled with the line of the specified rethrow.
-      * @param message (returnvalue) This varaiable will be filled with the message of the specified rethrow.
+      * @param file (returnvalue) This variable will be filled with the file of the specified rethrow.
+      * @param line (returnvalue) This variable will be filled with the line of the specified rethrow.
+      * @param message (returnvalue) This variable will be filled with the message of the specified rethrow.
       */
     void GetRethrowData(int rethrowNumber, std::string &file, int &line, std::string &message);
 

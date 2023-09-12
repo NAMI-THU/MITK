@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKDATASTORAGERENDERWINDOWLISTMODEL_H
-#define QMITKDATASTORAGERENDERWINDOWLISTMODEL_H
+#ifndef QmitkRenderWindowDataStorageListModel_h
+#define QmitkRenderWindowDataStorageListModel_h
 
 // render window manager UI model
 #include "MitkRenderWindowManagerUIExports.h"
@@ -81,7 +81,7 @@ public:
   void SetControlledRenderer(mitk::RenderWindowLayerUtilities::RendererVector controlledRenderer);
 
   void SetCurrentRenderer(mitk::BaseRenderer* baseRenderer);
-  mitk::BaseRenderer* GetCurrentRenderer() const;
+  mitk::BaseRenderer::Pointer GetCurrentRenderer() const;
 
   /**
   * @brief Use the RenderWindowLayerController to insert the given data node into all controlled render windows.
@@ -101,4 +101,4 @@ private:
 
 };
 
-#endif // QMITKDATASTORAGERENDERWINDOWLISTMODEL_H
+#endif

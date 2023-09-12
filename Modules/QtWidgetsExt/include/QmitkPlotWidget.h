@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef _QmitkPlotWidget_H_
-#define _QmitkPlotWidget_H_
+#ifndef QmitkPlotWidget_h
+#define QmitkPlotWidget_h
 
 #include "MitkQtWidgetsExtExports.h"
 #include "mitkCommon.h"
@@ -21,6 +21,7 @@ found in the LICENSE file.
 #include <qwt_plot_curve.h>
 #include <qwt_plot_intervalcurve.h>
 #include <qwt_symbol.h>
+#include <qwt_text.h>
 #include <tuple>
 #include <vector>
 

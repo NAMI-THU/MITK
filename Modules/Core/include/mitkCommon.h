@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITK_COMMON_H_DEFINED
-#define MITK_COMMON_H_DEFINED
+#ifndef mitkCommon_h
+#define mitkCommon_h
 
 #ifdef _MSC_VER
 // This warns about truncation to 255 characters in debug/browse info
@@ -25,10 +25,6 @@ found in the LICENSE file.
 #include "mitkExceptionMacro.h"
 #include "mitkGetClassHierarchy.h"
 #include "mitkLogMacros.h"
-
-#ifndef MITK_UNMANGLE_IPPIC
-#define mitkIpPicDescriptor mitkIpPicDescriptor
-#endif
 
 typedef unsigned int MapperSlotId;
 
@@ -56,7 +52,7 @@ typedef unsigned int MapperSlotId;
   itkTypeMacro(className, SuperClassName);
 
 /** At version 4.7 provides two type macros, the normal one expects the Superclass to provide the
- *  GetNameOfClass explicitely, the NoParent deos not expect anything.
+ *  GetNameOfClass explicitly, the NoParent deos not expect anything.
  */
 #define mitkClassMacroNoParent(className)                                                                              \
   typedef className Self;                                                                                              \
@@ -197,4 +193,4 @@ calling object*/
 #define MITK_LOCAL
 #endif
 
-#endif // MITK_COMMON_H_DEFINED
+#endif

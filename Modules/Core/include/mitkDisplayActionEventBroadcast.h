@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKDISPLAYACTIONEVENTBROADCAST_H
-#define MITKDISPLAYACTIONEVENTBROADCAST_H
+#ifndef mitkDisplayActionEventBroadcast_h
+#define mitkDisplayActionEventBroadcast_h
 
 #include "mitkInteractionEventObserver.h"
 #include <MitkCoreExports.h>
@@ -116,8 +116,6 @@ namespace mitk
 
   private:
 
-    void UpdateStatusbar(StateMachineAction* stateMachineAction, InteractionEvent* interactionEvent);
-
     bool GetBoolProperty(PropertyList::Pointer propertyList, const char* propertyName, bool defaultValue);
 
     /**
@@ -140,10 +138,6 @@ namespace mitk
     * @brief Coordinate of the mouse pointer in the last step within an interaction.
     */
     Point2D m_LastDisplayCoordinate;
-    /**
-    * @brief Coordinate of the mouse pointer in the last step within an interaction (translated to mm unit).
-    */
-    Point2D m_LastCoordinateInMM;
     /**
     * \brief Current coordinates of the pointer.
     */
@@ -221,4 +215,4 @@ namespace mitk
   };
 } // end namespace
 
-#endif // MITKDISPLAYACTIONEVENTBROADCAST_H
+#endif

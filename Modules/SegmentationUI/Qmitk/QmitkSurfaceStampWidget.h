@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QmitkSurfaceStampWidget_h_Included
-#define QmitkSurfaceStampWidget_h_Included
+#ifndef QmitkSurfaceStampWidget_h
+#define QmitkSurfaceStampWidget_h
 
 #include "MitkSegmentationUIExports.h"
 
@@ -26,8 +26,6 @@ namespace mitk
 
 /**
   \brief GUI for surface-based interpolation.
-
-  This class uses the mitk::ToolManagerProvider::MULTILABEL_SEGMENTATION context.
 
   \ingroup ToolManagerEtAl
   \ingroup Widgets

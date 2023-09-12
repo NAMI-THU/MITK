@@ -10,51 +10,41 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QmitkPickingToolGUI_h_Included
-#define QmitkPickingToolGUI_h_Included
+#ifndef QmitkPickingToolGUI_h
+#define QmitkPickingToolGUI_h
 
-#include "QmitkToolGUI.h"
-#include "mitkPickingTool.h"
-#include "ui_QmitkPickingToolGUIControls.h"
+#include "QmitkSegWithPreviewToolGUIBase.h"
 #include <MitkSegmentationUIExports.h>
-
-class QSlider;
-class QLabel;
-class QFrame;
-class QPushButton;
-#include <QCheckBox>
-
-#include "QmitkStepperAdapter.h"
-
-class QmitkPickingToolGUIControls;
 
 /**
 \ingroup org_mitk_gui_qt_interactivesegmentation_internal
-\brief GUI for mitk::LiveWireTool.
+\brief GUI for mitk::PickingTool.
 \sa mitk::PickingTool
 */
-class MITKSEGMENTATIONUI_EXPORT QmitkPickingToolGUI : public QmitkToolGUI
+class MITKSEGMENTATIONUI_EXPORT QmitkPickingToolGUI : public QmitkSegWithPreviewToolGUIBase
 {
   Q_OBJECT
 
 public:
-  mitkClassMacro(QmitkPickingToolGUI, QmitkToolGUI);
+  mitkClassMacro(QmitkPickingToolGUI, QmitkSegWithPreviewToolGUIBase);
   itkFactorylessNewMacro(Self);
   itkCloneMacro(Self);
 
-    protected slots :
-
-    void OnNewToolAssociated(mitk::Tool *);
-
-  void OnConfirmSegmentation();
+protected slots :
+  void OnResetPicksClicked();
+  void OnRadioPickClicked(bool checked);
 
 protected:
   QmitkPickingToolGUI();
   ~QmitkPickingToolGUI() override;
 
-  Ui::QmitkPickingToolGUIControls m_Controls;
+  void InitializeUI(QBoxLayout* mainLayout) override;
+  void EnableWidgets(bool enabled) override;
 
-  mitk::PickingTool::Pointer m_PickingTool;
+private:
+  QWidget* m_ClearPicksBtn = nullptr;
+  QWidget* m_RadioPick = nullptr;
+  QWidget* m_RadioRelabel = nullptr;
 };
 
 #endif

@@ -9,8 +9,8 @@ Use of this source code is governed by a 3-clause BSD license that can be
 found in the LICENSE file.
 
 ============================================================================*/
-#ifndef __mitkToFCameraMITKPlayerDevice_h
-#define __mitkToFCameraMITKPlayerDevice_h
+#ifndef mitkToFCameraMITKPlayerDevice_h
+#define mitkToFCameraMITKPlayerDevice_h
 
 #include <MitkToFHardwareExports.h>
 #include "mitkCommon.h"
@@ -19,8 +19,6 @@ found in the LICENSE file.
 
 #include "itkObject.h"
 #include "itkObjectFactory.h"
-#include "itkMultiThreader.h"
-#include "itkFastMutexLock.h"
 
 
 namespace mitk
@@ -113,7 +111,7 @@ namespace mitk
     /*!
     \brief Thread method continuously acquiring images from the specified input file
     */
-    static ITK_THREAD_RETURN_TYPE Acquire(void* pInfoStruct);
+    void Acquire();
     /*!
     \brief Clean up memory (pixel buffers)
     */

@@ -11,8 +11,8 @@ found in the LICENSE file.
 ============================================================================*/
 
 
-#ifndef QMITKFLOWAPPLICATIONLICATIONPLUGIN_H_
-#define QMITKFLOWAPPLICATIONLICATIONPLUGIN_H_
+#ifndef QmitkFlowApplicationPlugin_h
+#define QmitkFlowApplicationPlugin_h
 
 #include <berryAbstractUICTKPlugin.h>
 
@@ -36,17 +36,6 @@ public:
   void start(ctkPluginContext*) override;
   void stop(ctkPluginContext* context) override;
 
-  QString GetQtHelpCollectionFile() const;
-
-private:
-
-  void loadDataFromDisk(const QStringList& args, bool globalReinit);
-  void startNewInstance(const QStringList& args, const QStringList &files);
-
-private Q_SLOTS:
-
-  void handleIPCMessage(const QByteArray &msg);
-
 private:
 
   static QmitkFlowApplicationPlugin* inst;
@@ -54,4 +43,4 @@ private:
   ctkPluginContext* _context;
 };
 
-#endif /* QMITKFLOWAPPLICATIONLICATIONPLUGIN_H_ */
+#endif

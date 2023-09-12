@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITK_APPLICATION_CURSOR_H_DEFINED_AND_ALL_IS_GOOD
-#define MITK_APPLICATION_CURSOR_H_DEFINED_AND_ALL_IS_GOOD
+#ifndef mitkApplicationCursor_h
+#define mitkApplicationCursor_h
 
 #include "mitkNumericTypes.h"
 #include <MitkCoreExports.h>
@@ -22,7 +22,7 @@ namespace mitk
     \brief Toolkit specific implementation of mitk::ApplicationCursor
 
     For any toolkit, this class has to be sub-classed. One instance of that sub-class has to
-    be registered with mitk::ApplicationCursor. See the (very simple) implmentation of
+    be registered with mitk::ApplicationCursor. See the (very simple) implementation of
     QmitkApplicationCursor for an example.
   */
   class MITKCORE_EXPORT ApplicationCursorImplementation

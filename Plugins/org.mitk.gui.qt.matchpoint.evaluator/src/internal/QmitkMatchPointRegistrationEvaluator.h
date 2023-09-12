@@ -11,8 +11,8 @@ found in the LICENSE file.
 ============================================================================*/
 
 
-#ifndef __Q_MITK_MATCHPOINT_REGISTRATION_EVALUATOR_H
-#define __Q_MITK_MATCHPOINT_REGISTRATION_EVALUATOR_H
+#ifndef QmitkMatchPointRegistrationEvaluator_h
+#define QmitkMatchPointRegistrationEvaluator_h
 
 #include <QmitkAbstractView.h>
 #include <mitkIRenderWindowPartListener.h>
@@ -25,7 +25,6 @@ found in the LICENSE file.
 
 \warning  This class is not yet documented. Use "git blame" and ask the author to provide basic documentation.
 
-\sa QmitkFunctionality
 \ingroup ${plugin_target}_internal
 */
 class QmitkMatchPointRegistrationEvaluator : public QmitkAbstractView, public mitk::IRenderWindowPartListener
@@ -112,4 +111,4 @@ private:
   static const std::string HelperNodeName;
 };
 
-#endif // MatchPoint_h
+#endif

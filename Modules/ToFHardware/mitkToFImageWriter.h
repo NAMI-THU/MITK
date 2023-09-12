@@ -9,8 +9,8 @@ Use of this source code is governed by a 3-clause BSD license that can be
 found in the LICENSE file.
 
 ============================================================================*/
-#ifndef __mitkToFImageWriter_h
-#define __mitkToFImageWriter_h
+#ifndef mitkToFImageWriter_h
+#define mitkToFImageWriter_h
 
 #include <MitkToFHardwareExports.h>
 #include "mitkCommon.h"
@@ -24,8 +24,8 @@ namespace mitk
   /**
   * @brief Writer class for ToF images
   *
-  * This writer class allows streaming of ToF data into a file. The .pic file format is used for writing the data.
-  * Image information is included in the header of the pic file.
+  * This writer class allows streaming of ToF data into a file.
+  * Image information is included in the header of the nrrd file.
   * Writer can simultaneously save "distance", "intensity" and "amplitude" image.
   * Images can be written as 3D volume (ToFImageType::ToFImageType3D) or temporal image stack (ToFImageType::ToFImageType2DPlusT)
   *
@@ -89,7 +89,7 @@ namespace mitk
     */
     virtual void Open(){};
     /*!
-    \brief Close file(s) add .pic header and write
+    \brief Close file(s) add header and write
     */
     virtual void Close(){};
     /*!
@@ -127,4 +127,4 @@ namespace mitk
     ToFImageWriter::ToFImageType m_ToFImageType; ///< type of image to be recorded: ToFImageType3D (0) or ToFImageType2DPlusT (1)
   };
 } //END mitk namespace
-#endif // __mitkToFImageWriter_h
+#endif

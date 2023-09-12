@@ -20,7 +20,6 @@ found in the LICENSE file.
 #include <mitkNodePredicateProperty.h>
 #include <mitkNodePredicateOr.h>
 #include <mitkNodePredicateDataType.h>
-#include <mitkIRenderingManager.h>
 #include <mitkImageGenerator.h>
 
 // Qmitk
@@ -68,7 +67,7 @@ void QmitkIGTFiducialRegistration::CreateQtPartControl( QWidget *parent )
 
 void QmitkIGTFiducialRegistration::InitializeRegistration()
 {
-  foreach(QmitkRenderWindow* renderWindow, this->GetRenderWindowPart()->GetQmitkRenderWindows().values())
+  foreach(QmitkRenderWindow* renderWindow, this->GetRenderWindowPart(mitk::WorkbenchUtil::OPEN)->GetQmitkRenderWindows().values())
   {
     this->m_Controls.m_FiducialRegistrationWidget->AddSliceNavigationController(renderWindow->GetSliceNavigationController());
   }

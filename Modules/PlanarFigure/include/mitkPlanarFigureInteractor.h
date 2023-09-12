@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKPLANARFIGUREINTERACTOR_H
-#define MITKPLANARFIGUREINTERACTOR_H
+#ifndef mitkPlanarFigureInteractor_h
+#define mitkPlanarFigureInteractor_h
 
 #include <MitkPlanarFigureExports.h>
 
@@ -36,15 +36,16 @@ namespace mitk
 #pragma GCC visibility push(default)
 
   // Define events for PlanarFigure interaction notifications
-  itkEventMacro(PlanarFigureEvent, itk::AnyEvent);
-  itkEventMacro(StartPlacementPlanarFigureEvent, PlanarFigureEvent);
-  itkEventMacro(EndPlacementPlanarFigureEvent, PlanarFigureEvent);
-  itkEventMacro(SelectPlanarFigureEvent, PlanarFigureEvent);
-  itkEventMacro(StartInteractionPlanarFigureEvent, PlanarFigureEvent);
-  itkEventMacro(EndInteractionPlanarFigureEvent, PlanarFigureEvent);
-  itkEventMacro(StartHoverPlanarFigureEvent, PlanarFigureEvent);
-  itkEventMacro(EndHoverPlanarFigureEvent, PlanarFigureEvent);
-  itkEventMacro(ContextMenuPlanarFigureEvent, PlanarFigureEvent);
+  itkEventMacroDeclaration(PlanarFigureEvent, itk::AnyEvent);
+  itkEventMacroDeclaration(StartPlacementPlanarFigureEvent, PlanarFigureEvent);
+  itkEventMacroDeclaration(EndPlacementPlanarFigureEvent, PlanarFigureEvent);
+  itkEventMacroDeclaration(SelectPlanarFigureEvent, PlanarFigureEvent);
+  itkEventMacroDeclaration(StartInteractionPlanarFigureEvent, PlanarFigureEvent);
+  itkEventMacroDeclaration(EndInteractionPlanarFigureEvent, PlanarFigureEvent);
+  itkEventMacroDeclaration(StartHoverPlanarFigureEvent, PlanarFigureEvent);
+  itkEventMacroDeclaration(EndHoverPlanarFigureEvent, PlanarFigureEvent);
+  itkEventMacroDeclaration(ContextMenuPlanarFigureEvent, PlanarFigureEvent);
+  itkEventMacroDeclaration(PointMovedPlanarFigureEvent, PlanarFigureEvent);
 
 #pragma GCC visibility pop
 
@@ -194,4 +195,4 @@ namespace mitk
   };
 }
 
-#endif // MITKPLANARFIGUREINTERACTOR_H
+#endif

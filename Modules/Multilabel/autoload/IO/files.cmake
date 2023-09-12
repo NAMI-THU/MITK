@@ -1,8 +1,15 @@
 set(CPP_FILES
-  mitkLabelSetImageIO.cpp
-  mitkLabelSetImageIO.h
-  mitkLabelSetImageSerializer.cpp
-  mitkLabelSetImageSerializer.h
+  mitkLegacyLabelSetImageIO.cpp
+  mitkLegacyLabelSetImageIO.h
+  mitkMultiLabelSegmentationIO.cpp
+  mitkMultiLabelSegmentationIO.h
+  mitkMultiLabelSegmentationSerializer.cpp
+  mitkMultiLabelSegmentationSerializer.h
   mitkMultilabelActivator.cpp
+  mitkMultilabelIOMimeTypes.cpp
+  mitkMultilabelIOMimeTypes.h
+  mitkSegmentationTaskListIO.cpp
+  mitkSegmentationTaskListIO.h
+  mitkSegmentationTaskListSerializer.cpp
+  mitkSegmentationTaskListSerializer.h
 )
-

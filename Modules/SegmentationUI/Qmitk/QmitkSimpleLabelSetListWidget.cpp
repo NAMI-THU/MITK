@@ -16,7 +16,7 @@ found in the LICENSE file.
 
 #include <qlayout.h>
 
-QmitkSimpleLabelSetListWidget::QmitkSimpleLabelSetListWidget(QWidget* parent) : QWidget(parent), m_LabelList(nullptr)
+QmitkSimpleLabelSetListWidget::QmitkSimpleLabelSetListWidget(QWidget* parent) : QWidget(parent), m_LabelList(nullptr), m_Emmiting(false)
 {
   QGridLayout* layout = new QGridLayout(this);
   this->setContentsMargins(0, 0, 0, 0);
@@ -102,11 +102,11 @@ void QmitkSimpleLabelSetListWidget::OnLooseLabelSetConnection()
   auto labelSet = m_LabelSetImage->GetLabelSet(activeLayerID);
 
   // Reset LabelSetWidget Events
-  labelSet->AddLabelEvent -= mitk::MessageDelegate<QmitkSimpleLabelSetListWidget>(
+  labelSet->AddLabelEvent -= mitk::MessageDelegate1<QmitkSimpleLabelSetListWidget, mitk::LabelSetImage::LabelValueType>(
     this, &QmitkSimpleLabelSetListWidget::OnLabelChanged);
-  labelSet->RemoveLabelEvent -= mitk::MessageDelegate<QmitkSimpleLabelSetListWidget>(
+  labelSet->RemoveLabelEvent -= mitk::MessageDelegate1<QmitkSimpleLabelSetListWidget, mitk::LabelSetImage::LabelValueType>(
     this, &QmitkSimpleLabelSetListWidget::OnLabelChanged);
-  labelSet->ModifyLabelEvent -= mitk::MessageDelegate<QmitkSimpleLabelSetListWidget>(
+  labelSet->ModifyLabelEvent -= mitk::MessageDelegate1<QmitkSimpleLabelSetListWidget, mitk::LabelSetImage::LabelValueType>(
     this, &QmitkSimpleLabelSetListWidget::OnLabelChanged);
 }
 
@@ -119,32 +119,49 @@ void QmitkSimpleLabelSetListWidget::OnEstablishLabelSetConnection()
   auto labelSet = m_LabelSetImage->GetLabelSet(activeLayerID);
 
   // Reset LabelSetWidget Events
-  labelSet->AddLabelEvent += mitk::MessageDelegate<QmitkSimpleLabelSetListWidget>(
+  labelSet->AddLabelEvent += mitk::MessageDelegate1<QmitkSimpleLabelSetListWidget, mitk::LabelSetImage::LabelValueType>(
     this, &QmitkSimpleLabelSetListWidget::OnLabelChanged);
-  labelSet->RemoveLabelEvent += mitk::MessageDelegate<QmitkSimpleLabelSetListWidget>(
+  labelSet->RemoveLabelEvent += mitk::MessageDelegate1<QmitkSimpleLabelSetListWidget, mitk::LabelSetImage::LabelValueType>(
     this, &QmitkSimpleLabelSetListWidget::OnLabelChanged);
-  labelSet->ModifyLabelEvent += mitk::MessageDelegate<QmitkSimpleLabelSetListWidget>(
+  labelSet->ModifyLabelEvent += mitk::MessageDelegate1<QmitkSimpleLabelSetListWidget, mitk::LabelSetImage::LabelValueType>(
     this, &QmitkSimpleLabelSetListWidget::OnLabelChanged);
 }
 
 void QmitkSimpleLabelSetListWidget::OnLayerChanged()
 {
   this->OnEstablishLabelSetConnection();
-  this->ResetList();
-  emit ActiveLayerChanged();
-  emit SelectedLabelsChanged(this->SelectedLabels());
+  if (!this->m_Emmiting)
+  {
+    this->ResetList();
+
+    this->m_Emmiting = true;
+    emit ActiveLayerChanged();
+    emit SelectedLabelsChanged(this->SelectedLabels());
+    this->m_Emmiting = false;
+  }
 }
 
-void QmitkSimpleLabelSetListWidget::OnLabelChanged()
+void QmitkSimpleLabelSetListWidget::OnLabelChanged(mitk::LabelSetImage::LabelValueType /*lv*/)
 {
-  this->ResetList();
-  emit ActiveLayerChanged();
-  emit SelectedLabelsChanged(this->SelectedLabels());
+  if (!this->m_Emmiting)
+  {
+    this->ResetList();
+
+    this->m_Emmiting = true;
+    emit ActiveLayerChanged();
+    emit SelectedLabelsChanged(this->SelectedLabels());
+    this->m_Emmiting = false;
+  }
 }
 
 void QmitkSimpleLabelSetListWidget::OnLabelSelectionChanged()
 {
-  emit SelectedLabelsChanged(this->SelectedLabels());
+  if (!this->m_Emmiting)
+  {
+    this->m_Emmiting = true;
+    emit SelectedLabelsChanged(this->SelectedLabels());
+    this->m_Emmiting = false;
+  }
 }
 
 void QmitkSimpleLabelSetListWidget::ResetList()

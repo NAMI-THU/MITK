@@ -219,7 +219,7 @@ void mitk::BaseGeometry::_SetSpacing(const mitk::Vector3D &aSpacing, bool enforc
 mitk::Vector3D mitk::BaseGeometry::GetAxisVector(unsigned int direction) const
 {
   Vector3D frontToBack;
-  frontToBack.SetVnlVector(this->GetIndexToWorldTransform()->GetMatrix().GetVnlMatrix().get_column(direction));
+  frontToBack.SetVnlVector(this->GetIndexToWorldTransform()->GetMatrix().GetVnlMatrix().get_column(direction).as_ref());
   frontToBack *= GetExtent(direction);
   return frontToBack;
 }
@@ -249,9 +249,9 @@ bool mitk::BaseGeometry::Is2DConvertable()
       break;
     }
     mitk::Vector3D col0, col1, col2;
-    col0.SetVnlVector(this->GetIndexToWorldTransform()->GetMatrix().GetVnlMatrix().get_column(0));
-    col1.SetVnlVector(this->GetIndexToWorldTransform()->GetMatrix().GetVnlMatrix().get_column(1));
-    col2.SetVnlVector(this->GetIndexToWorldTransform()->GetMatrix().GetVnlMatrix().get_column(2));
+    col0.SetVnlVector(this->GetIndexToWorldTransform()->GetMatrix().GetVnlMatrix().get_column(0).as_ref());
+    col1.SetVnlVector(this->GetIndexToWorldTransform()->GetMatrix().GetVnlMatrix().get_column(1).as_ref());
+    col2.SetVnlVector(this->GetIndexToWorldTransform()->GetMatrix().GetVnlMatrix().get_column(2).as_ref());
 
     if ((col0[2] != 0) || (col1[2] != 0) || (col2[0] != 0) || (col2[1] != 0) || (col2[2] != 1))
     {
@@ -614,7 +614,7 @@ void mitk::BaseGeometry::ExecuteOperation(Operation *operation)
 
 mitk::VnlVector mitk::BaseGeometry::GetMatrixColumn(unsigned int direction) const
 {
-  return this->GetIndexToWorldTransform()->GetMatrix().GetVnlMatrix().get_column(direction);
+  return this->GetIndexToWorldTransform()->GetMatrix().GetVnlMatrix().get_column(direction).as_ref();
 }
 
 mitk::BoundingBox::Pointer mitk::BaseGeometry::CalculateBoundingBoxRelativeToTransform(
@@ -759,15 +759,19 @@ void mitk::BaseGeometry::PrintSelf(std::ostream &os, itk::Indent indent) const
     os << indent << "Center: " << this->GetIndexToWorldTransform()->GetCenter() << std::endl;
     os << indent << "Translation: " << this->GetIndexToWorldTransform()->GetTranslation() << std::endl;
 
-    os << indent << "Inverse: " << std::endl;
-    for (i = 0; i < 3; i++)
+    auto inverse = mitk::AffineTransform3D::New();
+    if (this->GetIndexToWorldTransform()->GetInverse(inverse))
     {
-      os << indent.GetNextIndent();
-      for (j = 0; j < 3; j++)
+      os << indent << "Inverse: " << std::endl;
+      for (i = 0; i < 3; i++)
       {
-        os << this->GetIndexToWorldTransform()->GetInverseMatrix()[i][j] << " ";
+        os << indent.GetNextIndent();
+        for (j = 0; j < 3; j++)
+        {
+          os << inverse->GetMatrix()[i][j] << " ";
+        }
+        os << std::endl;
       }
-      os << std::endl;
     }
 
     // from itk::ScalableAffineTransform
@@ -1009,6 +1013,7 @@ bool mitk::IsSubGeometry(const mitk::BaseGeometry& testGeo,
     result = false;
   }
 
+  //check if the geometry is within or equal to the bounds of reference geomentry.
   for (int i = 0; i<8; ++i)
   {
     auto testCorner = testGeo.GetCornerPoint(i);
@@ -1017,34 +1022,34 @@ bool mitk::IsSubGeometry(const mitk::BaseGeometry& testGeo,
     referenceGeo.WorldToIndex(testCorner, testCornerIndex);
 
     std::bitset<sizeof(int)> bs(i);
-    //To regard the directionEps, we substract or add it to the index elments
-    //depending on wether it was constructed by a lower or an upper bound value
+    //To regard the coordinateEps, we subtract or add it to the index elements
+    //depending on whether it was constructed by a lower or an upper bound value
     //(see implementation of BaseGeometry::GetCorner()).
     if (bs.test(0))
     {
-      testCornerIndex[2] -= directionEps;
+      testCornerIndex[2] -= coordinateEps;
     }
     else
     {
-      testCornerIndex[2] += directionEps;
+      testCornerIndex[2] += coordinateEps;
     }
 
     if (bs.test(1))
     {
-      testCornerIndex[1] -= directionEps;
+      testCornerIndex[1] -= coordinateEps;
     }
     else
     {
-      testCornerIndex[1] += directionEps;
+      testCornerIndex[1] += coordinateEps;
     }
 
     if (bs.test(2))
     {
-      testCornerIndex[0] -= directionEps;
+      testCornerIndex[0] -= coordinateEps;
     }
     else
     {
-      testCornerIndex[0] += directionEps;
+      testCornerIndex[0] += coordinateEps;
     }
 
     isInside = referenceGeo.IsIndexInside(testCornerIndex);

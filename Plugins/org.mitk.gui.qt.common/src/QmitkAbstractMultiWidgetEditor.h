@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKABSTRACTMULTIWIDGETEDITOR_H
-#define QMITKABSTRACTMULTIWIDGETEDITOR_H
+#ifndef QmitkAbstractMultiWidgetEditor_h
+#define QmitkAbstractMultiWidgetEditor_h
 
 #include <org_mitk_gui_qt_common_Export.h>
 
@@ -58,7 +58,19 @@ public:
   /**
   * @brief Overridden from QmitkAbstractRenderEditor : IRenderWindowPart
   */
-  virtual QmitkRenderWindow* GetQmitkRenderWindow(const mitk::BaseRenderer::ViewDirection& viewDirection) const override;
+  virtual QmitkRenderWindow* GetQmitkRenderWindow(const mitk::AnatomicalPlane& orientation) const override;
+  /**
+  * @brief Overridden from QmitkAbstractRenderEditor : IRenderWindowPart
+  */
+  void InitializeViews(const mitk::TimeGeometry* geometry, bool resetCamera) override;
+  /**
+  * @brief Overridden from QmitkAbstractRenderEditor : IRenderWindowPart
+  */
+  void SetInteractionReferenceGeometry(const mitk::TimeGeometry* referenceGeometry) override;
+  /**
+  * @brief Overridden from QmitkAbstractRenderEditor : IRenderWindowPart
+  */
+  bool HasCoupledRenderWindows() const override;
   /**
   * @brief Overridden from QmitkAbstractRenderEditor : IRenderWindowPart
   */
@@ -79,18 +91,6 @@ public:
   * @brief Overridden from QmitkAbstractRenderEditor : IRenderWindowPart
   */
   virtual QStringList GetDecorations() const override;
-  /**
-  * @brief Overridden from berry::IPartListener
-  */
-  virtual berry::IPartListener::Events::Types GetPartEventTypes() const override;
-  /**
-  * @brief Overridden from berry::IPartListener
-  */
-  virtual void PartOpened(const berry::IWorkbenchPartReference::Pointer& partRef) override;
-  /**
-  * @brief Overridden from berry::IPartListener
-  */
-  virtual void PartClosed(const berry::IWorkbenchPartReference::Pointer& partRef) override;
   /**
   * @brief Retrieve a QmitkRenderWindow by its index.
   */
@@ -136,4 +136,4 @@ private:
 
 };
 
-#endif // QMITKABSTRACTMULTIWIDGETEDITOR_H
+#endif

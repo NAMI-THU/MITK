@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKRENDERWINDOWMENU_H
-#define QMITKRENDERWINDOWMENU_H
+#ifndef QmitkRenderWindowMenu_h
+#define QmitkRenderWindowMenu_h
 
 // mitk qtwidgets module
 #include "MitkQtWidgetsExports.h"
@@ -51,7 +51,7 @@ class MITKQTWIDGETS_EXPORT QmitkRenderWindowMenu : public QWidget
 
 public:
 
-  using LayoutIndex = mitk::BaseRenderer::ViewDirection;
+  using LayoutIndex = mitk::AnatomicalPlane;
   using LayoutDesign = QmitkMultiWidgetLayoutManager::LayoutDesign;
 
   QmitkRenderWindowMenu(QWidget *parent = nullptr,
@@ -70,10 +70,10 @@ public:
       return m_LayoutActionsMenu->isVisible();
   }
 
-  /*! Set layout index. Defines layout direction (axial, coronal, sagital or threeD) of the parent. */
+  /*! Set layout index. Defines layout direction (axial, coronal, sagittal or threeD) of the parent. */
   void SetLayoutIndex(LayoutIndex layoutIndex);
 
-  /*! Return layout direction of parent (axial, coronal, sagital or threeD) */
+  /*! Return layout direction of parent (axial, coronal, sagittal or threeD) */
   LayoutIndex GetLayoutIndex() { return m_Layout; }
   /*! Update list of layout design (standard layout, 2D images top, 3D bottom ..). Set action of current layout design
   to disable and all other to enable. */
@@ -191,4 +191,4 @@ private:
 
 };
 
-#endif // QMITKRENDERWINDOWMENU_H
+#endif

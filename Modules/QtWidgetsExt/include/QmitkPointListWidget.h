@@ -9,20 +9,22 @@ Use of this source code is governed by a 3-clause BSD license that can be
 found in the LICENSE file.
 
 ============================================================================*/
-#ifndef QmitkPointListWidget_H
-#define QmitkPointListWidget_H
+#ifndef QmitkPointListWidget_h
+#define QmitkPointListWidget_h
 
 #include "MitkQtWidgetsExtExports.h"
+
 #include <QmitkPointListModel.h>
 #include <QmitkPointListView.h>
 
-#include <QmitkStdMultiWidget.h>
 #include <mitkDataInteractor.h>
 #include <mitkDataNode.h>
 #include <mitkPointSet.h>
 
 #include <QPushButton>
 #include <QToolButton>
+
+class QmitkAbstractMultiWidget;
 
 /*!
  * \brief Widget for regular operations on point sets
@@ -43,7 +45,7 @@ found in the LICENSE file.
  *
  * If the render window crosshair should be moved to the
  * currently selected point, the widget user has to provide
- * a QmitkStdMultiWidget object.
+ * a QmitkAbstractMultiWidget object.
  */
 
 class MITKQTWIDGETSEXT_EXPORT QmitkPointListWidget : public QWidget
@@ -82,8 +84,8 @@ public:
   void SetPointSetNode(mitk::DataNode *newNode);
   mitk::DataNode *GetPointSetNode();
 
-  /** @brief assign a QmitkStdMultiWidget for updating render window crosshair */
-  void SetMultiWidget(QmitkStdMultiWidget *multiWidget);
+  /** @brief assign a QmitkAbstractMultiWidget for updating render window crosshair */
+  void SetMultiWidget(QmitkAbstractMultiWidget*multiWidget);
 
   /** @brief itk observer for node "delete" events */
   void OnNodeDeleted(const itk::EventObject &e);

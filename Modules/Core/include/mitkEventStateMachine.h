@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKEVENTSTATEMACHINE_H_
-#define MITKEVENTSTATEMACHINE_H_
+#ifndef mitkEventStateMachine_h
+#define mitkEventStateMachine_h
 
 #include "itkObject.h"
 #include "mitkCommon.h"
@@ -215,8 +215,7 @@ namespace mitk
      */
     void SetMouseCursor(const char *xpm[], int hotspotX, int hotspotY);
 
-    /** \brief Resets the mouse cursor (if modified by the SlicesCoordinator)
-     * to its original state.
+    /** \brief Resets the mouse cursor to its original state.
      *
      * Should be used by subclasses and from external application instead
      * of using QmitkApplicationCursor directly to avoid conflicts. */
@@ -261,4 +260,4 @@ namespace mitk
   };
 
 } /* namespace mitk */
-#endif /* MITKEVENTSTATEMACHINE_H_ */
+#endif

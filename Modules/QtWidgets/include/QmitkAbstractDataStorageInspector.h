@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKABSTRACTDATASTORAGEINSPECTOR_H
-#define QMITKABSTRACTDATASTORAGEINSPECTOR_H
+#ifndef QmitkAbstractDataStorageInspector_h
+#define QmitkAbstractDataStorageInspector_h
 
 #include <QmitkModelViewSelectionConnector.h>
 
@@ -23,8 +23,6 @@ found in the LICENSE file.
 
 // qt
 #include <QWidget>
-
-class QAbstractItemVew;
 
 /**
 * @brief This abstract class is a convenient base class for easy implementation of widgets that
@@ -126,4 +124,4 @@ protected:
 
 };
 
-#endif // QMITKABSTRACTDATASTORAGEMODEL_H
+#endif

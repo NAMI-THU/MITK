@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MAPPER_H_HEADER_INCLUDED_C1E6EA08
-#define MAPPER_H_HEADER_INCLUDED_C1E6EA08
+#ifndef mitkMapper_h
+#define mitkMapper_h
 
 #include "mitkBaseRenderer.h"
 #include "mitkCommon.h"
@@ -22,9 +22,6 @@ found in the LICENSE file.
 
 #include <itkObject.h>
 #include <itkWeakPointer.h>
-
-// Just included to get VTK version
-#include <vtkConfigure.h>
 
 class vtkWindow;
 class vtkProp;
@@ -188,7 +185,7 @@ namespace mitk
     Mapper &operator=(const Mapper &);
 
   public:
-    /** \brief Base class for mapper specific rendering ressources.
+    /** \brief Base class for mapper specific rendering resources.
      */
     class MITKCORE_EXPORT BaseLocalStorage
     {
@@ -211,4 +208,4 @@ namespace mitk
 
 } // namespace mitk
 
-#endif /* MAPPER_H_HEADER_INCLUDED_C1E6EA08 */
+#endif

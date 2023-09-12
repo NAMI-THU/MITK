@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef _MITK_IMAGE_WRITER__H_
-#define _MITK_IMAGE_WRITER__H_
+#ifndef mitkImageWriter_h
+#define mitkImageWriter_h
 
 #include <MitkLegacyIOExports.h>
 #include <mitkFileWriterWithInformation.h>
@@ -23,7 +23,7 @@ namespace mitk
    * @brief Writer for mitk::Image
    *
    * Uses the given extension (SetExtension) to decide the format to write
-   * (.mhd is default, .pic, .tif, .png, .jpg supported yet).
+   * (.mhd is default, .tif, .png, .jpg supported yet).
    * @ingroup MitkLegacyIOModule
    * @deprecatedSince{2014_10} Use mitk::IOUtils or mitk::FileWriterRegistry instead.
    */
@@ -168,4 +168,4 @@ namespace mitk
   };
 }
 
-#endif //_MITK_IMAGE_WRITER__H_
+#endif

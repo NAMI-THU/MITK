@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef _MITK_POINT_SET_READER_SERVICE__H_
-#define _MITK_POINT_SET_READER_SERVICE__H_
+#ifndef mitkPointSetReaderService_h
+#define mitkPointSetReaderService_h
 
 // MITK
 #include <mitkAbstractFileReader.h>
@@ -29,7 +29,7 @@ namespace mitk
    *
    * @brief reads xml representations of mitk::PointSets from a file
    *
-   * Reader for xml files containing one or multiple xml represenations of
+   * Reader for xml files containing one or multiple xml representations of
    * mitk::PointSet. If multiple mitk::PointSet objects are stored in one file,
    * these are assigned to multiple BaseData objects.
    *

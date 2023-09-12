@@ -10,14 +10,12 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKUSTelemedImageSource_H_HEADER_INCLUDED_
-#define MITKUSTelemedImageSource_H_HEADER_INCLUDED_
+#ifndef mitkUSTelemedImageSource_h
+#define mitkUSTelemedImageSource_h
 
 #include "mitkUSImageSource.h"
 #include "mitkUSTelemedSDKHeader.h"
 #include "mitkUSTelemedScanConverterPlugin.h"
-
-#include "itkFastMutexLock.h"
 
 namespace mitk {
 /**
@@ -71,9 +69,9 @@ protected:
   long m_OldnYPelsPerUnit;
 
 
-  mitk::Image::Pointer                        m_Image;
-  itk::FastMutexLock::Pointer                 m_ImageMutex;
+  mitk::Image::Pointer m_Image;
+  std::mutex* m_ImageMutex;
 };
 } // namespace mitk
 
-#endif // MITKUSTelemedImageSource_H
+#endif

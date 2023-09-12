@@ -10,32 +10,34 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKRENDERWINDOWWIDGET_H
-#define QMITKRENDERWINDOWWIDGET_H
+#ifndef QmitkRenderWindowWidget_h
+#define QmitkRenderWindowWidget_h
+
+#include "MitkQtWidgetsExports.h"
 
 // qt widgets module
-#include "MitkQtWidgetsExports.h"
-#include "QmitkRenderWindow.h"
+#include <QmitkRenderWindow.h>
 
 // mitk core
+#include <mitkCrosshairManager.h>
 #include <mitkDataStorage.h>
-#include <mitkPointSet.h>
 #include <mitkRenderWindow.h>
 
 // qt
 #include <QFrame>
-#include <QHBoxLayout>
 #include <QMouseEvent>
+#include <QVBoxLayout>
 
 class vtkCornerAnnotation;
 
 /**
 * @brief The 'QmitkRenderWindowWidget' is a QFrame that holds a render window
-*        and some associates properties, like a crosshair (pointset) and decorations.
+*        and some associates properties, e.g. decorations.
 *        Decorations are corner annotation (text and color), frame color or background color
 *        and can be set using this class.
 *        The 'QmitkRenderWindowWidget' is used inside a 'QmitkAbstractMultiWidget', where a map contains
 *        several render window widgets to create the multi widget display.
+*        This class uses a CrosshairManager, which allows to use plane geometries as crosshair.
 */
 class MITKQTWIDGETS_EXPORT QmitkRenderWindowWidget : public QFrame
 {
@@ -60,6 +62,8 @@ public:
   void RequestUpdate();
   void ForceImmediateUpdate();
 
+  void AddUtilityWidget(QWidget* utilityWidget);
+
   void SetGradientBackgroundColors(const mitk::Color& upper, const mitk::Color& lower);
   void ShowGradientBackground(bool enable);
   std::pair<mitk::Color, mitk::Color> GetGradientBackgroundColors() const { return m_GradientBackgroundColors; };
@@ -78,28 +82,37 @@ public:
 
   bool IsRenderWindowMenuActivated() const;
 
-  void ActivateCrosshair(bool activate);
+  void SetCrosshairVisibility(bool visible);
+  bool GetCrosshairVisibility();
+  void SetCrosshairGap(unsigned int gapSize);
 
-Q_SIGNALS:
+  void EnableCrosshair();
+  void DisableCrosshair();
 
-  void MouseEvent(QMouseEvent* e);
+  void SetCrosshairPosition(const mitk::Point3D& newPosition);
+  mitk::Point3D GetCrosshairPosition() const;
+
+  void SetGeometry(const itk::EventObject& event);
+  void SetGeometrySlice(const itk::EventObject& event);
+
+public Q_SLOTS:
+
+  void OnResetGeometry();
 
 private:
 
   void InitializeGUI();
   void InitializeDecorations();
-
-  void SetCrosshair(mitk::Point3D selectedPoint);
+  void ResetGeometry(const mitk::TimeGeometry* referenceGeometry);
 
   QString m_WidgetName;
-  QHBoxLayout* m_Layout;
+  QVBoxLayout* m_Layout;
 
   mitk::DataStorage* m_DataStorage;
 
   QmitkRenderWindow* m_RenderWindow;
 
-  mitk::DataNode::Pointer m_PointSetNode;
-  mitk::PointSet::Pointer m_PointSet;
+  mitk::CrosshairManager::Pointer m_CrosshairManager;
 
   std::pair<mitk::Color, mitk::Color> m_GradientBackgroundColors;
   mitk::Color m_DecorationColor;
@@ -107,4 +120,4 @@ private:
 
 };
 
-#endif // QMITKRENDERWINDOWWIDGET_H
+#endif

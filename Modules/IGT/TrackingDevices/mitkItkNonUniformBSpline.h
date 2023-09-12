@@ -10,6 +10,9 @@ found in the LICENSE file.
 
 ============================================================================*/
 
+#ifndef mitkItkNonUniformBSpline_h
+#define mitkItkNonUniformBSpline_h
+
 /*===================================================================
 
 This file is based heavily on a corresponding ITK filter.
@@ -17,11 +20,8 @@ This file is based heavily on a corresponding ITK filter.
 ===================================================================*/
 
 /*********************************
-  This file was taken from ITK, CVS version 1.8 to circumvent a bug in ITK release 3.18 (see http://public.kitware.com/Bug/view.php?id=10633
+  This file was taken from ITK, CVS version 1.8 to circumvent a bug in ITK release 3.18
  *********************************/
-
-#ifndef __itkNonUniformBSpline_h
-#define __itkNonUniformBSpline_h
 
 #if defined(_MSC_VER)
 #pragma warning ( disable : 4786 )
@@ -203,4 +203,4 @@ protected:
 #endif
 
 
-#endif // __itkNonUniformBSpline_h
+#endif

@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef __MITK_T2_DECAY_MODEL_H_
-#define __MITK_T2_DECAY_MODEL_H_
+#ifndef mitkT2DecayModel_h
+#define mitkT2DecayModel_h
 
 #include "mitkModelBase.h"
 
@@ -20,7 +20,11 @@ found in the LICENSE file.
 namespace mitk
 {
 
-  /** Simple model of the MR T2 signal decay. */
+  /** @class T2DecayModel
+  * @brief Simple model of the MR T2 signal decay. This corresponds to an exponential decay in the form of:
+  * f(t) = M0 * exp(-t/T2) with T2 being the transverse / spin-spin relaxation time. The derived parameter R2
+  * is calculated from T2 by inversion.
+  */
   class MITKMODELFIT_EXPORT T2DecayModel : public mitk::ModelBase
   {
 
@@ -55,6 +59,13 @@ namespace mitk
     ParameterNamesType GetStaticParameterNames() const override;
 
     ParametersSizeType GetNumberOfStaticParameters() const override;
+
+    DerivedParametersSizeType GetNumberOfDerivedParameters() const override;
+
+    DerivedParameterNamesType GetDerivedParameterNames() const override;
+
+    mitk::ModelBase::DerivedParameterMapType ComputeDerivedParameters(
+      const mitk::ModelBase::ParametersType &parameters) const;
 
   protected:
     T2DecayModel() {};

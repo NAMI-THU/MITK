@@ -224,7 +224,7 @@ void QmitkUSNavigationMarkerPlacement::ReInitializeSettingsNodesAndImageStream()
 
 void QmitkUSNavigationMarkerPlacement::OnGetCursorPosition()
 {
-  mitk::Point3D centroid = this->GetRenderWindowPart()->GetSelectedPosition();
+  auto centroid = this->GetRenderWindowPart(mitk::WorkbenchUtil::OPEN)->GetSelectedPosition();
   ui->m_CtToUsRegistrationWidget->OnCalculateTRE(centroid);
 }
 
@@ -723,9 +723,7 @@ void QmitkUSNavigationMarkerPlacement::ReinitOnImage()
       mitk::IRenderWindowPart *renderWindowPart = this->GetRenderWindowPart();
       if (renderWindowPart != nullptr && image->GetTimeGeometry()->IsValid())
       {
-        renderWindowPart->GetRenderingManager()->InitializeViews(
-          image->GetTimeGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true);
-        renderWindowPart->GetRenderingManager()->RequestUpdateAll();
+        renderWindowPart->GetRenderingManager()->InitializeViews(image->GetTimeGeometry());
       }
 
       this->RequestRenderWindowUpdate();

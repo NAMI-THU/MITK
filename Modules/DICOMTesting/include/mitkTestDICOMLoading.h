@@ -64,7 +64,7 @@ class MITKDICOMTESTING_EXPORT TestDICOMLoading
 
     void ResetUserLocale();
 
-    std::string ComponentTypeToString( int type );
+    std::string ComponentTypeToString( itk::IOComponentEnum type );
 
     KeyValueMap ParseDump( const std::string& dump );
 
@@ -108,4 +108,3 @@ class MITKDICOMTESTING_EXPORT TestDICOMLoading
 }
 
 #endif
-

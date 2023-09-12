@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef _MITK_POINT_SET_SOURCE_H
-#define _MITK_POINT_SET_SOURCE_H
+#ifndef mitkPointSetSource_h
+#define mitkPointSetSource_h
 
 #include "mitkBaseDataSource.h"
 #include "mitkPointSet.h"
@@ -52,7 +52,7 @@ namespace mitk
 
     /**
      * This is a default implementation to make sure we have something.
-     * Once all the subclasses of ProcessObject provide an appopriate
+     * Once all the subclasses of ProcessObject provide an appropriate
      * MakeOutput(), then ProcessObject::MakeOutput() can be made pure
      * virtual.
      */
@@ -64,4 +64,4 @@ namespace mitk
     ~PointSetSource() override;
   };
 }
-#endif // #define _MITK_POINT_SET_SOURCE_H
+#endif

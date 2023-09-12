@@ -87,7 +87,7 @@ QmitkRenderWindow* QmitkAbstractMultiWidgetEditor::GetQmitkRenderWindow(const QS
   return multiWidget->GetRenderWindow(id);
 }
 
-QmitkRenderWindow* QmitkAbstractMultiWidgetEditor::GetQmitkRenderWindow(const mitk::BaseRenderer::ViewDirection& viewDirection) const
+QmitkRenderWindow* QmitkAbstractMultiWidgetEditor::GetQmitkRenderWindow(const mitk::AnatomicalPlane& orientation) const
 {
   const auto& multiWidget = GetMultiWidget();
   if (nullptr == multiWidget)
@@ -95,7 +95,40 @@ QmitkRenderWindow* QmitkAbstractMultiWidgetEditor::GetQmitkRenderWindow(const mi
     return nullptr;
   }
 
-  return multiWidget->GetRenderWindow(viewDirection);
+  return multiWidget->GetRenderWindow(orientation);
+}
+
+void QmitkAbstractMultiWidgetEditor::InitializeViews(const mitk::TimeGeometry* geometry, bool resetCamera)
+{
+  const auto& multiWidget = this->GetMultiWidget();
+  if (nullptr == multiWidget)
+  {
+    return;
+  }
+
+  multiWidget->InitializeViews(geometry, resetCamera);
+}
+
+void QmitkAbstractMultiWidgetEditor::SetInteractionReferenceGeometry(const mitk::TimeGeometry* referenceGeometry)
+{
+  const auto& multiWidget = this->GetMultiWidget();
+  if (nullptr == multiWidget)
+  {
+    return;
+  }
+
+  multiWidget->SetInteractionReferenceGeometry(referenceGeometry);
+}
+
+bool QmitkAbstractMultiWidgetEditor::HasCoupledRenderWindows() const
+{
+  const auto& multiWidget = GetMultiWidget();
+  if (nullptr == multiWidget)
+  {
+    return false;
+  }
+
+  return multiWidget->HasCoupledRenderWindows();
 }
 
 mitk::Point3D QmitkAbstractMultiWidgetEditor::GetSelectedPosition(const QString& id/* = QString()*/) const
@@ -131,35 +164,6 @@ bool QmitkAbstractMultiWidgetEditor::IsDecorationEnabled(const QString& decorati
 QStringList QmitkAbstractMultiWidgetEditor::GetDecorations() const
 {
   return m_Impl->m_MultiWidgetDecorationManager->GetDecorations();
-}
-
-berry::IPartListener::Events::Types QmitkAbstractMultiWidgetEditor::GetPartEventTypes() const
-{
-  return Events::CLOSED | Events::OPENED;
-}
-
-void QmitkAbstractMultiWidgetEditor::PartOpened(const berry::IWorkbenchPartReference::Pointer& partRef)
-{
-  if (partRef->GetId() == QmitkAbstractMultiWidgetEditor::EDITOR_ID)
-  {
-    const auto& multiWidget = GetMultiWidget();
-    if (nullptr != multiWidget)
-    {
-      multiWidget->MultiWidgetOpened();
-    }
-  }
-}
-
-void QmitkAbstractMultiWidgetEditor::PartClosed(const berry::IWorkbenchPartReference::Pointer& partRef)
-{
-  if (partRef->GetId() == QmitkAbstractMultiWidgetEditor::EDITOR_ID)
-  {
-    const auto& multiWidget = GetMultiWidget();
-    if (nullptr != multiWidget)
-    {
-      multiWidget->MultiWidgetClosed();
-    }
-  }
 }
 
 QmitkRenderWindow* QmitkAbstractMultiWidgetEditor::GetQmitkRenderWindowByIndex(int index) const

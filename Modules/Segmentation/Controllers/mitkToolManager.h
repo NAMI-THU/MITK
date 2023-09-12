@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef mitkToolManager_h_Included
-#define mitkToolManager_h_Included
+#ifndef mitkToolManager_h
+#define mitkToolManager_h
 
 #include "mitkDataNode.h"
 #include "mitkDataStorage.h"
@@ -208,7 +208,7 @@ namespace mitk
      */
     DataNode *GetRoiData(int idx);
 
-    DataStorage *GetDataStorage();
+    DataStorage::Pointer GetDataStorage() const;
     void SetDataStorage(DataStorage &storage);
 
     /** Get the current selected time point of the RenderManager

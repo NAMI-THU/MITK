@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef mitkTubeGraphDataInteractor3D_h_
-#define mitkTubeGraphDataInteractor3D_h_
+#ifndef mitkTubeGraphDataInteractor_h
+#define mitkTubeGraphDataInteractor_h
 
 #include <MitkTubeGraphExports.h>
 
@@ -24,7 +24,7 @@ found in the LICENSE file.
 namespace mitk
 {
   // Define events for TubeGraph interaction notifications
-  itkEventMacro(SelectionChangedTubeGraphEvent, itk::AnyEvent);
+  itkEventMacroDeclaration(SelectionChangedTubeGraphEvent, itk::AnyEvent);
 
   /**
   * \brief

@@ -66,13 +66,11 @@ void InteractionEventRecorder::Play()
   mitk::XML2EventParser::EventContainerType events = parser.GetInteractions();
 
   MITK_INFO << "parsed events";
-  for (std::size_t i=0; i < events.size(); ++i)
-  {
-    //this->GetRenderWindowPart()->GetQmitkRenderWindow("axial")->GetRenderer()->GetDispatcher()->ProcessEvent(events.at(i));
-    events.at(i)->GetSender()->GetDispatcher()->ProcessEvent(events.at(i));
-  }
-  MITK_INFO << "DONE";
 
+  for (std::size_t i=0; i < events.size(); ++i)
+    events.at(i)->GetSender()->GetDispatcher()->ProcessEvent(events.at(i));
+
+  MITK_INFO << "DONE";
 }
 
 void InteractionEventRecorder::OpenFile()
@@ -99,8 +97,9 @@ void InteractionEventRecorder::RotatePlanes()
   secondVec[2] = 1;
 
   // Rotate Planes to a predefined state which can later be used again in tests
-  this->GetRenderWindowPart()->GetQmitkRenderWindow("axial")->GetSliceNavigationController()->ReorientSlices( center, firstVec,secondVec );
-  this->GetRenderWindowPart()->GetQmitkRenderWindow("axial")->GetRenderer()->RequestUpdate();
+  auto* axialRenderWindow = this->GetRenderWindowPart(mitk::WorkbenchUtil::OPEN)->GetQmitkRenderWindow("axial");
+  axialRenderWindow->GetSliceNavigationController()->ReorientSlices( center, firstVec,secondVec );
+  axialRenderWindow->GetRenderer()->RequestUpdate();
 
 }
 
@@ -108,23 +107,20 @@ void InteractionEventRecorder::RotateView()
 {
   // Rotate the view in 3D to a predefined state which can later be used again in tests
   // this simulates a prior VTK Interaction
+  auto allRenderWindows = mitk::BaseRenderer::GetAll3DRenderWindows();
+  for (auto mapit = allRenderWindows.begin(); mapit != allRenderWindows.end(); ++mapit)
+  {
+    vtkRenderWindow* renderWindow = mapit->first;
+    if (renderWindow == nullptr)
+      continue;
 
-  vtkRenderWindow* renderWindow = mitk::BaseRenderer::GetRenderWindowByName("stdmulti.widget3");
+    mitk::Stepper* stepper = mapit->second->GetCameraRotationController()->GetSlice();
+    if (stepper == nullptr)
+      return;
 
-  if (renderWindow == nullptr)
-    return;
-
-  mitk::Stepper* stepper = mitk::BaseRenderer::GetInstance(renderWindow)->GetCameraRotationController()->GetSlice();
-
-  if (stepper == nullptr)
-    return;
-
-  unsigned int newPos = 17;
-
-
-  stepper->SetPos(newPos);
-
-  this->GetRenderWindowPart()->GetQmitkRenderWindow("axial")->GetRenderer()->RequestUpdate();
+    unsigned int newPos = 17;
+    stepper->SetPos(newPos);
+  }
 }
 
 void InteractionEventRecorder::CreateQtPartControl( QWidget *parent )

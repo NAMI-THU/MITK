@@ -10,15 +10,12 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef mitkPickingTool_h_Included
-#define mitkPickingTool_h_Included
+#ifndef mitkPickingTool_h
+#define mitkPickingTool_h
 
-#include "itkImage.h"
-#include "mitkAutoSegmentationTool.h"
-#include "mitkCommon.h"
-#include "mitkDataStorage.h"
+#include "mitkSegWithPreviewTool.h"
 #include "mitkPointSet.h"
-#include "mitkSinglePointDataInteractor.h"
+
 #include <MitkSegmentationExports.h>
 
 namespace us
@@ -40,54 +37,45 @@ namespace mitk
   \sa QmitkInteractiveSegmentation
 
   */
-  class MITKSEGMENTATION_EXPORT PickingTool : public AutoSegmentationTool
+  class MITKSEGMENTATION_EXPORT PickingTool : public SegWithPreviewTool
   {
   public:
-    mitkClassMacro(PickingTool, AutoSegmentationTool);
+    mitkClassMacro(PickingTool, SegWithPreviewTool);
     itkFactorylessNewMacro(Self);
     itkCloneMacro(Self);
 
-      const char **GetXPM() const override;
+    const char **GetXPM() const override;
     const char *GetName() const override;
     us::ModuleResource GetIconResource() const override;
 
     void Activated() override;
     void Deactivated() override;
 
-    bool CanHandle(const BaseData* referenceData, const BaseData* workingData) const override;
+    /**Clears all picks and updates the preview.*/
+    void ClearPicks();
 
-    virtual DataNode::Pointer GetPointSetNode();
-
-    mitk::DataNode *GetReferenceData();
-    mitk::DataNode *GetWorkingData();
-    mitk::DataStorage *GetDataStorage();
-
-    void ConfirmSegmentation();
+    bool HasPicks() const;
 
   protected:
     PickingTool(); // purposely hidden
     ~PickingTool() override;
 
-    // Callback for point add event of PointSet
-    void OnPointAdded();
+    void ConnectActionsAndFunctions() override;
 
-    // Observer id
-    long m_PointSetAddObserverTag;
+    /// \brief Add point action of StateMachine pattern
+    virtual void OnAddPoint(StateMachineAction*, InteractionEvent* interactionEvent);
 
-    mitk::DataNode::Pointer m_ResultNode;
+    /// \brief Delete action of StateMachine pattern
+    virtual void OnDelete(StateMachineAction*, InteractionEvent* interactionEvent);
 
-    // itk regrowing
-    template <typename TPixel, unsigned int VImageDimension>
-    void StartRegionGrowing(itk::Image<TPixel, VImageDimension> *itkImage,
-                            mitk::BaseGeometry *imageGeometry,
-                            mitk::PointSet::PointType seedPoint);
+    /// \brief Clear all seed points.
+    void ClearSeeds();
+
+    void DoUpdatePreview(const Image* inputAtTimeStep, const Image* oldSegAtTimeStep, LabelSetImage* previewImage, TimeStepType timeStep) override;
 
     // seed point
     PointSet::Pointer m_PointSet;
-    SinglePointDataInteractor::Pointer m_SeedPointInteractor;
     DataNode::Pointer m_PointSetNode;
-
-    DataNode *m_WorkingData;
   };
 
 } // namespace

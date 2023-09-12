@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKINTERACTIONSCHEMETOOLBAR_H
-#define QMITKINTERACTIONSCHEMETOOLBAR_H
+#ifndef QmitkInteractionSchemeToolBar_h
+#define QmitkInteractionSchemeToolBar_h
 
 #include "MitkQtWidgetsExports.h"
 
@@ -39,18 +39,17 @@ public:
 
   void SetInteractionEventHandler(mitk::InteractionEventHandler::Pointer interactionEventHandler);
 
-protected slots:
+protected Q_SLOTS:
 
-  void OnInteractionSchemeChanged();
   void AddButton(InteractionScheme id, const QString& toolName, const QIcon& icon, bool on = false);
+  void OnInteractionSchemeChanged();
 
 private:
 
   QActionGroup* m_ActionGroup;
 
-  mitk::InteractionSchemeSwitcher::Pointer m_InteractionSchemeSwitcher;
   mitk::InteractionEventHandler::Pointer m_InteractionEventHandler;
 
 };
 
-#endif // QMITKINTERACTIONSCHEMETOOLBAR_H
+#endif

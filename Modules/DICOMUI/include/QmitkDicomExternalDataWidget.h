@@ -16,10 +16,6 @@ found in the LICENSE file.
 #include "ui_QmitkDicomExternalDataWidgetControls.h"
 #include <MitkDICOMUIExports.h>
 
-// include ctk
-#include <ctkDICOMDatabase.h>
-#include <ctkDICOMIndexer.h>
-
 // include QT
 #include <QHash>
 #include <QLabel>
@@ -30,11 +26,12 @@ found in the LICENSE file.
 #include <QWidget>
 
 class ctkFileDialog;
+class ctkDICOMDatabase;
+class ctkDICOMIndexer;
 
 /**
 * \brief QmitkDicomExternalDataWidget is a QWidget providing functionality for dicom import.
 *
-* \sa QmitkFunctionality
 * \ingroup Functionalities
 */
 class MITKDICOMUI_EXPORT QmitkDicomExternalDataWidget : public QWidget
@@ -96,6 +93,10 @@ protected slots:
 
   void OnProgressDetail(const QString&);
 
+  void OnProgress(int value);
+
+  void OnIndexingComplete(int, int, int, int);
+
 protected:
   /// \brief Get the list of filepath from current selected index in TreeView. All file paths referring to the index
   /// will be returned.
@@ -117,4 +118,4 @@ protected:
   Ui::QmitkDicomExternalDataWidgetControls *m_Controls;
 };
 
-#endif // _QmitkDicomExternalDataWidget_H_INCLUDED
+#endif

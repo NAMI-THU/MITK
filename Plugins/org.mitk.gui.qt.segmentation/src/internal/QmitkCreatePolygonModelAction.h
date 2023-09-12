@@ -9,8 +9,8 @@ Use of this source code is governed by a 3-clause BSD license that can be
 found in the LICENSE file.
 
 ============================================================================*/
-#ifndef QMITKCREATEPOLYGONMODELACTION_H
-#define QMITKCREATEPOLYGONMODELACTION_H
+#ifndef QmitkCreatePolygonModelAction_h
+#define QmitkCreatePolygonModelAction_h
 
 #include <org_mitk_gui_qt_segmentation_Export.h>
 
@@ -44,8 +44,8 @@ private:
   QmitkCreatePolygonModelAction & operator=(const QmitkCreatePolygonModelAction &);
 
   mitk::DataStorage::Pointer m_DataStorage;
-  bool m_IsSmoothed;
-  bool m_IsDecimated;
+  bool m_IsSmoothed = false;
+  bool m_IsDecimated = true;
 };
 
 #endif

@@ -21,7 +21,6 @@ found in the LICENSE file.
 #include <QCheckBox>
 #include <QGroupBox>
 
-#include <mitkInteractionEventObserver.h>
 #include <mitkCoreServices.h>
 #include <mitkIPropertyFilters.h>
 #include <mitkPropertyFilter.h>
@@ -53,8 +52,6 @@ found in the LICENSE file.
 
 #include "mitkPluginActivator.h"
 #include "usModuleRegistry.h"
-#include "mitkInteractionEventObserver.h"
-#include "mitkDisplayInteractor.h"
 #include "usGetModuleContext.h"
 #include "usModuleContext.h"
 #include <usModuleInitialization.h>
@@ -67,7 +64,8 @@ struct QmitkPlanarFigureData
     : m_EndPlacementObserverTag(0),
       m_SelectObserverTag(0),
       m_StartInteractionObserverTag(0),
-      m_EndInteractionObserverTag(0)
+      m_EndInteractionObserverTag(0),
+      m_DuringInteractionObserverTag(0)
   {
   }
 
@@ -76,6 +74,7 @@ struct QmitkPlanarFigureData
   unsigned int m_SelectObserverTag;
   unsigned int m_StartInteractionObserverTag;
   unsigned int m_EndInteractionObserverTag;
+  unsigned int m_DuringInteractionObserverTag;
 };
 
 struct QmitkMeasurementViewData
@@ -93,7 +92,6 @@ struct QmitkMeasurementViewData
       m_BezierCurveCounter(0),
       m_SubdivisionPolygonCounter(0),
       m_UnintializedPlanarFigure(false),
-      m_ScrollEnabled(true),
       m_Parent(nullptr),
       m_SingleNodeSelectionWidget(nullptr),
       m_DrawLine(nullptr),
@@ -133,9 +131,9 @@ struct QmitkMeasurementViewData
   std::map<mitk::DataNode::Pointer, QmitkPlanarFigureData> m_DataNodeToPlanarFigureData;
   mitk::DataNode::Pointer m_SelectedImageNode;
   bool m_UnintializedPlanarFigure;
-  bool m_ScrollEnabled;
 
   QWidget* m_Parent;
+  QLabel* m_SelectedImageLabel;
   QmitkSingleNodeSelectionWidget* m_SingleNodeSelectionWidget;
   QAction* m_DrawLine;
   QAction* m_DrawPath;
@@ -244,6 +242,7 @@ void QmitkMeasurementView::CreateQtPartControl(QWidget* parent)
   d->m_FixedParameterBox = new QGroupBox();
   d->m_FixedParameterBox->setCheckable(true);
   d->m_FixedParameterBox->setChecked(false);
+  d->m_FixedParameterBox->setEnabled(false);
   d->m_FixedParameterBox->setTitle("Fixed sized circle/double ellipse");
   d->m_FixedParameterBox->setToolTip("If activated, circles and double ellipses (as rings) figures will always be created with the set parameters as fixed size.");
   d->m_FixedParameterBox->setAlignment(Qt::AlignLeft);
@@ -278,8 +277,10 @@ void QmitkMeasurementView::CreateQtPartControl(QWidget* parent)
   // copy to clipboard button
   d->m_CopyToClipboard = new QPushButton(tr("Copy to Clipboard"));
 
+  d->m_SelectedImageLabel = new QLabel("Selected Image");
   d->m_Layout = new QGridLayout;
-  d->m_Layout->addWidget(d->m_SingleNodeSelectionWidget, 0, 0, 1, 2);
+  d->m_Layout->addWidget(d->m_SelectedImageLabel, 0, 0);
+  d->m_Layout->addWidget(d->m_SingleNodeSelectionWidget, 0, 1, 1, 1);
   d->m_Layout->addWidget(d->m_DrawActionsToolBar, 1, 0, 1, 2);
   d->m_Layout->addWidget(d->m_FixedParameterBox, 2, 0, 1, 2);
   d->m_Layout->addWidget(d->m_SelectedPlanarFiguresText, 3, 0, 1, 2);
@@ -319,11 +320,13 @@ void QmitkMeasurementView::OnCurrentSelectionChanged(QList<mitk::DataNode::Point
   {
     d->m_SelectedImageNode = nullptr;
     d->m_DrawActionsToolBar->setEnabled(false);
+    d->m_FixedParameterBox->setEnabled(false);
   }
   else
   {
     d->m_SelectedImageNode = nodes.front();
     d->m_DrawActionsToolBar->setEnabled(true);
+    d->m_FixedParameterBox->setEnabled(true);
   }
 }
 
@@ -367,15 +370,10 @@ void QmitkMeasurementView::NodeAdded(const mitk::DataNode* node)
     selectCommand->SetCallbackFunction(this, &QmitkMeasurementView::PlanarFigureSelected);
     data.m_SelectObserverTag = planarFigure->AddObserver(mitk::SelectPlanarFigureEvent(), selectCommand);
 
-    // add observer for event when interaction with figure starts
-    auto startInteractionCommand = SimpleCommandType::New();
-    startInteractionCommand->SetCallbackFunction(this, &QmitkMeasurementView::DisableCrosshairNavigation);
-    data.m_StartInteractionObserverTag = planarFigure->AddObserver(mitk::StartInteractionPlanarFigureEvent(), startInteractionCommand);
-
-    // add observer for event when interaction with figure starts
-    auto endInteractionCommand = SimpleCommandType::New();
-    endInteractionCommand->SetCallbackFunction(this, &QmitkMeasurementView::EnableCrosshairNavigation);
-    data.m_EndInteractionObserverTag = planarFigure->AddObserver(mitk::EndInteractionPlanarFigureEvent(), endInteractionCommand);
+    // add observer for event during interaction when a point is moved
+    auto duringInteractionCommand = SimpleCommandType::New();
+    duringInteractionCommand->SetCallbackFunction(this, &QmitkMeasurementView::UpdateMeasurementText);
+    data.m_DuringInteractionObserverTag = planarFigure->AddObserver(mitk::PointMovedPlanarFigureEvent(), duringInteractionCommand);
 
     // adding to the map of tracked planarfigures
     d->m_DataNodeToPlanarFigureData[nonConstNode] = data;
@@ -406,6 +404,7 @@ void QmitkMeasurementView::NodeRemoved(const mitk::DataNode* node)
     data.m_Figure->RemoveObserver(data.m_SelectObserverTag);
     data.m_Figure->RemoveObserver(data.m_StartInteractionObserverTag);
     data.m_Figure->RemoveObserver(data.m_EndInteractionObserverTag);
+    data.m_Figure->RemoveObserver(data.m_DuringInteractionObserverTag);
 
     isFigureFinished = data.m_Figure->GetPropertyList()->GetBoolProperty("initiallyplaced", isPlaced);
 
@@ -441,7 +440,6 @@ void QmitkMeasurementView::NodeRemoved(const mitk::DataNode* node)
           {
             d->m_DataNodeToPlanarFigureData.erase(it);
             this->PlanarFigureInitialized(); // normally called when a figure is finished, to reset all buttons
-            this->EnableCrosshairNavigation();
           }
         }
       }
@@ -731,7 +729,6 @@ mitk::DataNode::Pointer QmitkMeasurementView::AddFigureToDataStorage(mitk::Plana
   d->m_CurrentSelection.push_back(newNode);
 
   this->UpdateMeasurementText();
-  this->DisableCrosshairNavigation();
 
   d->m_DrawActionsToolBar->setEnabled(false);
   d->m_UnintializedPlanarFigure = true;
@@ -811,57 +808,6 @@ void QmitkMeasurementView::AddAllInteractors()
 
   for (auto it = planarFigures->Begin(); it != planarFigures->End(); ++it)
     this->NodeAdded(it.Value());
-}
-
-void QmitkMeasurementView::EnableCrosshairNavigation()
-{
-  // enable the crosshair navigation
-  // Re-enabling InteractionEventObservers that have been previously disabled for legacy handling of Tools
-  // in new interaction framework
-  for (const auto& displayInteractorConfig : m_DisplayInteractorConfigs)
-  {
-    if (displayInteractorConfig.first)
-    {
-      auto displayInteractor = static_cast<mitk::DisplayInteractor*>(us::GetModuleContext()->GetService<mitk::InteractionEventObserver>(displayInteractorConfig.first));
-
-      if (displayInteractor != nullptr)
-      {
-        // here the regular configuration is loaded again
-        displayInteractor->SetEventConfig(displayInteractorConfig.second);
-      }
-    }
-  }
-
-  m_DisplayInteractorConfigs.clear();
-  d->m_ScrollEnabled = true;
-}
-
-void QmitkMeasurementView::DisableCrosshairNavigation()
-{
-  // dont deactivate twice, else we will clutter the config list ...
-  if (d->m_ScrollEnabled == false)
-      return;
-
-  // As a legacy solution the display interaction of the new interaction framework is disabled here  to avoid conflicts with tools
-  // Note: this only affects InteractionEventObservers (formerly known as Listeners) all DataNode specific interaction will still be enabled
-  m_DisplayInteractorConfigs.clear();
-
-  auto eventObservers = us::GetModuleContext()->GetServiceReferences<mitk::InteractionEventObserver>();
-
-  for (const auto& eventObserver : eventObservers)
-  {
-    auto displayInteractor = dynamic_cast<mitk::DisplayInteractor*>(us::GetModuleContext()->GetService<mitk::InteractionEventObserver>(eventObserver));
-
-    if (displayInteractor != nullptr)
-    {
-      // remember the original configuration
-      m_DisplayInteractorConfigs.insert(std::make_pair(eventObserver, displayInteractor->GetEventConfig()));
-      // here the alternative configuration is loaded
-      displayInteractor->SetEventConfig("DisplayConfigMITKLimited.xml");
-    }
-  }
-
-  d->m_ScrollEnabled = false;
 }
 
 mitk::DataStorage::SetOfObjects::ConstPointer QmitkMeasurementView::GetAllPlanarFigures() const

@@ -11,7 +11,6 @@ found in the LICENSE file.
 ============================================================================*/
 
 #include <QmitkDataNodeShowSelectedNodesAction.h>
-#include <mitkNodePredicateFirstLevel.h>
 
 // mitk core
 #include <mitkRenderingManager.h>
@@ -39,12 +38,12 @@ void QmitkDataNodeShowSelectedNodesAction::InitializeAction()
 
 void QmitkDataNodeShowSelectedNodesAction::OnActionTriggered(bool /*checked*/)
 {
-  if (m_DataStorage.IsExpired())
+  auto dataStorage = m_DataStorage.Lock();
+
+  if (dataStorage.IsNull())
   {
     return;
   }
-
-  auto dataStorage = m_DataStorage.Lock();
 
   mitk::BaseRenderer::Pointer baseRenderer = GetBaseRenderer();
 

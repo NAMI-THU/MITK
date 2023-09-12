@@ -79,6 +79,7 @@ void QmitkDicomInspectorView::CreateQtPartControl(QWidget* parent)
 
   m_Controls.singleSlot->SetDataStorage(GetDataStorage());
   m_Controls.singleSlot->SetSelectionIsOptional(true);
+  m_Controls.singleSlot->SetAutoSelectNewNodes(true);
   m_Controls.singleSlot->SetEmptyInfo(QString("Please select a data node"));
   m_Controls.singleSlot->SetPopUpTitel(QString("Select data node"));
 
@@ -194,7 +195,6 @@ void QmitkDicomInspectorView::OnCurrentSelectionChanged(QList<mitk::DataNode::Po
 
 void QmitkDicomInspectorView::OnSliceChanged()
 {
-  // Taken from QmitkStdMultiWidget::HandleCrosshairPositionEvent().
   // Since there are always 3 events arriving (one for each render window) every time the slice
   // or time changes, the slot OnSliceChangedDelayed is triggered - and only if it hasn't been
   // triggered yet - so it is only executed once for every slice/time change.
@@ -215,8 +215,9 @@ void QmitkDicomInspectorView::OnSliceNavigationControllerDeleted(const itk::Obje
 
 void QmitkDicomInspectorView::ValidateAndSetCurrentPosition()
 {
-  mitk::Point3D currentSelectedPosition = GetRenderWindowPart()->GetSelectedPosition(nullptr);
-  const auto currentSelectedTimePoint = GetRenderWindowPart()->GetSelectedTimePoint();
+  auto* renderWindowPart = this->GetRenderWindowPart(mitk::WorkbenchUtil::OPEN);
+  auto currentSelectedPosition = renderWindowPart->GetSelectedPosition(nullptr);
+  const auto currentSelectedTimePoint = renderWindowPart->GetSelectedTimePoint();
 
   if (m_SelectedPosition != currentSelectedPosition
     || m_SelectedTimePoint != currentSelectedTimePoint

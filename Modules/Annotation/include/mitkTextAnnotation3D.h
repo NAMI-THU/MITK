@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef TextAnnotation3D_H
-#define TextAnnotation3D_H
+#ifndef mitkTextAnnotation3D_h
+#define mitkTextAnnotation3D_h
 
 #include "MitkAnnotationExports.h"
 #include <mitkLocalStorageHandler.h>
@@ -29,7 +29,7 @@ namespace mitk
   public:
     /** \brief Internal class holding the mapper, actor, etc. for each of the render windows */
     /**
-       * To render the Annotation on transveral, coronal, and sagittal, the update method
+       * To render the Annotation on axial, coronal, and sagittal, the update method
        * is called for each renderwindow. For performance reasons, the corresponding data
        * for each view is saved in the internal helper class LocalStorage.
        * This allows rendering n views with just 1 mitkAnnotation using n vtkMapper.
@@ -78,4 +78,4 @@ namespace mitk
   };
 
 } // namespace mitk
-#endif // TextAnnotation3D_H
+#endif

@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITK_STANDARD_FILE_LOCATIONS_H_INCLUDED_SWDG
-#define MITK_STANDARD_FILE_LOCATIONS_H_INCLUDED_SWDG
+#ifndef mitkStandardFileLocations_h
+#define mitkStandardFileLocations_h
 
 #include <string>
 
@@ -38,7 +38,7 @@ namespace mitk
     \      Use this function in combination with FindFile(), after adding some
     \      directories, they will also be searched for the requested file
     \param dir         directory you want to be searched in
-    \param insertInFrontOfSearchList  wheather this search request shall be processed first
+    \param insertInFrontOfSearchList  whether this search request shall be processed first
     */
     void AddDirectoryForSearch(const char *dir, bool insertInFrontOfSearchList = true);
 

@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKDATANODECOLORMAPACTION_H
-#define QMITKDATANODECOLORMAPACTION_H
+#ifndef QmitkDataNodeColorMapAction_h
+#define QmitkDataNodeColorMapAction_h
 
 #include <org_mitk_gui_qt_application_Export.h>
 
@@ -41,8 +41,6 @@ protected:
 
   void InitializeAction() override;
 
-  void UseWholePixelRange(mitk::DataNode* node);
-
 };
 
-#endif // QMITKDATANODECOLORMAPACTION_H
+#endif

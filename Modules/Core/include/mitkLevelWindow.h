@@ -9,8 +9,8 @@ Use of this source code is governed by a 3-clause BSD license that can be
 found in the LICENSE file.
 
 ============================================================================*/
-#ifndef LEVELWINDOW_H_HEADER_INCLUDED_C1F4F02C
-#define LEVELWINDOW_H_HEADER_INCLUDED_C1F4F02C
+#ifndef mitkLevelWindow_h
+#define mitkLevelWindow_h
 
 #include "mitkNumericTypes.h"
 #include <MitkCoreExports.h>
@@ -90,7 +90,7 @@ namespace mitk
     void SetLevelWindow(ScalarType level, ScalarType window, bool expandRangesIfNecessary = true);
 
     /*!
-    * Set the lower and upper bound of the window
+    * Set the lower and upper bound of the window, restricted to the range from -10^300 to 10^300. Higher/lower values are clamped to these boundaries.
     */
     void SetWindowBounds(ScalarType lowerBound, ScalarType upperBound, bool expandRangesIfNecessary = true);
 
@@ -140,7 +140,7 @@ namespace mitk
     void SetDefaultLevelWindow(ScalarType level, ScalarType window);
 
     /*!
-    * set the default Bounderies
+    * set the default Boundaries
     */
     void SetDefaultBoundaries(ScalarType low, ScalarType up);
 
@@ -260,4 +260,4 @@ namespace mitk
     inline void EnsureConsistency();
   };
 } // namespace mitk
-#endif /* LEVELWINDOW_H_HEADER_INCLUDED_C1F4F02C */
+#endif

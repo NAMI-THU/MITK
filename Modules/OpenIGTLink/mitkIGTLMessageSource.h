@@ -11,8 +11,8 @@ found in the LICENSE file.
 ============================================================================*/
 
 
-#ifndef MITKIGTLMESSAGESOURCE_H_HEADER_INCLUDED_
-#define MITKIGTLMESSAGESOURCE_H_HEADER_INCLUDED_
+#ifndef mitkIGTLMessageSource_h
+#define mitkIGTLMessageSource_h
 
 #include <itkProcessObject.h>
 #include "mitkPropertyList.h"
@@ -23,8 +23,7 @@ found in the LICENSE file.
 #include <mitkServiceInterface.h>
 #include <usServiceRegistration.h>
 
-//itk
-#include <itkFastMutexLock.h>
+#include <mutex>
 
 namespace mitk {
 
@@ -196,7 +195,7 @@ namespace mitk {
 
 
     /** mutex to control access to m_StreamingFPS */
-    itk::FastMutexLock::Pointer m_StreamingFPSMutex;
+    std::mutex m_StreamingFPSMutex;
     /** The frames per second used for streaming */
     unsigned int m_StreamingFPS;
 
@@ -205,4 +204,4 @@ namespace mitk {
 } // namespace mitk
 // This is the microservice declaration. Do not meddle!
 MITK_DECLARE_SERVICE_INTERFACE(mitk::IGTLMessageSource, "org.mitk.services.IGTLMessageSource")
-#endif /* MITKIGTLMESSAGESOURCE_H_HEADER_INCLUDED_ */
+#endif

@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKIMAGEACCESSBYITK_H_HEADER_INCLUDED
-#define MITKIMAGEACCESSBYITK_H_HEADER_INCLUDED
+#ifndef mitkImageAccessByItk_h
+#define mitkImageAccessByItk_h
 
 #include <itkCastImageFilter.h>
 #include <mitkImageToItk.h>
@@ -325,7 +325,7 @@ namespace mitk
 /**
  * \brief Access a MITK image by an ITK image with one or more parameters.
  *
- * Define a templated function or method (\a itkImageTypeFunction) with one ore more
+ * Define a templated function or method (\a itkImageTypeFunction) with one or more
  * additional parameters, within which the mitk-image (\a mitkImage) is accessed:
  * \code
  *   template < typename TPixel, unsigned int VImageDimension >
@@ -703,4 +703,4 @@ namespace mitk
     }                                                                                                                  \
   }
 
-#endif // of MITKIMAGEACCESSBYITK_H_HEADER_INCLUDED
+#endif

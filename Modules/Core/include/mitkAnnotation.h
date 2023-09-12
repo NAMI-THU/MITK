@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef Annotation_H
-#define Annotation_H
+#ifndef mitkAnnotation_h
+#define mitkAnnotation_h
 
 #include "mitkServiceInterface.h"
 #include "usServiceRegistration.h"
@@ -34,7 +34,7 @@ namespace mitk
       itk::Point<double, 2> Size;
     };
 
-    /** \brief Base class for mapper specific rendering ressources.
+    /** \brief Base class for mapper specific rendering resources.
      */
     class MITKCORE_EXPORT BaseLocalStorage
     {
@@ -346,7 +346,7 @@ namespace mitk
     * @brief Convenience method for setting visibility properties (instances
     * of BoolProperty)
     * @param visible If set to true, the data will be rendered. If false, the render will skip this data.
-    * @param propertyKey Can be used to specify a user defined name of the visibility propery.
+    * @param propertyKey Can be used to specify a user defined name of the visibility property.
     */
     void SetVisibility(bool visible, const std::string &propertyKey = "visible");
 
@@ -455,4 +455,4 @@ namespace mitk
 
 MITK_DECLARE_SERVICE_INTERFACE(mitk::Annotation, "org.mitk.services.Annotation")
 
-#endif // Annotation_H
+#endif

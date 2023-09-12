@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKIMIMETYPEPROVIDER_H
-#define MITKIMIMETYPEPROVIDER_H
+#ifndef mitkIMimeTypeProvider_h
+#define mitkIMimeTypeProvider_h
 
 #include <MitkCoreExports.h>
 
@@ -36,7 +36,7 @@ namespace mitk
    * look-ups in the service registry or calling the methods of this service interface.
    *
    * This service interface also allows to infer the mime type of a file on the file
-   * system. The heuristics for infering the actual mime type is implementation specific.
+   * system. The heuristics for inferring the actual mime type is implementation specific.
    *
    * @note This is a <em>core service</em>
    *
@@ -65,4 +65,4 @@ namespace mitk
 
 MITK_DECLARE_SERVICE_INTERFACE(mitk::IMimeTypeProvider, "org.mitk.IMimeTypeProvider")
 
-#endif // MITKIMIMETYPEPROVIDER_H
+#endif

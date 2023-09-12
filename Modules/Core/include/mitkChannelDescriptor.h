@@ -10,10 +10,10 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKCHANNELDESCRIPTOR_H
-#define MITKCHANNELDESCRIPTOR_H
+#ifndef mitkChannelDescriptor_h
+#define mitkChannelDescriptor_h
 
-#include "mitkPixelType.h"
+#include <mitkPixelType.h>
 #include <string>
 
 namespace mitk
@@ -53,8 +53,6 @@ namespace mitk
       }
     }
 
-    void AllocateData();
-
     /** Name of the channel */
     std::string m_Name;
 
@@ -75,4 +73,4 @@ namespace mitk
   };
 
 } // end namespace mitk
-#endif // MITKCHANNELDESCRIPTOR_H
+#endif

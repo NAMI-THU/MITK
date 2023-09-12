@@ -9,8 +9,8 @@ Use of this source code is governed by a 3-clause BSD license that can be
 found in the LICENSE file.
 
 ============================================================================*/
-#ifndef __mitkToFNrrdImageWriter_h
-#define __mitkToFNrrdImageWriter_h
+#ifndef mitkToFNrrdImageWriter_h
+#define mitkToFNrrdImageWriter_h
 
 #include <MitkToFHardwareExports.h>
 #include "mitkToFImageWriter.h"
@@ -40,7 +40,7 @@ namespace mitk
     */
     void Open() override;
     /*!
-    \brief Close file(s) add .pic header and write
+    \brief Close file(s) add header and write
     */
     void Close() override;
     /*!
@@ -74,4 +74,4 @@ namespace mitk
     void ConvertStreamToNrrdFormat( std::string fileName );
   };
 } //END mitk namespace
-#endif // __mitkToFNrrdImageWriter_h
+#endif

@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef mitkExtractImageFilter_h_Included
-#define mitkExtractImageFilter_h_Included
+#ifndef mitkExtractImageFilter_h
+#define mitkExtractImageFilter_h
 
 #include "mitkCommon.h"
 #include "mitkImageToImageFilter.h"
@@ -28,7 +28,6 @@ namespace mitk
     \brief Extracts a 2D slice from a 3D image.
 
     \sa SegTool2D
-    \sa OverwriteSliceImageFilter
 
     \ingroup Process
     \ingroup ToolManagerEtAl

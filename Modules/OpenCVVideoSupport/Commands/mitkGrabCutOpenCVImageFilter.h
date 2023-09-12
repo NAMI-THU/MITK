@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKGRABCUTOPENCVIMAGEFILTER_H
-#define MITKGRABCUTOPENCVIMAGEFILTER_H
+#ifndef mitkGrabCutOpenCVImageFilter_h
+#define mitkGrabCutOpenCVImageFilter_h
 
 // mitk headers
 #include "mitkAbstractOpenCVImageFilter.h"
@@ -19,10 +19,14 @@ found in the LICENSE file.
 
 // itk headers
 #include "itkObjectFactory.h"
-#include "itkMutexLock.h"
+#include <itkThreadSupport.h>
 
 // opencv headers
 #include <opencv2/core.hpp>
+
+#include <condition_variable>
+#include <mutex>
+#include <thread>
 
 namespace itk {
 template<unsigned int T> class Index;
@@ -260,28 +264,26 @@ private:
    * It blocks every time a image was segmented and will be waken up again by
    * the mitk::GrabCutOpenCVImageFilter::OnFilterImage() method.
    *
-   * \param pInfoStruct pointer to the GrabCutOpenCVImageFilter object
    * \return
    */
-  static ITK_THREAD_RETURN_TYPE SegmentationWorker(void* pInfoStruct);
+  void SegmentationWorker();
 
-  int                                       m_ThreadId;
+  std::thread m_Thread;
 
   /** \brief worker thread will terminate after the next wakeup if set to true */
   bool                                      m_StopThread;
 
-  itk::SmartPointer<itk::MultiThreader>     m_MultiThreader;
-  itk::SmartPointer<itk::ConditionVariable> m_WorkerBarrier;
+  std::condition_variable m_WorkerBarrier;
 
   /** \brief mutex for guarding m_InputImage and m_InputImageId */
-  itk::SmartPointer<itk::FastMutexLock>     m_ImageMutex;
+  std::mutex     m_ImageMutex;
 
   /** \brief mutex for guarding m_ResultMask and m_ResultImageId */
-  itk::SmartPointer<itk::FastMutexLock>     m_ResultMutex;
+  std::mutex     m_ResultMutex;
 
   /** \brief mutex for guarding m_ForegroundPoints and m_BackgroundPoints */
-  itk::SmartPointer<itk::FastMutexLock>     m_PointSetsMutex;
+  std::mutex     m_PointSetsMutex;
 };
 } // namespace mitk
 
-#endif // MITKGRABCUTOPENCVIMAGEFILTER_H
+#endif

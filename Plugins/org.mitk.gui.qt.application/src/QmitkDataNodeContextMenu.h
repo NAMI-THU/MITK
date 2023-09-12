@@ -10,14 +10,15 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKDATANODECONTEXTMENU_H
-#define QMITKDATANODECONTEXTMENU_H
+#ifndef QmitkDataNodeContextMenu_h
+#define QmitkDataNodeContextMenu_h
 
 #include <org_mitk_gui_qt_application_Export.h>
 
 // qt widgets module
 #include "QmitkDataNodeGlobalReinitAction.h"
 #include "QmitkDataNodeReinitAction.h"
+#include "QmitkDataNodeResetGeometryAction.h"
 #include "QmitkDataNodeRemoveAction.h"
 #include "QmitkDataNodeShowSelectedNodesAction.h"
 #include "QmitkDataNodeToggleVisibilityAction.h"
@@ -119,6 +120,7 @@ private:
   //////////////////////////////////////////////////////////////////////////
   QmitkDataNodeGlobalReinitAction* m_GlobalReinitAction;
   QmitkDataNodeReinitAction* m_ReinitAction;
+  QmitkDataNodeResetGeometryAction* m_ResetGeometryAction;
   QmitkDataNodeRemoveAction* m_RemoveAction;
   QmitkDataNodeShowSelectedNodesAction* m_ShowSelectedNodesAction;
   QmitkDataNodeToggleVisibilityAction* m_ToggleVisibilityAction;
@@ -133,4 +135,4 @@ private:
   bool m_SurfaceDecimation;
 };
 
-#endif // QMITKDATANODECONTEXTMENU_H
+#endif

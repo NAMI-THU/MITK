@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKVTKABSTRACTTRANSFORMPLANEGEOMETRY_H_HEADER_INCLUDED_C1C68A2C
-#define MITKVTKABSTRACTTRANSFORMPLANEGEOMETRY_H_HEADER_INCLUDED_C1C68A2C
+#ifndef mitkAbstractTransformGeometry_h
+#define mitkAbstractTransformGeometry_h
 
 #include "mitkPlaneGeometry.h"
 #include <MitkCoreExports.h>
@@ -54,7 +54,7 @@ namespace mitk
       //## @brief Get the vtkAbstractTransform (stored in m_VtkAbstractTransform)
       virtual vtkAbstractTransform *GetVtkAbstractTransform() const;
 
-    unsigned long GetMTime() const override;
+    itk::ModifiedTimeType GetMTime() const override;
 
     //##Documentation
     //## @brief Get the rectangular area that is used for transformation by
@@ -231,4 +231,4 @@ namespace mitk
     void PreSetSpacing(const mitk::Vector3D &aSpacing) override { Superclass::PreSetSpacing(aSpacing); };
   };
 } // namespace mitk
-#endif /* MITKVTKABSTRACTTRANSFORMPLANEGEOMETRY_H_HEADER_INCLUDED_C1C68A2C */
+#endif

@@ -10,12 +10,10 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef OptiTrackTrackingTool_H_HEADER_INCLUDED_
-#define OptiTrackTrackingTool_H_HEADER_INCLUDED_
+#ifndef mitkOptitrackTrackingTool_h
+#define mitkOptitrackTrackingTool_h
 
 #include <MitkIGTExports.h>
-#include <itkMultiThreader.h>
-#include "itkFastMutexLock.h"
 #include "mitkTrackingDevice.h"
 #include "mitkTrackingTool.h"
 #include "mitkIGTTimeStamp.h"
@@ -23,11 +21,9 @@ found in the LICENSE file.
 #include <cstdio>
 #include <ctime>
 #include <itksys/SystemTools.hxx>
-#include <itkMutexLockHolder.h>
 #include "mitkCommon.h"
 #include <mitkTrackingTool.h>
 #include <mitkVector.h>
-#include <itkFastMutexLock.h>
 #include "mitkIGTException.h"
 
 
@@ -47,7 +43,7 @@ namespace mitk
   *   \brief An object of this class represents the a Tool tracked by Optitrack System. You can define
   *  the tool by the a definition file like in the example in ****. Remember that it will be necessary to
   *  to have a license for using the Optitrack System.
-  *  See  http://www.naturalpoint.com/ for details.
+  *  See  https://www.naturalpoint.com/ for details.
   *   \author E. Marinetto (emarinetto@hggm.es) Instituto de Investigación Sanitaria Gregorio Marañón, Madrid, Spain. & M. Noll (matthias.noll@igd.fraunhofer.de) Cognitive Computing & Medical Imaging | Fraunhofer IGD
   *   \ingroup IGT
   */
@@ -214,4 +210,4 @@ namespace mitk
 
   };
 }
-#endif /* OptiTrackTrackingTool_H_HEADER_INCLUDED_ */
+#endif

@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKIMAGESTATISTICSVIEW_H
-#define QMITKIMAGESTATISTICSVIEW_H
+#ifndef QmitkImageStatisticsView_h
+#define QmitkImageStatisticsView_h
 
 #include "ui_QmitkImageStatisticsViewControls.h"
 
@@ -72,7 +72,7 @@ protected:
   void OnGenerationFinished();
   void OnJobError(QString error, const QmitkDataGenerationJobBase* failedJob);
   void OnRequestHistogramUpdate(unsigned int);
-  void OnCheckBoxIgnoreZeroStateChanged(int state);
+  void OnIgnoreZeroValuedVoxelStateChanged(int state);
   void OnButtonSelectionPressed();
   void OnImageSelectionChanged(QmitkAbstractNodeSelectionWidget::NodeList nodes);
   void OnROISelectionChanged(QmitkAbstractNodeSelectionWidget::NodeList nodes);
@@ -92,4 +92,4 @@ private:
 
 };
 
-#endif // QMITKIMAGESTATISTICSVIEW_H
+#endif

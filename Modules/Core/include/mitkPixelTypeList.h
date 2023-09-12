@@ -10,6 +10,9 @@ found in the LICENSE file.
 
 ============================================================================*/
 
+#ifndef mitkPixelTypeList_h
+#define mitkPixelTypeList_h
+
 #include <stdexcept>
 
 namespace mitk
@@ -79,8 +82,8 @@ namespace mitk
 
   template <typename TypeList,
             int Index,                                              // requested element index
-            int Step = 0,                                           // current recusion step
-            bool Stop = (Index == Step),                            // stop recusion flag
+            int Step = 0,                                           // current recursion step
+            bool Stop = (Index == Step),                            // stop recursion flag
             bool OutOfRange = PixelTypeLength<TypeList>::value == 0 // out of range flag
             >
   struct GetPixelType
@@ -179,4 +182,6 @@ namespace mitk
     T3 t3;
   };
 
-} // namespace mitk
+}
+
+#endif

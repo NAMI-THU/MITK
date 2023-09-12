@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITK_REG_EVALUATION_MAPPER_2D_H
-#define MITK_REG_EVALUATION_MAPPER_2D_H
+#ifndef mitkRegEvaluationMapper2D_h
+#define mitkRegEvaluationMapper2D_h
 
 //MatchPoint
 #include <mapRegistration.h>
@@ -81,7 +81,7 @@ public:
 
   /** \brief Internal class holding the mapper, actor, etc. for each of the 3 2D render windows */
   /**
-     * To render transveral, coronal, and sagittal, the mapper is called three times.
+     * To render axial, coronal, and sagittal, the mapper is called three times.
      * For performance reasons, the corresponding data for each view is saved in the
      * internal helper class LocalStorage. This allows rendering n views with just
      * 1 mitkMapper using n vtkMapper.
@@ -245,4 +245,4 @@ protected:
 
 } // namespace mitk
 
-#endif /* MITKRegEvaluationMapper2D_H_HEADER_INCLUDED_C10E906E */
+#endif

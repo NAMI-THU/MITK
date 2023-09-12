@@ -11,8 +11,8 @@ found in the LICENSE file.
 ============================================================================*/
 
 
-#ifndef __Q_MITK_REGISTRATION_MANIPULATION_WIDGET_H
-#define __Q_MITK_REGISTRATION_MANIPULATION_WIDGET_H
+#ifndef QmitkRegistrationManipulationWidget_h
+#define QmitkRegistrationManipulationWidget_h
 
 
 #include <itkEuler3DTransform.h>
@@ -33,7 +33,6 @@ found in the LICENSE file.
 
 \warning  This class is not yet documented. Use "git blame" and ask the author to provide basic documentation.
 
-\sa QmitkFunctionality
 \ingroup ${plugin_target}_internal
 */
 class MITKMATCHPOINTREGISTRATIONUI_EXPORT QmitkRegistrationManipulationWidget : public QWidget, private Ui::QmitkRegistrationManipulationWidget
@@ -125,5 +124,4 @@ private:
   bool m_internalUpdate;
 };
 
-#endif // MatchPoint_h
-
+#endif

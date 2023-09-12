@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef QMITKTRANSFERFUNCTIONGENERATORWIDGET_H
-#define QMITKTRANSFERFUNCTIONGENERATORWIDGET_H
+#ifndef QmitkTransferFunctionGeneratorWidget_h
+#define QmitkTransferFunctionGeneratorWidget_h
 
 #include "MitkQtWidgetsExtExports.h"
 #include "ui_QmitkTransferFunctionGeneratorWidget.h"
@@ -32,7 +32,7 @@ public:
   QmitkTransferFunctionGeneratorWidget(QWidget *parent = nullptr, Qt::WindowFlags f = nullptr);
   ~QmitkTransferFunctionGeneratorWidget() override;
 
-  void SetDataNode(mitk::DataNode *node);
+  void SetDataNode(mitk::DataNode *node, mitk::TimeStepType timestep = 0);
 
   int AddPreset(const QString &presetName);
 

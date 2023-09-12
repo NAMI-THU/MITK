@@ -11,8 +11,8 @@ found in the LICENSE file.
 ============================================================================*/
 
 
-#ifndef __Q_MITK_MATCHPOINT_REGISTRATION_MANIPULATOR_H
-#define __Q_MITK_MATCHPOINT_REGISTRATION_MANIPULATOR_H
+#ifndef QmitkMatchPointRegistrationManipulator_h
+#define QmitkMatchPointRegistrationManipulator_h
 
 #include <QmitkAbstractView.h>
 #include <mitkIRenderWindowPartListener.h>
@@ -29,7 +29,6 @@ class QmitkMappingJob;
 
 \warning  This class is not yet documented. Use "git blame" and ask the author to provide basic documentation.
 
-\sa QmitkFunctionality
 \ingroup ${plugin_target}_internal
 */
 class QmitkMatchPointRegistrationManipulator : public QmitkAbstractView, public mitk::IRenderWindowPartListener
@@ -145,5 +144,4 @@ private:
   static const std::string HelperNodeName;
 };
 
-#endif // MatchPoint_h
-
+#endif

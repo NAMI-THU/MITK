@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKIMAGESTATISTICSCALCULATOR
-#define MITKIMAGESTATISTICSCALCULATOR
+#ifndef mitkImageStatisticsCalculator_h
+#define mitkImageStatisticsCalculator_h
 
 #include <MitkImageStatisticsExports.h>
 #include <mitkImage.h>
@@ -103,10 +103,10 @@ namespace mitk
         mitk::Image::ConstPointer m_InternalImageForStatistics;
 
         mitk::MaskGenerator::Pointer m_MaskGenerator;
-        mitk::Image::Pointer m_InternalMask;
+        mitk::Image::ConstPointer m_InternalMask;
 
         mitk::MaskGenerator::Pointer m_SecondaryMaskGenerator;
-        mitk::Image::Pointer m_SecondaryMask;
+        mitk::Image::ConstPointer m_SecondaryMask;
 
         unsigned int m_nBinsForHistogramStatistics;
         double m_binSizeForHistogramStatistics;
@@ -116,5 +116,4 @@ namespace mitk
     };
 
 }
-#endif // MITKIMAGESTATISTICSCALCULATOR
-
+#endif

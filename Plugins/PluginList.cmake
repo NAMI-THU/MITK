@@ -14,7 +14,6 @@ set(MITK_PLUGINS
   org.mitk.core.services:ON
   org.mitk.gui.common:ON
   org.mitk.planarfigure:ON
-  org.mitk.core.ext:OFF
   org.mitk.core.jobs:OFF
   org.mitk.example.gui.opencv:ON
   org.mitk.gui.qt.ablationplanning:ON
@@ -26,7 +25,6 @@ set(MITK_PLUGINS
   org.mitk.gui.qt.common:ON
   org.mitk.gui.qt.stdmultiwidgeteditor:ON
   org.mitk.gui.qt.mxnmultiwidgeteditor:OFF
-  org.mitk.gui.qt.common.legacy:OFF
   org.mitk.gui.qt.cmdlinemodules:OFF
   org.mitk.gui.qt.chartExample:OFF
   org.mitk.gui.qt.datamanager:ON
@@ -68,7 +66,6 @@ set(MITK_PLUGINS
   org.mitk.gui.qt.classificationsegmentation:OFF
   org.mitk.gui.qt.overlaymanager:OFF
   org.mitk.gui.qt.igt.app.hummelprotocolmeasurements:OFF
-  org.mitk.gui.qt.multilabelsegmentation:OFF
   org.mitk.matchpoint.core.helper:OFF
   org.mitk.gui.qt.matchpoint.algorithm.browser:OFF
   org.mitk.gui.qt.matchpoint.algorithm.control:OFF
@@ -90,4 +87,5 @@ set(MITK_PLUGINS
   org.mitk.gui.qt.pharmacokinetics.concentration.mri:OFF
   org.mitk.gui.qt.flowapplication:OFF
   org.mitk.gui.qt.flow.segmentation:OFF
+  org.mitk.gui.qt.pixelvalue:ON
 )

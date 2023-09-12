@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKPLANARFIGUREMASKGENERATOR
-#define MITKPLANARFIGUREMASKGENERATOR
+#ifndef mitkPlanarFigureMaskGenerator_h
+#define mitkPlanarFigureMaskGenerator_h
 
 #include <MitkImageStatisticsExports.h>
 #include <itkImage.h>
@@ -43,9 +43,9 @@ namespace mitk
        * @brief GetMask Computes and returns the mask
        * @return mitk::Image::Pointer of the generated mask
        */
-      mitk::Image::Pointer GetMask() override;
+    mitk::Image::ConstPointer GetMask() override;
 
-    void SetPlanarFigure(mitk::PlanarFigure::Pointer planarFigure);
+    void SetPlanarFigure(mitk::PlanarFigure* planarFigure);
 
     mitk::Image::ConstPointer GetReferenceImage() override;
 
@@ -138,8 +138,9 @@ namespace mitk
     unsigned int m_PlanarFigureAxis;
     unsigned long m_InternalMaskUpdateTime;
     unsigned int m_PlanarFigureSlice;
+    mitk::Image::Pointer m_InternalMask;
   };
 
 } // namespace mitk
 
-#endif // MITKPLANARFIGUREMASKGENERATOR
+#endif

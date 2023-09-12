@@ -10,13 +10,14 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKSTANDALONEDATASTORAGE_H_HEADER_INCLUDED_
-#define MITKSTANDALONEDATASTORAGE_H_HEADER_INCLUDED_
+#ifndef mitkStandaloneDataStorage_h
+#define mitkStandaloneDataStorage_h
 
 #include "itkVectorContainer.h"
 #include "mitkDataStorage.h"
 #include "mitkMessage.h"
 #include <map>
+#include <mutex>
 
 namespace mitk
 {
@@ -88,8 +89,7 @@ namespace mitk
     //##
     SetOfObjects::ConstPointer GetAll() const override;
 
-    /*ITK Mutex */
-    mutable itk::SimpleFastMutexLock m_Mutex;
+    mutable std::mutex m_Mutex;
 
   protected:
     //##Documentation
@@ -126,4 +126,4 @@ namespace mitk
     AdjacencyList m_DerivedNodes;
   };
 } // namespace mitk
-#endif /* MITKSTANDALONEDATASTORAGE_H_HEADER_INCLUDED_ */
+#endif

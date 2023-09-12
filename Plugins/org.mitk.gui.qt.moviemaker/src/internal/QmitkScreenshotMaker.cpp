@@ -17,22 +17,23 @@ found in the LICENSE file.
 
 #include "mitkVtkPropRenderer.h"
 #include <QmitkRenderWindow.h>
+#include <QmitkRenderWindowWidget.h>
 
 #include <iostream>
 
 #include <vtkRenderer.h>
 #include <vtkCamera.h>
 
-#include <qaction.h>
-#include <qfiledialog.h>
-#include <qtimer.h>
-#include <qdatetime.h>
-#include <qspinbox.h>
-#include <qcombobox.h>
-#include <qcolor.h>
-#include <qcolordialog.h>
+#include <QAction>
+#include <QFileDialog>
+#include <QTimer>
+#include <QDateTime>
+#include <QSpinBox>
+#include <QComboBox>
+#include <QColor>
+#include <QColorDialog>
 
-#include "qapplication.h"
+#include <QApplication>
 
 #include "vtkImageWriter.h"
 #include "vtkJPEGWriter.h"
@@ -147,9 +148,9 @@ void QmitkScreenshotMaker::GenerateScreenshot()
   if (fileName.size()>0)
     m_LastFile = fileName;
 
-  auto renderWindowPart = this->GetRenderWindowPart(mitk::WorkbenchUtil::IRenderWindowPartStrategy::OPEN);
+  auto* renderWindowPart = this->GetRenderWindowPart(mitk::WorkbenchUtil::OPEN);
 
-  auto renderer = renderWindowPart->GetQmitkRenderWindow(m_Controls->m_DirectionBox->currentText())->GetRenderer();
+  auto* renderer = renderWindowPart->GetQmitkRenderWindow(m_Controls->m_DirectionBox->currentText())->GetRenderer();
   if (renderer == nullptr)
     return;
 
@@ -173,61 +174,30 @@ void QmitkScreenshotMaker::GenerateMultiplanarScreenshots()
   }
 
   //emit StartBlockControls();
-  auto renderWindowPart = this->GetRenderWindowPart(mitk::WorkbenchUtil::IRenderWindowPartStrategy::OPEN);
+  auto* renderWindowPart = this->GetRenderWindowPart(mitk::WorkbenchUtil::OPEN);
   renderWindowPart->EnableDecorations(false, QStringList{mitk::IRenderWindowPart::DECORATION_CORNER_ANNOTATION});
 
-  QString fileName = "/axial.png";
-  int c = 1;
-  while (QFile::exists(filePath+fileName))
+  auto windowCount = m_Controls->m_DirectionBox->count();
+  for (int i = 0; i < windowCount; ++i)
   {
-    fileName = QString("/axial_");
-    fileName += QString::number(c);
-    fileName += ".png";
-    c++;
-  }
-  vtkRenderer* renderer = renderWindowPart->GetQmitkRenderWindow("axial")->GetRenderer()->GetVtkRenderer();
-  if (renderer != nullptr)
-  {
-    if (m_Controls->m_AllChannelsBox->isChecked())
-      MultichannelScreenshot(renderWindowPart->GetQmitkRenderWindow("axial")->GetRenderer(), filePath+fileName, m_PNGExtension);
-    else
-      this->TakeScreenshot(renderer, 1, filePath+fileName);
-  }
-
-  fileName = "/sagittal.png";
-  c = 1;
-  while (QFile::exists(filePath+fileName))
-  {
-    fileName = QString("/sagittal_");
-    fileName += QString::number(c);
-    fileName += ".png";
-    c++;
-  }
-  renderer = renderWindowPart->GetQmitkRenderWindow("sagittal")->GetRenderer()->GetVtkRenderer();
-  if (renderer != nullptr)
-  {
-    if (m_Controls->m_AllChannelsBox->isChecked())
-      MultichannelScreenshot(renderWindowPart->GetQmitkRenderWindow("sagittal")->GetRenderer(), filePath+fileName, m_PNGExtension);
-    else
-      this->TakeScreenshot(renderer, 1, filePath+fileName);
-  }
-
-  fileName = "/coronal.png";
-  c = 1;
-  while (QFile::exists(filePath+fileName))
-  {
-    fileName = QString("/coronal_");
-    fileName += QString::number(c);
-    fileName += ".png";
-    c++;
-  }
-  renderer = renderWindowPart->GetQmitkRenderWindow("coronal")->GetRenderer()->GetVtkRenderer();
-  if (renderer != nullptr)
-  {
-    if (m_Controls->m_AllChannelsBox->isChecked())
-      MultichannelScreenshot(renderWindowPart->GetQmitkRenderWindow("coronal")->GetRenderer(), filePath+fileName, m_PNGExtension);
-    else
-      this->TakeScreenshot(renderer, 1, filePath+fileName);
+    auto windowName = m_Controls->m_DirectionBox->itemText(i);
+    QString fileName = QDir::separator() + windowName + QString::fromStdString(".png");
+    int c = 1;
+    while (QFile::exists(filePath + fileName))
+    {
+      fileName = QDir::separator() + windowName + QString::fromStdString("_");
+      fileName += QString::number(c);
+      fileName += ".png";
+      c++;
+    }
+    vtkRenderer* renderer = renderWindowPart->GetQmitkRenderWindow(windowName)->GetRenderer()->GetVtkRenderer();
+    if (renderer != nullptr)
+    {
+      if (m_Controls->m_AllChannelsBox->isChecked())
+        MultichannelScreenshot(renderWindowPart->GetQmitkRenderWindow(windowName)->GetRenderer(), filePath + fileName, m_PNGExtension);
+      else
+        this->TakeScreenshot(renderer, 1, filePath + fileName);
+    }
   }
 
   /// TODO I do not find a simple way of doing this through the render window part API,
@@ -326,25 +296,31 @@ void QmitkScreenshotMaker::GenerateMultiplanar3DHighresScreenshot()
   GetCam()->Roll( -2.5 );
   GenerateHR3DAtlasScreenshots(filePath+fileName);
 
+  GetCam()->Roll( 2.5 );
+  // not negative because direction of elevation has flipped
+  GetCam()->Elevation( 94 );
+  GetCam()->Azimuth( -82.5 );
+
   mitk::RenderingManager::GetInstance()->RequestUpdateAll();
 }
 
 void QmitkScreenshotMaker::GenerateHR3DAtlasScreenshots(QString fileName, QString filter)
 {
   // only works correctly for 3D RenderWindow
-  auto renderer = this->GetRenderWindowPart()->GetQmitkRenderWindow("3d")->GetRenderer()->GetVtkRenderer();
+  auto* renderWindowPart = this->GetRenderWindowPart(mitk::WorkbenchUtil::OPEN);
+  auto* renderer = renderWindowPart->GetQmitkRenderWindow("3d")->GetRenderer()->GetVtkRenderer();
 
   if (nullptr != renderer)
   {
-    this->GetRenderWindowPart()->EnableDecorations(false);
+    renderWindowPart->EnableDecorations(false);
     this->TakeScreenshot(renderer, this->m_Controls->m_MagFactor->text().toFloat(), fileName, filter);
-    this->GetRenderWindowPart()->EnableDecorations(true);
+    renderWindowPart->EnableDecorations(true);
   }
 }
 
 vtkCamera* QmitkScreenshotMaker::GetCam()
 {
-  mitk::BaseRenderer* renderer = this->GetRenderWindowPart(mitk::WorkbenchUtil::IRenderWindowPartStrategy::OPEN)->GetQmitkRenderWindow("3d")->GetRenderer();
+  auto* renderer = this->GetRenderWindowPart(mitk::WorkbenchUtil::OPEN)->GetQmitkRenderWindow("3d")->GetRenderer();
   vtkCamera* cam = nullptr;
   const mitk::VtkPropRenderer *propRenderer = dynamic_cast<const mitk::VtkPropRenderer * >( renderer );
   if (propRenderer)
@@ -372,6 +348,36 @@ void QmitkScreenshotMaker::OnSelectionChanged(berry::IWorkbenchPart::Pointer /*p
     m_SelectedNode = nodes[0];
 }
 
+void QmitkScreenshotMaker::UpdateDirectionBox(mitk::IRenderWindowPart* renderWindowPart)
+{
+  m_Controls->m_DirectionBox->clear();
+
+  auto renderWindows = renderWindowPart->GetQmitkRenderWindows();
+  bool has3DWindow = false;
+  for (auto name : renderWindows.keys())
+  {
+    auto window = renderWindows[name];
+    if (window->GetRenderer()->GetMapperID() == mitk::BaseRenderer::Standard3D)
+    {
+      has3DWindow = true;
+    }
+    else
+    {
+      auto windowName = name;
+      auto renderWindowWidget = dynamic_cast<QmitkRenderWindowWidget*>(window->parentWidget());
+      if (renderWindowWidget)
+      {
+        windowName = QString::fromStdString(renderWindowWidget->GetCornerAnnotationText());
+      }
+      m_Controls->m_DirectionBox->insertItem(m_Controls->m_DirectionBox->count() + 1, windowName);
+    }
+  }
+
+  renderWindows = renderWindowPart->GetQmitkRenderWindows();
+
+  m_Controls->groupBox->setEnabled(has3DWindow);
+}
+
 void QmitkScreenshotMaker::CreateQtPartControl(QWidget *parent)
 {
   if (!m_Controls)
@@ -379,6 +385,12 @@ void QmitkScreenshotMaker::CreateQtPartControl(QWidget *parent)
     m_Parent = parent;
     m_Controls = new Ui::QmitkScreenshotMakerControls;
     m_Controls->setupUi(parent);
+
+    auto renderWindowPart = this->GetRenderWindowPart();
+    if (renderWindowPart)
+    {
+      this->UpdateDirectionBox(renderWindowPart);
+    }
 
     // Initialize "Selected Window" combo box
     const mitk::RenderingManager::RenderWindowVector rwv =
@@ -395,14 +407,21 @@ void QmitkScreenshotMaker::SetFocus()
   m_Controls->btnScreenshot->setFocus();
 }
 
-void QmitkScreenshotMaker::RenderWindowPartActivated(mitk::IRenderWindowPart* /*renderWindowPart*/)
+void QmitkScreenshotMaker::RenderWindowPartActivated(mitk::IRenderWindowPart* renderWindowPart)
 {
   m_Parent->setEnabled(true);
+  this->UpdateDirectionBox(renderWindowPart);
+}
+
+void QmitkScreenshotMaker::RenderWindowPartInputChanged(mitk::IRenderWindowPart* renderWindowPart)
+{
+  this->UpdateDirectionBox(renderWindowPart);
 }
 
 void QmitkScreenshotMaker::RenderWindowPartDeactivated(mitk::IRenderWindowPart* /*renderWindowPart*/)
 {
   m_Parent->setEnabled(false);
+  m_Controls->m_DirectionBox->clear();
 }
 
 void QmitkScreenshotMaker::TakeScreenshot(vtkRenderer* renderer, unsigned int magnificationFactor, QString fileName, QString filter)
@@ -461,7 +480,7 @@ void QmitkScreenshotMaker::TakeScreenshot(vtkRenderer* renderer, unsigned int ma
   double bgcolor[] = {m_BackgroundColor.red()/255.0, m_BackgroundColor.green()/255.0, m_BackgroundColor.blue()/255.0};
   renderer->SetBackground(bgcolor);
 
-  mitk::IRenderWindowPart* renderWindowPart = this->GetRenderWindowPart();
+  mitk::IRenderWindowPart* renderWindowPart = this->GetRenderWindowPart(mitk::WorkbenchUtil::OPEN);
 
   renderWindowPart->EnableDecorations(false);
 

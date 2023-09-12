@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef IFileWriter_H_HEADER_INCLUDED_C1E7E521
-#define IFileWriter_H_HEADER_INCLUDED_C1E7E521
+#ifndef mitkIFileWriter_h
+#define mitkIFileWriter_h
 
 #include <mitkIFileIO.h>
 
@@ -31,7 +31,7 @@ namespace mitk
    * \brief The common interface of all MITK file writers.
    *
    * Implementations of this interface must be registered as a service
-   * to make themselve available via the service registry. If the
+   * to make themselves available via the service registry. If the
    * implementation is stateful, the service should be registered using
    * a PrototypeServiceFactory.
    *
@@ -131,4 +131,4 @@ namespace mitk
 
 MITK_DECLARE_SERVICE_INTERFACE(mitk::IFileWriter, "org.mitk.IFileWriter")
 
-#endif /* IFileWriter_H_HEADER_INCLUDED_C1E7E521 */
+#endif

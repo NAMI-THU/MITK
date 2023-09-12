@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKIRENDERWINDOWPART_H
-#define MITKIRENDERWINDOWPART_H
+#ifndef mitkIRenderWindowPart_h
+#define mitkIRenderWindowPart_h
 
 #include <QString>
 #include <QStringList>
@@ -44,7 +44,7 @@ class SliceNavigationController;
  * A IRenderWindowPart provides zero or more QmitkRenderWindow instances which can
  * be controlled via this interface. QmitkRenderWindow instances have an associated
  * \e id, which is implementation specific.
- * Additionally the defined values AXIAL, SAGITTAL, CORONAL, THREE_D from mitk::BaseRenderer
+ * Additionally the defined values Axial, Sagittal, Coronal and Original from mitk::AnatomicalPlane
  * can be used to retrieve a specific QmitkRenderWindow.
  *
  * \see ILinkedRenderWindowPart
@@ -86,12 +86,12 @@ struct MITK_GUI_COMMON_PLUGIN IRenderWindowPart {
   virtual QmitkRenderWindow* GetQmitkRenderWindow(const QString& id) const = 0;
 
   /**
-  * Get a render window with a specific view direction.
+  * Get a render window with a specific plane orientation.
   *
-  * \param viewDirection The render window view direction.
-  * \return The QmitkRenderWindow instance for <code>viewDirection</code>
+  * \param orientation The render window plane orientation.
+  * \return The QmitkRenderWindow instance for <code>orientation</code>
   */
-  virtual QmitkRenderWindow* GetQmitkRenderWindow(const mitk::BaseRenderer::ViewDirection& viewDirection) const = 0;
+  virtual QmitkRenderWindow* GetQmitkRenderWindow(const mitk::AnatomicalPlane& orientation) const = 0;
 
   /**
    * Get the rendering manager used by this render window part.
@@ -116,6 +116,37 @@ struct MITK_GUI_COMMON_PLUGIN IRenderWindowPart {
    *        will be requested.
    */
   virtual void ForceImmediateUpdate(mitk::RenderingManager::RequestType requestType = mitk::RenderingManager::REQUEST_UPDATE_ALL) = 0;
+
+   /**
+   * @brief Initialize the render windows of this render window part to the given geometry.
+    *
+   * @param geometry      The geometry to be used to initialize / update a
+    *                     render window's time and slice navigation controller.
+   * @param resetCamera   If true, the camera and crosshair will be reset to the default view (centered, no zoom).
+   *                      If false, the current crosshair position and the camera zoom will be stored and reset
+   *                      after the reference geometry has been updated.
+   */
+  virtual void InitializeViews(const mitk::TimeGeometry* geometry, bool resetCamera) = 0;
+
+  /**
+  * @brief Define the reference geometry for interaction withing a render window.
+  *
+  *        The concrete implementation is subclass-specific, no default implementation is provided here.
+  *        An implementation can be found in 'QmitkAbstractMultiWidgetEditor' and will just
+  *        forward the argument to the contained multi widget.
+  *
+  * @param referenceGeometry  The interaction reference geometry for the concrete multi widget.
+  *                           For more details, see 'BaseRenderer::SetInteractionReferenceGeometry'.
+  */
+  virtual void SetInteractionReferenceGeometry(const mitk::TimeGeometry* referenceGeometry) = 0;
+
+  /**
+  * @brief Returns true if the render windows are coupled; false if not.
+  *
+  * Render windows are coupled if the slice navigation controller of the render windows
+  * are connected which means that always the same geometry is used for the render windows.
+  */
+  virtual bool HasCoupledRenderWindows() const = 0;
 
   /**
    * Get the SliceNavigationController for controlling time positions.
@@ -148,7 +179,8 @@ struct MITK_GUI_COMMON_PLUGIN IRenderWindowPart {
    * or in the active render window if <code>id</code> is an empty string.
    *
    * \param id The render window id.
-   * \return The currently selected position in world coordinates.*/
+   * \return The currently selected position in world coordinates.
+   */
   virtual TimePointType GetSelectedTimePoint(const QString& id = QString()) const = 0;
 
   /**
@@ -195,4 +227,4 @@ struct MITK_GUI_COMMON_PLUGIN IRenderWindowPart {
 
 Q_DECLARE_INTERFACE(mitk::IRenderWindowPart, "org.mitk.ui.IRenderWindowPart")
 
-#endif // MITKIRENDERWINDOWPART_H
+#endif

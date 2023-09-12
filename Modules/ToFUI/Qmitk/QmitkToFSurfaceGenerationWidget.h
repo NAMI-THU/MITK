@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef _QMITKTOFSURFACEGENERATIONWIDGET_H_INCLUDED
-#define _QMITKTOFSURFACEGENERATIONWIDGET_H_INCLUDED
+#ifndef QmitkToFSurfaceGenerationWidget_h
+#define QmitkToFSurfaceGenerationWidget_h
 
 #include <MitkToFUIExports.h>
 #include "ui_QmitkToFSurfaceGenerationWidgetControls.h"
@@ -30,8 +30,6 @@ found in the LICENSE file.
 #include <mitkToFImageGrabber.h>
 #include <mitkCameraIntrinsics.h>
 #include <mitkSurface.h>
-
-class QmitkStdMultiWidget;
 
 /** Documentation:
   *
@@ -154,4 +152,4 @@ protected slots:
 
 };
 
-#endif // _QMITKTOFVISUALISATIONSETTINGSWIDGET_H_INCLUDED
+#endif

@@ -10,15 +10,15 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef MITKVIRTUALTRACKINGDEVICE_H_HEADER_INCLUDED_
-#define MITKVIRTUALTRACKINGDEVICE_H_HEADER_INCLUDED_
+#ifndef mitkVirtualTrackingDevice_h
+#define mitkVirtualTrackingDevice_h
 
 #include <MitkIGTExports.h>
 #include <mitkTrackingDevice.h>
 #include <mitkVirtualTrackingTool.h>
-#include <itkMultiThreader.h>
 
-#include "itkFastMutexLock.h"
+#include <mutex>
+#include <thread>
 #include <vector>
 
 namespace mitk
@@ -189,7 +189,7 @@ namespace mitk
 
     void InitializeSpline(mitk::VirtualTrackingTool* t);  ///< initializes the spline path of the tool t with random control points inside the current tracking volume
 
-    static ITK_THREAD_RETURN_TYPE ThreadStartTracking(void* data); ///< static start method for tracking thread
+    void ThreadStartTracking(); ///< static start method for tracking thread
 
     typedef mitk::VirtualTrackingTool::SplineType::ControlPointType ControlPointType;
 
@@ -198,10 +198,9 @@ namespace mitk
 
     typedef std::vector<VirtualTrackingTool::Pointer> ToolContainer; ///< container type for tracking tools
     ToolContainer m_AllTools;                       ///< container for all tracking tools
-    itk::FastMutexLock::Pointer m_ToolsMutex; ///< mutex for coordinated access of tool container
+    mutable std::mutex m_ToolsMutex; ///< mutex for coordinated access of tool container
 
-    itk::MultiThreader::Pointer m_MultiThreader;    ///< MultiThreader that starts continuous tracking update
-    int m_ThreadID;
+    std::thread m_Thread;
 
     unsigned int m_RefreshRate;                     ///< refresh rate of the internal tracking thread in milliseconds (NOT refreshs per second!)
     unsigned int m_NumberOfControlPoints;           ///< number of control points for the random path generation
@@ -212,4 +211,4 @@ namespace mitk
   double m_DeviationDistributionParam;  ///< deviation distribution for Gaussian Noise, 1.0 by default
   };
 }//mitk
-#endif /* MITKVIRTUALTRACKINGDEVICE_H_HEADER_INCLUDED_ */
+#endif

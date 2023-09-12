@@ -10,8 +10,8 @@ found in the LICENSE file.
 
 ============================================================================*/
 
-#ifndef OPERATIONACTOR_H_HEADER_INCLUDED_C16E28BD
-#define OPERATIONACTOR_H_HEADER_INCLUDED_C16E28BD
+#ifndef mitkOperationActor_h
+#define mitkOperationActor_h
 
 #include <MitkCoreExports.h>
 #include <mitkCommon.h>
@@ -24,7 +24,7 @@ found in the LICENSE file.
   if (newOperationName == nullptr)                                                                                        \
                                                                                                                        \
   {                                                                                                                    \
-    itkWarningMacro("Recieved wrong type of operation!");                                                              \
+    itkWarningMacro("Received wrong type of operation!");                                                              \
     return;                                                                                                            \
   }
 
@@ -50,4 +50,4 @@ namespace mitk
   };
 }
 
-#endif /* OPERATIONACTOR_H_HEADER_INCLUDED_C16E28BD */
+#endif
