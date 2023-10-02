@@ -1,6 +1,7 @@
 MITK_CREATE_MODULE(
   INCLUDE_DIRS Qmitk
   DEPENDS MitkIGT MitkQtWidgetsExt MitkPersistence ITKLabelMap
+  PACKAGE_DEPENDS PUBLIC ITK|MathematicalMorphology+Smoothing
 )
 
 add_subdirectory(autoload/ConfigurationWidgetRegistry)

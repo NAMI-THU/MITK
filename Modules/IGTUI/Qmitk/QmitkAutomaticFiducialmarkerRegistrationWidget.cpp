@@ -14,6 +14,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include "QmitkAutomaticFiducialmarkerRegistrationWidget.h"
 
+#include "mitkImageStatisticsHolder.h"
 #include <QMessageBox>
 
 #include "mitkProperties.h"
@@ -435,8 +436,8 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::SetImageGeometryInformation
   m_ImageSpacing[1] = image->GetGeometry()->GetSpacing()[1];
   m_ImageSpacing[2] = image->GetGeometry()->GetSpacing()[2];
 
-  MITK_INFO << "GetScalarValueMax = " << image->GetScalarValueMax(0);
-  MITK_INFO << "GetScalarValueMin = " << image->GetScalarValueMin(0);
+  MITK_INFO << "GetScalarValueMax = " << image->GetStatistics()->GetScalarValueMax(0);
+  MITK_INFO << "GetScalarValueMin = " << image->GetStatistics()->GetScalarValueMin(0);
 }
 
 double QmitkAutomaticFiducialmarkerRegistrationWidget::GetVoxelVolume()
@@ -479,15 +480,15 @@ bool QmitkAutomaticFiducialmarkerRegistrationWidget::FilterImage()
     m_LaplacianFilter2->Update();
     mitk::CastToMitkImage(m_LaplacianFilter2->GetOutput(), m_ImageToRegister);
 
-    if (m_ImageToRegister->GetScalarValueMax() < 150)
+    if (m_ImageToRegister->GetStatistics()->GetScalarValueMax() < 150)
     {
       m_BinaryThresholdFilter->SetLowerThreshold(2);
     }
-    else if (m_ImageToRegister->GetScalarValueMax() < 300)
+    else if (m_ImageToRegister->GetStatistics()->GetScalarValueMax() < 300)
     {
       m_BinaryThresholdFilter->SetLowerThreshold(10);
     }
-    else if (m_ImageToRegister->GetScalarValueMax() < 400)
+    else if (m_ImageToRegister->GetStatistics()->GetScalarValueMax() < 400)
     {
       m_BinaryThresholdFilter->SetLowerThreshold(15);
     }
@@ -526,7 +527,7 @@ void QmitkAutomaticFiducialmarkerRegistrationWidget::InitializeImageFilters()
 
   if (m_Controls->selectedModalityComboBox->currentIndex() == 1) // 1 means MRI
   {
-    m_ThresholdFilter->SetLower(floor(m_ImageToRegister->GetScalarValueMax() * 0.05));
+    m_ThresholdFilter->SetLower(floor(m_ImageToRegister->GetStatistics()->GetScalarValueMax() * 0.05));
     m_ThresholdFilter->SetUpper(1800);
   }
   else

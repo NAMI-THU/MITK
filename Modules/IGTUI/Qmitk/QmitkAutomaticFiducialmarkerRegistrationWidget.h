@@ -12,11 +12,10 @@ A PARTICULAR PURPOSE.
 See LICENSE.txt or http://www.mitk.org for details.
 ===================================================================*/
 
-#ifndef _QmitkAutomaticFiducialmarkerRegistrationWidget_H_INCLUDED
-#define _QmitkAutomaticFiducialmarkerRegistrationWidget_H_INCLUDED
+#ifndef QmitkAutomaticFiducialmarkerRegistrationWidget_H
+#define QmitkAutomaticFiducialmarkerRegistrationWidget_H
 
 
-#include "QWidget"
 #include "ui_QmitkAutomaticFiducialmarkerRegistrationWidget.h"
 #include "MitkIGTUIExports.h"
 
@@ -29,12 +28,11 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkPlaneFit.h>
 
 #include <itkImage.h>
-#include <itkThresholdImageFilter.h>
-#include <itkBinaryThresholdImageFilter.h>
-#include <itkGradientMagnitudeImageFilter.h>
-#include <itkLaplacianRecursiveGaussianImageFilter.h>
 #include "itkVotingBinaryIterativeHoleFillingImageFilter.h"
 #include <itkBinaryImageToShapeLabelMapFilter.h>
+#include <itkBinaryThresholdImageFilter.h>
+#include <itkLaplacianRecursiveGaussianImageFilter.h>
+#include <itkThresholdImageFilter.h>
 
 namespace itk {
   template<class T> class SmartPointer;
@@ -53,9 +51,9 @@ namespace Ui {
 }
 
 // Declare typedefs:
-typedef itk::Image<int, 3>  ImageType;
+typedef itk::Image<int, 3> ImageType;
 typedef itk::ThresholdImageFilter<ImageType> ThresholdImageFilterType;
-typedef itk::BinaryThresholdImageFilter <ImageType, ImageType> BinaryThresholdImageFilterType;
+typedef itk::BinaryThresholdImageFilter<ImageType, ImageType> BinaryThresholdImageFilterType;
 typedef itk::LaplacianRecursiveGaussianImageFilter<ImageType, ImageType> LaplacianRecursiveGaussianImageFilterType;
 typedef itk::VotingBinaryIterativeHoleFillingImageFilter<ImageType> VotingBinaryIterativeHoleFillingImageFilterType;
 typedef itk::BinaryImageToShapeLabelMapFilter<ImageType> BinaryImageToShapeLabelMapFilterType;
@@ -97,13 +95,6 @@ public:
   mitk::DataNode::Pointer GetImageNode();
 
   mitk::DataNode::Pointer GetSurfaceNode();
-
-signals:
-
-public slots:
-
-
-
 
 protected:
   void UnsetFloatingImageGeometry();
@@ -186,4 +177,4 @@ private:
 
   itk::SmartPointer<mitk::DataStorage> m_DataStorage;
 };
-#endif // _QmitkAutomaticFiducialmarkerRegistrationWidget_H_INCLUDED
+#endif // QmitkAutomaticFiducialmarkerRegistrationWidget_H
