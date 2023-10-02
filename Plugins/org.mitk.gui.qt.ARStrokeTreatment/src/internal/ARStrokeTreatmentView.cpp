@@ -453,13 +453,13 @@ void ARStrokeTreatmentView::OnChangeDisplayStyle()
   }
 
   QmitkRenderWindow *renderWindow =
-    this->GetRenderWindowPart()->GetQmitkRenderWindow(mitk::BaseRenderer::ViewDirection(2));
+    this->GetRenderWindowPart()->GetQmitkRenderWindow(mitk::AnatomicalPlane::Coronal); 
   this->GetRenderWindowPart()
-    ->GetQmitkRenderWindow(mitk::BaseRenderer::ViewDirection(2))
+    ->GetQmitkRenderWindow(mitk::AnatomicalPlane::Coronal)
     ->GetCameraRotationController();
 
   MITK_INFO << int(renderWindow->GetLayoutIndex());
-  renderWindow->SetLayoutIndex(mitk::BaseRenderer::ViewDirection(3));
+  renderWindow->SetLayoutIndex(mitk::AnatomicalPlane::Original);    // TODO: This was on 3D before, but this does not exist anymore in the enum. Test it
   MITK_INFO << int(renderWindow->GetLayoutIndex());
   renderWindow->updateBehavior();
 
