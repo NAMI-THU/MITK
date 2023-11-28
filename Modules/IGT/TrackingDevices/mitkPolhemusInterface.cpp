@@ -185,7 +185,7 @@ bool mitk::PolhemusInterface::Disconnect()
   }
 
   returnValue = m_pdiDev->Disconnect();
-  MITK_INFO << "Disconnect"
+  MITK_INFO << "Disconnect";
   return returnValue;
 }
 
