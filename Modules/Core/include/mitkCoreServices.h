@@ -16,7 +16,7 @@ found in the LICENSE file.
 #include "MitkCoreExports.h"
 
 #include <mitkCommon.h>
-#include <mitkLogMacros.h>
+#include <mitkLog.h>
 
 #include <mitkServiceInterface.h>
 #include <usGetModuleContext.h>
@@ -30,6 +30,7 @@ namespace mitk
   struct IMimeTypeProvider;
   class IPropertyAliases;
   class IPropertyDescriptions;
+  class IPropertyDeserialization;
   class IPropertyExtensions;
   class IPropertyFilters;
   class IPropertyPersistence;
@@ -71,6 +72,13 @@ namespace mitk
      * @return A non-nullptr IPropertyDescriptions instance.
      */
     static IPropertyDescriptions *GetPropertyDescriptions(us::ModuleContext *context = us::GetModuleContext());
+
+    /**
+     * @brief Get an IPropertyDeserialization instance.
+     * @param context The module context of the module getting the service.
+     * @return A non-nullptr IPropertyDeserialization instance.
+     */
+    static IPropertyDeserialization* GetPropertyDeserialization(us::ModuleContext* context = us::GetModuleContext());
 
     /**
      * @brief Get an IPropertyExtensions instance.

@@ -237,7 +237,7 @@ void QmitkImageCropperView::OnCreateNewBoundingBox()
     return;
   }
 
-  QString name = QString::fromStdString(imageNode->GetName() + " Bounding Shape");
+  QString name = QString::fromStdString(imageNode->GetName() + " Bounding Box");
 
   auto boundingShape = this->GetDataStorage()->GetNode(mitk::NodePredicateFunction::New([&name](const mitk::DataNode *node)
   {
@@ -251,7 +251,7 @@ void QmitkImageCropperView::OnCreateNewBoundingBox()
 
   // get current timestep to support 3d+t images
   auto renderWindowPart = this->GetRenderWindowPart(mitk::WorkbenchUtil::IRenderWindowPartStrategy::OPEN);
-  const auto timePoint = renderWindowPart->GetSelectedTimePoint();
+  const mitk::TimePointType timePoint = renderWindowPart->GetSelectedTimePoint();
   const auto imageGeometry = imageNode->GetData()->GetTimeGeometry()->GetGeometryForTimePoint(timePoint);
 
   auto boundingBox = mitk::GeometryData::New();
@@ -259,10 +259,8 @@ void QmitkImageCropperView::OnCreateNewBoundingBox()
   auto boundingBoxNode = mitk::DataNode::New();
   boundingBoxNode->SetData(boundingBox);
   boundingBoxNode->SetProperty("name", mitk::StringProperty::New(name.toStdString()));
-  boundingBoxNode->SetProperty("color", mitk::ColorProperty::New(1.0, 1.0, 1.0));
-  boundingBoxNode->SetProperty("opacity", mitk::FloatProperty::New(0.6));
   boundingBoxNode->SetProperty("layer", mitk::IntProperty::New(99));
-  boundingBoxNode->AddProperty("handle size factor", mitk::DoubleProperty::New(1.0 / 40.0));
+  boundingBoxNode->AddProperty("Bounding Shape.Handle Size Factor", mitk::DoubleProperty::New(0.02));
   boundingBoxNode->SetBoolProperty("pickable", true);
 
   if (!this->GetDataStorage()->Exists(boundingBoxNode))

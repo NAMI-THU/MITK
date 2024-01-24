@@ -40,6 +40,30 @@ found in the LICENSE file.
 
 const std::string QmitkImageStatisticsView::VIEW_ID = "org.mitk.views.imagestatistics";
 
+namespace {
+  bool CheckPlanarFigureMatchesGeometry(const mitk::PlanarFigure* planarFigure, const mitk::BaseGeometry* imageGeometry)
+  {
+    if (!planarFigure || !imageGeometry)
+      return false;
+
+    if (!mitk::PlanarFigureMaskGenerator::CheckPlanarFigureIsNotTilted(planarFigure->GetPlaneGeometry(), imageGeometry))
+      return false;
+
+    // The rest from here on is only needed until T30279 has been solved.
+    if (planarFigure->IsClosed())
+      return true;
+
+    const auto numControlPoints = planarFigure->GetNumberOfControlPoints();
+    for (unsigned int i = 0; i < numControlPoints; ++i)
+    {
+      if (!imageGeometry->IsInside(planarFigure->GetWorldControlPoint(i)))
+        return false;
+    }
+
+    return true;
+  }
+} // unnamed namespace
+
 QmitkImageStatisticsView::~QmitkImageStatisticsView()
 {
 }
@@ -214,7 +238,7 @@ void QmitkImageStatisticsView::UpdateHistogramWidget()
             }
 
             //Hardcoded labels are currently needed because the current histogram widget (and ChartWidget)
-            //do not allow correct removal or sound update/insertion of serveral charts.
+            //do not allow correct removal or sound update/insertion of several charts.
             //only thing that works for now is always to update/overwrite the same data label
             //This is a quick fix for T28223 and T28221
             m_Controls.widget_histogram->SetHistogram(statistics->GetHistogramForTimeStep(timeStep), "histogram");
@@ -330,7 +354,6 @@ void QmitkImageStatisticsView::OnROISelectionChanged(QmitkAbstractNodeSelectionW
   this->UpdateIntensityProfile();
 }
 
-
 void QmitkImageStatisticsView::OnButtonSelectionPressed()
 {
   QmitkNodeSelectionDialog* dialog = new QmitkNodeSelectionDialog(nullptr, "Select input for the statistic","You may select images and ROIs to compute their statistic. ROIs may be segmentations or planar figures.");
@@ -406,11 +429,9 @@ QmitkNodeSelectionDialog::SelectionCheckFunctionType QmitkImageStatisticsView::C
         }
         else
         {
-          const mitk::PlanarFigure* planar2 = dynamic_cast<const mitk::PlanarFigure*>(rightNode->GetData());
-          if (planar2)
-          {
-            validGeometry = mitk::PlanarFigureMaskGenerator::CheckPlanarFigureIsNotTilted(planar2->GetPlaneGeometry(), imageNodeData->GetGeometry());
-          }
+          const auto planarFigure = dynamic_cast<const mitk::PlanarFigure*>(rightNode->GetData());
+          const auto imageGeometry = imageNodeData->GetGeometry();
+          validGeometry = CheckPlanarFigureMatchesGeometry(planarFigure, imageGeometry);
         }
 
         if (!validGeometry)
@@ -452,11 +473,8 @@ mitk::NodePredicateBase::Pointer QmitkImageStatisticsView::GenerateROIPredicate(
       }
       else
       {
-        const auto planar2 = dynamic_cast<const mitk::PlanarFigure*>(node->GetData());
-        if (planar2)
-        {
-          sameGeometry = mitk::PlanarFigureMaskGenerator::CheckPlanarFigureIsNotTilted(planar2->GetPlaneGeometry(), image->GetGeometry());
-        }
+        const auto planarFigure = dynamic_cast<const mitk::PlanarFigure*>(node->GetData());
+        sameGeometry = CheckPlanarFigureMatchesGeometry(planarFigure, image->GetGeometry());
       }
 
       return sameGeometry;

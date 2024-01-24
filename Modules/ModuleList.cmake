@@ -2,6 +2,7 @@
 # ordered according to their dependencies.
 
 set(MITK_MODULES
+  Log
   Core
   CommandLine
   CoreCmdApps
@@ -73,4 +74,5 @@ set(MITK_MODULES
   REST
   RESTService
   DICOMweb
+  ROI
 )

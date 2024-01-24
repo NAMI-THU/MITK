@@ -203,6 +203,7 @@ namespace mitk
 
     //## Get the Vtk Matrix which describes the transform.
     vtkMatrix4x4 *GetVtkMatrix();
+    const vtkMatrix4x4* GetVtkMatrix() const;
 
     //##Documentation
     //## @brief Get the m_IndexToWorldTransform as a vtkLinearTransform
@@ -530,6 +531,17 @@ namespace mitk
       itkBooleanMacro(ImageGeometry);
 
         const GeometryTransformHolder *GetGeometryTransformHolder() const;
+
+    //##Documentation
+    //## @brief One to one mapping of axes to world orientations.
+    //##
+    //## The result is stored in the output argument that must be an array of three int values.
+    //## The elements of the array will be the axis indices that correspond to the sagittal,
+    //## coronal and axial orientations, in this order. It is guaranteed that each axis will
+    //## be mapped to different orientations.
+    //##
+    //## @param axes Output argument that will store the axis indices for each orientation.
+    void MapAxesToOrientations(int axes[]) const;
 
   protected:
     // ********************************** Constructor **********************************

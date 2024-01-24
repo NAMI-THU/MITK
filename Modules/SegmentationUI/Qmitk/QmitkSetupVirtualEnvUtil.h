@@ -13,12 +13,10 @@ found in the LICENSE file.s
 #ifndef QmitkSetupVirtualEnvUtil_h_Included
 #define QmitkSetupVirtualEnvUtil_h_Included
 
-#include "mitkLogMacros.h"
+#include "mitkLog.h"
 #include "mitkProcessExecutor.h"
 #include <MitkSegmentationUIExports.h>
 #include <QString>
-#include <QDir>
-#include <QApplication>
 
 /**
  * @brief Abstract Class to Setup a python virtual environment and pip install required packages.
@@ -184,6 +182,13 @@ public:
    * 
    */
   static void PrintProcessEvent(itk::Object *, const itk::EventObject &e, void *);
+
+  /**
+  * @brief Get the exact Python path and version for any OS from the virtual environment path.
+  * @return A pair of the exact python path and its Python version or empty, if an supported
+  * version of Python could not be found.
+  */
+  static std::pair<QString, QString> GetExactPythonPath(const QString &pyEnv);
 
 private:
   QString m_PythonPath;
